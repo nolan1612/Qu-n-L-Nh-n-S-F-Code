@@ -1,0 +1,1 @@
+// Chứa các hàm tiện ích: chuẩn hóa chuỗi, bắt lỗi nhập liệu, xóa màn hình

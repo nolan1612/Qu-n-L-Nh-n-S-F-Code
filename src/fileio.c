@@ -1,0 +1,1 @@
+// Chuyên xử lý việc lưu mảng dữ liệu xuống file .dat và đọc lên

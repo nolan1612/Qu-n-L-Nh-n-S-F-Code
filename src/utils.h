@@ -1,0 +1,1 @@
+// Khai báo các hàm dùng chung
