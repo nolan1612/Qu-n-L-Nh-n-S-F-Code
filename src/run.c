@@ -1,0 +1,6 @@
+#include "main.c"
+#include "auth.h"
+#include "fileio.h"
+#include "auth.c"
+#include "fileio.c"
+#include "menu.c"

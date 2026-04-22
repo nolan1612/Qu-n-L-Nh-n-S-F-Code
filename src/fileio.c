@@ -1,29 +1,43 @@
-// Chuyên xử lý việc lưu mảng dữ liệu xuống file .dat và đọc lên
 #include <stdio.h>
 #include "fileio.h"
+#include "auth.h"
 
-int saveAccount(Account arr[], int count){
-    File *file = fopen("account.data", "w");
-    if(file == NULL){
-        printf("không thể mở account.data");
-        return 0;
-    }
-    fwrite(arr, sizeof(Account), count, file);
-    
-   
-    fclose(file);
-    return 1;
-}
-int loadAccounts(Account arr[]) {
-    FILE *file = fopen("account.dat", "rb");
+void saveAccounts(Account list[], int count) {
+
+    FILE *file = fopen("accounts.dat", "wb"); 
     if (file == NULL) {
-        return 0; 
+        printf("Loi: Khong the ghi file accounts.dat!\n");
+        return;
     }
+    fwrite(list, sizeof(Account), count, file);
+    fclose(file);
+}
+
+int loadAccounts(Account list[]) {
+    FILE *file = fopen("accounts.dat", "rb"); 
+    if (file == NULL) {
+        printf("[He thong] File accounts.dat chua ton tai. Dang tao du lieu mau...\n");
+        
+        Account mockData[5] = {
+            {"SE211377", "Ho26072007*", 1, 0, 0}, 
+            {"SE210023", "1234567789", 0, 0, 0},  
+            {"SE211577", "234567890", 0, 0, 0},
+            {"SE210182", "345678901", 0, 0, 0},
+            {"SE205432", "ui1234567", 1, 0, 0}
+        };
+        
+        for (int i = 0; i < 5; i++) {
+            list[i] = mockData[i];
+        }
+        
+        saveAccounts(list, 5);
+        return 5; 
+    }
+    
     int count = 0;
-    while (fread(&arr[count], sizeof(Account), 1, file) == 1) {
+    while (fread(&list[count], sizeof(Account), 1, file) == 1) {
         count++;
     }
-    
     fclose(file);
-    return count; 
+    return count;
 }

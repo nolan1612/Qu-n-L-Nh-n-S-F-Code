@@ -1,28 +1,58 @@
-//  Điểm vào của chương trình, chứa hàm main() và menu tổng.
-//  File này chỉ dùng để gọi hàm, KHÔNG chứa logic xử lý dài.
 #include <stdio.h>
+#include <stdlib.h>
+#include "auth.h"
+#include "fileio.h"
+#include "menu.h"
 
-int main(){
+int main() {
+    Account list[MAX_ACCOUNTS];
+    char mssv[10];
+    char ps[20];
     int choice;
-    printf("=== He Thong Quan Ly Su Kien ===\n");
-    printf("1. Dang Nhap\n");
-    printf("2. Thoát\n");
-    scanf("%d", &choice);
+    
+    int accountCount = loadAccounts(list);
+    printf("[He thong] Da tai thanh cong %d tai khoan tu file.\n", accountCount);
 
-    switch(choice){
-        case 1:
-            // Gọi hàm đăng nhập
-            printf("Dang Nhap chua duoc ho tro.\n");
+	while (1) {
+        printf("\n=========================================\n");
+        printf("    CHAO MUNG DEN VOI F-CODE STAFF   \n");
+        printf("=========================================\n");
+        printf("1. Dang nhap\n");
+        printf("0. Thoat chuong trinh\n");
+        printf("-----------------------------------------\n");
+        printf("Lua chon cua ban: ");
+        
+        if (scanf("%d", &choice) != 1) {
+            while (getchar() != '\n');
+            continue;
+        }
+
+        if (choice == 0) {
+            printf("Tam biet! Hen gap lai.\n");
             break;
-        case 2:
-            printf("Thoat chuong trinh.\n");
-            break;
-        default:
-            printf("Lua chon khong hop le. Vui long thu lai.\n");
+        } else if (choice == 1) {
+            printf("\n--- DANG NHAP ---\n");
+            printf("Nhap MSSV: ");
+            scanf(" %[^\n]", mssv); 
+            printf("Nhap mat khau: ");
+            scanf(" %[^\n]", ps);
+            int status = Login(mssv, ps, list, accountCount);
+            if (status >= 0) {
+                printf("\n>>> Dang nhap thanh cong! <<<\n");
+                if (list[status].role == 1) {
+                    runAdminMenu(&list[status], list, accountCount);
+                } else {
+                    runMemberMenu(&list[status], list, accountCount);
+                }
+                saveAccounts(list, accountCount); 
+            } else if (status == -1) {
+                saveAccounts(list, accountCount);
+                exit(1); 
+            }
+        } else {
+            printf(">> Loi: Lua chon khong hop le!\n");
+        }
     }
-
-
-    /*
-        vào menu đăng nhập, nếu đăng nhập thành công thì sẽ vào menu chính của hệ thống, nếu không sẽ quay lại menu đăng nhập.
-    */
+    
+    return 0;
 }
