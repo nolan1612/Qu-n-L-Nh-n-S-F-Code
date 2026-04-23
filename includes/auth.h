@@ -2,7 +2,7 @@
 #ifndef AUTH_H
 #define AUTH_H
 
-#define MAX_ACCOUNTS 300
+#define MAX_ACCOUNTS 500
 
 typedef struct {
     char studentid[10];

@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include "../includes/auth.h"
 #include "../includes/event.h"
 #include "../includes/menu.h"

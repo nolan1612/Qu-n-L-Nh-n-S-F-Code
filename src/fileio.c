@@ -27,7 +27,7 @@ void saveAccounts(Account list[], int count) {
     }
     
     for (int i = 0; i < count; i++) {
-        // ĐÃ SỬA: %s %s %s %d %d %d (Đủ 6 chỗ trống: 3 Chuỗi, 3 Số)
+       
         fprintf(file, "%s %s %s %d %d %d\n", 
                 list[i].studentid, 
                 list[i].username,

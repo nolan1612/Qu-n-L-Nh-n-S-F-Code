@@ -9,7 +9,7 @@
 #include "../includes/staff.h"
 #include "../includes/utils.h"
 
-<<<<<<< HEAD
+
 int checkPassword(char ps[], Account list[], int index) {
     do{
         if (strcmp(ps, list[index].password) == 0) {
@@ -29,24 +29,24 @@ int checkPassword(char ps[], Account list[], int index) {
             }
         }
     } while (list[index].failCount < 3);
-=======
-int checkPassword(char ps[], Account *account) {
-    if (strcmp(ps, account->password) == 0) {
-        account->failCount = 0; 
-        return 1; 
-    }
-
-    account->failCount++;
-    if (account->failCount >= 3) {
-        account->isLocked = 1;
-        printf("Nhap sai mat khau 3 lan. Tai khoan da bi khoa!\n");
-        return -3;
-    } 
-    printf("Sai mat khau! Ban con %d lan thu.\n", 3 - account->failCount);
-    return -1;  
->>>>>>> c99c98abba518ae503efa70595a57c8d19d71eb1
 }
-    ww
+// int checkPassword(char ps[], Account *account) {
+//     if (strcmp(ps, account->password) == 0) {
+//         account->failCount = 0; 
+//         return 1; 
+//     }
+
+//     account->failCount++;
+//     if (account->failCount >= 3) {
+//         account->isLocked = 1;
+//         printf("Nhap sai mat khau 3 lan. Tai khoan da bi khoa!\n");
+//         return -3;
+//     } 
+//     printf("Sai mat khau! Ban con %d lan thu.\n", 3 - account->failCount);
+//     return -1;  
+
+
+    
 //     if (strcmp(ps, account->password) == 0) {
 //         account->failCount = 0; 
 //         return 1; 
@@ -81,7 +81,7 @@ int Login(char mssv[], char ps[], Account list[], int accountCount) {
 
     list[index].failCount = 0;
 
-    int result = checkPassword(ps, &list[index]);
+    int result = checkPassword(ps, list, index);
     if (result == 1) return index;
     if (result == -1) return -1;   
     if (result == -3) return -3;
