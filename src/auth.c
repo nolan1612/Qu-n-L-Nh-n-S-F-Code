@@ -1,6 +1,13 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
-#include "auth.h"
+#include "../includes/auth.h"
+#include "../includes/event.h"
+#include "../includes/menu.h"
+#include "../includes/fileio.h"
+#include "../includes/report.h"
+#include "../includes/staff.h"
+#include "../includes/utils.h"
 
 int checkPassword(char ps[], Account list[], int index) {
     if (strcmp(ps, list[index].password) == 0) {
@@ -41,27 +48,36 @@ int Login(char mssv[], char ps[], Account list[], int accountCount) {
 }
 
 void changePassword(Account *currentAcc) {
-    char oldPass[20], newPass[20], confirmPass[20];
+        char oldPass[20], newPass[20], confirmPass[20];
 
-    /*printf("\n--- DOI MAT KHAU ---\n");
-    printf("Nhap mat khau cu: ");
-    scanf(" %[^\n]", oldPass);
+        printf("\n--- DOI MAT KHAU ---\n");
+        printf("Nhap mat khau cu: ");
+        scanf(" %[^\n]", oldPass);
 
-    if (strcmp(oldPass, currentAcc->password) != 0) {
-        printf(">> Loi: Mat khau cu khong chinh xac!\n");
-        return;
-    } */
+        if (strcmp(oldPass, currentAcc->password) != 0) {
+            printf(">> Loi: Mat khau cu khong chinh xac!\n");
+            return;
+        } 
 
-    printf("Nhap mat khau moi: ");
-    scanf(" %[^\n]", newPass);
-    printf("Xac nhan mat khau moi: ");
-    scanf(" %[^\n]", confirmPass);
+        printf("Nhap mat khau moi: ");
+        scanf(" %[^\n]", newPass);
+        printf("Xac nhan mat khau moi: ");
+        scanf(" %[^\n]", confirmPass);
 
-    if (strcmp(newPass, confirmPass) == 0) {
-        strcpy(currentAcc->password, newPass);
-      
-        printf(">> Thanh cong: Da thay doi mat khau!\n");
-    } else {
-        printf(">> Loi: Mat khau xac nhan khong khop!\n");
-    }
+        if (strcmp(newPass, confirmPass) == 0) {
+            strcpy(currentAcc->password, newPass);
+        
+            printf(">> Thanh cong: Da thay doi mat khau!\n");
+        } else if(strcmp(oldPass, newPass) == 32) {
+        printf("ban co muon giu lai mat khau cu khong? (y/n): ");
+        char choice;
+            scanf(" %c", &choice);
+            if(choice == 'y' || choice == 'Y') {
+                printf(">> Mat khau van duoc giu nguyen!\n");
+            }else if(choice == 'n' || choice == 'N') {
+                printf(">> Mat khau van duoc giu nguyen!\n");
+        }
+        } else {
+            printf(">> Loi: Mat khau moi va xac nhan khong khop!\n");
+        }
 }
