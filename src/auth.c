@@ -136,8 +136,8 @@ void changePassword(Account *currentAcc) {
         }
     }
 
+
 int Logout(Account *currentAcc, Account list[], int accountCount) {
-    printf("\n---DANG XUAT ---\n");
     printf("Xac nhan dang xuat? (y/n): ");
     char choice;
     scanf(" %c", &choice);
