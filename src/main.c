@@ -1,17 +1,22 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include "auth.h"
-#include "fileio.h"
-#include "menu.h"
-
+#include "../includes/auth.h"
+#include "../includes/event.h"
+#include "../includes/menu.h"
+#include "../includes/fileio.h"
+#include "../includes/report.h"
+#include "../includes/staff.h"
+#include "../includes/utils.h"
+Account list[MAX_ACCOUNTS];
+Event eventList[MAX_EVENTS];
 int main() {
-    Account list[MAX_ACCOUNTS];
     char mssv[10];
     char ps[20];
     int choice;
     
     int accountCount = loadAccounts(list);
-    printf("[He thong] Da tai thanh cong %d tai khoan tu file.\n", accountCount);
+    int eventCount = loadEvents(eventList);
+    printf("[He thong] Da tai thanh cong %d tai khoan va %d su kien tu file.\n", accountCount, eventCount);
 
 	while (1) {
         printf("\n=========================================\n");
@@ -40,9 +45,9 @@ int main() {
             if (status >= 0) {
                 printf("\n>>> Dang nhap thanh cong! <<<\n");
                 if (list[status].role == 1) {
-                    runAdminMenu(&list[status], list, accountCount);
+                    runAdminMenu(&list[status], list, accountCount,eventList, &eventCount);
                 } else {
-                    runMemberMenu(&list[status], list, accountCount);
+                    runMemberMenu(&list[status], list, accountCount,eventList, eventCount);
                 }
                 saveAccounts(list, accountCount); 
             } else if (status == -1) {
