@@ -9,6 +9,7 @@
 #include "../includes/staff.h"
 #include "../includes/utils.h"
 
+
 int checkPassword(char ps[], Account list[], int index) {
     do{
         if (strcmp(ps, list[index].password) == 0) {
@@ -28,51 +29,102 @@ int checkPassword(char ps[], Account list[], int index) {
             }
         }
     } while (list[index].failCount < 3);
-    
 }
+// int checkPassword(char ps[], Account *account) {
+//     if (strcmp(ps, account->password) == 0) {
+//         account->failCount = 0; 
+//         return 1; 
+//     }
+
+//     account->failCount++;
+//     if (account->failCount >= 3) {
+//         account->isLocked = 1;
+//         printf("Nhap sai mat khau 3 lan. Tai khoan da bi khoa!\n");
+//         return -3;
+//     } 
+//     printf("Sai mat khau! Ban con %d lan thu.\n", 3 - account->failCount);
+//     return -1;  
+
+
+    
+//     if (strcmp(ps, account->password) == 0) {
+//         account->failCount = 0; 
+//         return 1; 
+//     }
+
+//     account->failCount++;
+//     if (account->failCount >= 3) {
+//         account->isLocked = 1;
+//         printf("Nhap sai mat khau 3 lan. Tai khoan da bi khoa!\n");
+//         return -3;
+//     } 
+//     printf("Sai mat khau! Ban con %d lan thu.\n", 3 - account->failCount);
+//     return -1;  
+// }
 
 int Login(char mssv[], char ps[], Account list[], int accountCount) {    
+    int index = -1;
     for (int i = 0; i < accountCount; i++) {
         if (strcmp(mssv, list[i].studentid) == 0) {
-            
-            if (list[i].isLocked == 1) {
-                printf("Tai khoan nay da bi khoa tu truoc! Thoat chuong trinh.\n");
-                return -1; 
-            }
-            
-            int passCheck = checkPassword(ps, list, i);
-            
-            if (passCheck == 1) return i; 
-            if (passCheck == -1) return -1; 
-            return -2; 
-        } 
+            index = i;
+            break;
+        }
     }
-    printf("MSSV khong ton tai!\n");
-    return -2; 
+    if (index == -1) {
+        printf("MSSV khong ton tai!\n");
+        return -2;
+    }
+    if (list[index].isLocked == 1) {
+        printf("Tai khoan nay da bi khoa!\n");
+        return -3; 
+    }
+
+    list[index].failCount = 0;
+
+    int result = checkPassword(ps, list, index);
+    if (result == 1) return index;
+    if (result == -1) return -1;   
+    if (result == -3) return -3;
+    return -1; 
 }
 
 void changePassword(Account *currentAcc) {
         char oldPass[20], newPass[20], confirmPass[20];
-    
         printf("\n--- DOI MAT KHAU ---\n");
-        printf("Nhap mat khau cu: ");
-        scanf(" %[^\n]", oldPass);
-        
+        while(1) {
+            printf("Nhap mat khau cu: ");
+            scanf(" %[^\n]", oldPass);
+
         if (strcmp(oldPass, currentAcc->password) != 0) {
             printf(">> Loi: Mat khau cu khong chinh xac!\n");
-            return;
-        } 
+        } else {
+        printf(">> Mat khau cu chinh xac!\n");
+        break;
+        }
 
+        int c;
+        while ((c = getchar()) != '\n' && c != EOF) {
+            }
+        }
+        while(1){
         printf("Nhap mat khau moi: ");
         scanf(" %[^\n]", newPass);
         printf("Xac nhan mat khau moi: ");
         scanf(" %[^\n]", confirmPass);
 
-        if (strcmp(newPass, confirmPass) == 0) {
+        if (strcmp(newPass, confirmPass) != 0) {
+           printf(">> Loi: Mat khau moi va xac nhan khong khop!\n");
+        } 
+        else{
+        printf(">> Mat khau moi va xac nhan khop!\n");
+        break;
+        }
+    }
+        if(strcmp(newPass, confirmPass) == 0) {
             strcpy(currentAcc->password, newPass);
-        
             printf(">> Thanh cong: Da thay doi mat khau!\n");
-        } else if(strcmp(oldPass, newPass)  32) {
+        }
+        else if(strlen(newPass) == 0  || strlen(confirmPass) == 0) {
         printf("ban co muon giu lai mat khau cu khong? (y/n): ");
         char choice;
             scanf(" %c", &choice);
@@ -80,9 +132,9 @@ void changePassword(Account *currentAcc) {
                 printf(">> Mat khau van duoc giu nguyen!\n");
             }else if(choice == 'n' || choice == 'N') {
                 printf(">> Mat khau van duoc giu nguyen!\n");
-        }
-        } else {
-            printf(">> Loi: Mat khau moi va xac nhan khong khop!\n");
+            }
         }
     }
-}
+
+
+    // hàm gửi yêu cầu mở tài khoản cho BCN
