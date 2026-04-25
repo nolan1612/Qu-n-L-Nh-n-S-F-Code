@@ -1,20 +1,16 @@
-// Chứa thuật toán sắp xếp, lọc tìm kiếm, xuất file .txt
-#include "report.h"
+#include "../includes/report.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "../data/event.dat"
-#include "../includes/event.h"
-
-
-
+#include "../includes/auth.h"
 int search_events(Event list[], int countEvent, char eId[])
 {   
     int Index = -1;
 
     for (int i = 0; i < countEvent; i++)
     {
-        if ((strcmp(eId[i], list[i].eventId) == 0) || (strcmp(eId[i], toupper(list[i].eventId)) == 0))
+        // ĐÃ SỬA: Chỉ so sánh eId (cả chuỗi) chứ không dùng eId[i]
+        if (strcmp(eId, list[i].eventId) == 0)
         {
             Index = i;
 
@@ -29,8 +25,9 @@ int search_events(Event list[], int countEvent, char eId[])
     if (Index == -1)
     {
         printf("Ma su kien nay khong ton tai!\n");
-        return Index;
     }   
+    
+    return Index; // Chuyển return ra ngoài cùng để code chuẩn C
 }
 
 
@@ -64,28 +61,34 @@ void event_detail(Event list[], int countEvent, char eId[], StaffEntry staffList
             printf(" Ma so sinh vien: %s\n", staffList[i].studentId);
 
             printf(" Vai tro: ");
-                if (staffList[i].role == 0)
-                {
-                    printf("BCN\n");
-                } 
-                if (staffList[i].role == 1)
-                {
-                    printf("Member\n");
-                } 
-                if (staffList[i].role == 2)
-                {
-                    printf("Support\n");
-                } else 
-                    {
-                        printf("Chua co vai tro\n");
-                    }
+            // ĐÃ SỬA BUG LOGIC: Dùng chuỗi else if liên hoàn
+            if (staffList[i].role == 0)
+            {
+                printf("BCN\n");
+            } 
+            else if (staffList[i].role == 1)
+            {
+                printf("Member\n");
+            } 
+            else if (staffList[i].role == 2)
+            {
+                printf("Support\n");
+            } 
+            else 
+            {
+                printf("Chua co vai tro\n");
+            }
             
+            // ĐÃ SỬA BUG CHUỖI RỖNG: Dùng strlen thay vì NULL
             printf(" Nhiem vu: ");
-            if (staffList[i].description == NULL)
+            if (strlen(staffList[i].description) == 0)
             {
                 printf("Chua co nhiem vu\n");
             }
-            printf("%s\n", staffList[i].description);
+            else
+            {
+                printf("%s\n", staffList[i].description);
+            }
         } 
     }
 }
