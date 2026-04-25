@@ -29,4 +29,5 @@ void editEvent(Event events[], int count);
 void updateEventStatus(Event events[], int count);
 void deleteEvent(Event events[], int *count);
 void displayAllEvents(Event events[], int count);
+void viewMemberProfile(Account *currentAcc);
 #endif
