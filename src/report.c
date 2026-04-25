@@ -1,42 +1,43 @@
-#include "../includes/report.h"
+// Chứa thuật toán sắp xếp, lọc tìm kiếm, xuất file .txt
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "../includes/auth.h"
-int search_events(Event list[], int countEvent, char eId[])
-{   
+#include <ctype.h>
+#include "../includes/event.h"
+#include "../includes/report.h"
+
+
+int searchEvents(Event list[], int countEvent, char eId[]){   
     int Index = -1;
 
-    for (int i = 0; i < countEvent; i++)
-    {
-        // ĐÃ SỬA: Chỉ so sánh eId (cả chuỗi) chứ không dùng eId[i]
-        if (strcmp(eId, list[i].eventId) == 0)
-        {
+    for (int i = 0; i < countEvent; i++){
+        if (strcmp(eId, list[i].eventId) == 0){
             Index = i;
-
             printf("Ma su kien la: %s\n", list[i].eventId);
             printf("Ten su kien la: %s\n", list[i].name);
             printf("Trang thai su kien: %d\n", list[i].status);
-
             return Index;
         }
     }
 
-    if (Index == -1)
-    {
+    if (Index == -1){
         printf("Ma su kien nay khong ton tai!\n");
-    }   
-    
-    return Index; // Chuyển return ra ngoài cùng để code chuẩn C
-}
+        return Index;
+    }
+}   
 
 
-void event_detail(Event list[], int countEvent, char eId[], StaffEntry staffList[], int countAccount)
-{
-    int Index = search_events(list, countEvent, eId);
+void eventDetail(Event list[], int countEvent){
+	char eId[20];
+    printf("\nNhap ma su kien can xem chi tiet: ");
+    scanf(" %[^\n]", eId);
+    for(int i = 0; eId[i] != '\0'; i++){
+        eId[i] = toupper(eId[i]);
+    }
+    int Index = searchEvents(list, countEvent, eId);
 
-    if (Index != -1)
-    {
+    if (Index != -1){
         printf("|===============================|\n");
         printf("|       THONG TIN SU KIEN       |\n");
         printf("|===============================|\n");
@@ -54,41 +55,31 @@ void event_detail(Event list[], int countEvent, char eId[], StaffEntry staffList
         printf("|=======================================|\n");
         printf("|     DANH SACH NHAN SU CUA SU KIEN     |\n");
         printf("|=======================================|\n");
+ 
+        if (list[Index].staffCount == 0) {
+            printf(">> Su kien nay chua co nhan su.\n");
+        } else {
+        	for (int i = 0; i < list[Index].staffCount; i++){
+            	printf(" Ma so sinh vien: %s\n", list[Index].staffList[i].studentId);
 
-        for (int i = 0; i < countAccount; i++)
-        {
-            printf(" Ho va Ten: %s\n", staffList[i].studentName);
-            printf(" Ma so sinh vien: %s\n", staffList[i].studentId);
-
-            printf(" Vai tro: ");
-            // ĐÃ SỬA BUG LOGIC: Dùng chuỗi else if liên hoàn
-            if (staffList[i].role == 0)
-            {
-                printf("BCN\n");
-            } 
-            else if (staffList[i].role == 1)
-            {
-                printf("Member\n");
-            } 
-            else if (staffList[i].role == 2)
-            {
-                printf("Support\n");
-            } 
-            else 
-            {
-                printf("Chua co vai tro\n");
-            }
-            
-            // ĐÃ SỬA BUG CHUỖI RỖNG: Dùng strlen thay vì NULL
-            printf(" Nhiem vu: ");
-            if (strlen(staffList[i].description) == 0)
-            {
-                printf("Chua co nhiem vu\n");
-            }
-            else
-            {
-                printf("%s\n", staffList[i].description);
-            }
-        } 
+            	printf(" Vai tro: ");
+                if (list[Index].staffList[i].role == 0){
+                    printf("BCN\n");
+                } 
+                if (list[Index].staffList[i].role == 1){
+                    printf("Member\n");
+                } 
+                if (list[Index].staffList[i].role == 2){
+                    printf("Support\n");
+                } else {
+                    printf("Chua co vai tro\n");
+                }
+            	printf(" Nhiem vu: ");
+            	if (strlen(list[Index].staffList[i].description) == 0){
+                	printf("Chua co nhiem vu\n");
+            	}
+            	printf("%s\n", list[Index].staffList[i].description);
+        	}
+		}
     }
 }

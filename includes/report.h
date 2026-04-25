@@ -5,6 +5,6 @@
 #include "event.h"
 
 int search_events(Event list[], int countEvent, char eId[]);
-void event_detail(Event list[], int countEvent, char eId[], StaffEntry staffList[], int countAccount);
+void eventDetail(Event list[], int countEvent);
 
 #endif
