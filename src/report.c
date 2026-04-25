@@ -7,16 +7,13 @@
 
 
 int search_events(Event list[], int countEvent, char eIdorName[])
-{
+{   
     int Index = -1;
 
     for (int i = 0; i < countEvent; i++)
     {
         // ĐÃ SỬA: Chỉ so sánh eId (cả chuỗi) chứ không dùng eId[i]
-        if (strcmp(eIdorName, list[i].eventId) == 0 
-            || strcmp(eIdorName, list[i].name) == 0 
-            || strcmp(eIdorName, toupper(list[i].name)) == 0 
-            || strcmp(eIdorName, toupper(list[i].eventId)) == 0)
+        if (strcmp(eIdorName, list[i].eventId) == 0 || strcmp(eIdorName, list[i].name) == 0 || strcmp(eIdorName, toupper(list[i].name)) == 0 || strcmp(eIdorName, toupper(list[i].eventId)) == 0)
         {
             Index = i;
 
@@ -42,6 +39,8 @@ void event_detail(Event list[], int countEvent)
     char eId[20];
     printf("Nhap ma su kien can xem chi tiet (VD: EV000001) hoac ten su kien: ");
     scanf(" %[^\n]", eId);
+
+
 
     int Index = search_events(list, countEvent, eId);
 
