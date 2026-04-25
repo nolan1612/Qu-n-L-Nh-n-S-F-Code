@@ -5,11 +5,11 @@
 #define MAX_ACCOUNTS 500
 
 typedef struct {
-    char studentid[10];
+    char studentid[20];
     char username[50];
     char password[20];
-    int role;
-    int isLocked;
+    int role; 
+    int isLocked; 
     int failCount;
 } Account;
 
