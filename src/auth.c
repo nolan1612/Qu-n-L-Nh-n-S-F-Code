@@ -85,54 +85,68 @@ int Login(char mssv[], char ps[], Account list[], int accountCount) {
 }
 
 void changePassword(Account *currentAcc) {
-        char oldPass[20], newPass[20], confirmPass[20];
-        printf("\n--- DOI MAT KHAU ---\n");
-        while(1) {
-            printf("Nhap mat khau cu: ");
-            scanf(" %[^\n]", oldPass);
-//Nếu như tôi quên luoon mật khẩu thì có cách nào để lấy lại không? T
-//Tôi có thể liên hệ với admin để reset mật khẩu không?
-        if (strcmp(oldPass, currentAcc->password) != 0) {
-            printf(">> Loi: Mat khau cu khong chinh xac!\n");
-        } else {
-        printf(">> Mat khau cu chinh xac!\n");
-        break;
+    char oldPass[20], newPass[20], confirmPass[20];
+    int failCount = 0; 
+    
+    printf("\n--- DOI MAT KHAU ---\n");
+
+    
+    while(1) {
+        printf("Nhap mat khau cu: ");
+        scanf(" %[^\n]", oldPass);
+
+      
+        if (strcmp(oldPass, "0") == 0) {
+            printf(">> Da huy doi mat khau. Quay lai menu...\n");
+            return; 
         }
 
-        int c;
-        while ((c = getchar()) != '\n' && c != EOF) {
+        if (strcmp(oldPass, currentAcc->password) != 0) {
+            failCount++; 
+            printf(">> Loi: Mat khau cu khong chinh xac!\n");
+            printf(">> Hay thu lai. Ban con %d lan thu.\n", 3 - failCount);
+            
+            // Nếu sai từ 3 lần trở lên, tung phao cứu sinh
+            if (failCount >= 3) {
+                printf("\033[1;33m[Meo]\033[0m Neu ban da quen mat khau, hay go '0' de thoat ra va nho Admin reset nhe!\n");
             }
+        } else {
+            break; 
         }
-    while(1){
-        printf("Nhap mat khau moi: ");
+    }
+
+
+    while(1) {
+        printf("Nhap mat khau moi (Go '0' de huy): "); 
         scanf(" %[^\n]", newPass);
+        
+        if (strcmp(newPass, "0") == 0) {
+            printf(">> Da huy doi mat khau. Quay lai menu...\n");
+            return; 
+        }
+
+        if (strcmp(newPass, currentAcc->password) == 0) {
+            printf(">> Loi: Mat khau moi khong duoc giong mat khau hien tai!\n");
+            continue; 
+        }
+
         printf("Xac nhan mat khau moi: ");
         scanf(" %[^\n]", confirmPass);
 
+        if (strcmp(confirmPass, "0") == 0) {
+            printf(">> Da huy doi mat khau. Quay lai menu...\n");
+            return; 
+        }
+
         if (strcmp(newPass, confirmPass) != 0) {
-           printf(">> Loi: Mat khau moi va xac nhan khong khop!\n");
-        } 
-        else{
-        printf(">> Mat khau moi va xac nhan khop!\n");
-        break;
-        }
-    }
-      
-        if(strcmp(newPass, confirmPass) == 0) {
+           printf(">> Loi: Mat khau moi va xac nhan khong khop! Hay nhap lai.\n");
+        } else {
             strcpy(currentAcc->password, newPass);
-            printf(">> Thanh cong: Da thay doi mat khau!\n");
-        }
-        else if(strlen(newPass) == 0  || strlen(confirmPass) == 0) {
-        printf("ban co muon giu lai mat khau cu khong? (y/n): ");
-        char choice;
-            scanf(" %c", &choice);
-            if(choice == 'y' || choice == 'Y') {
-                printf(">> Mat khau van duoc giu nguyen!\n");
-            }else if(choice == 'n' || choice == 'N') {
-                printf(">> Mat khau van duoc giu nguyen!\n");
-            }
+            printf("\033[1;32m>> Thanh cong: Da thay doi mat khau!\033[0m\n");
+            break; 
         }
     }
+}
 
 
 int Logout(Account *currentAcc, Account list[], int accountCount) {
