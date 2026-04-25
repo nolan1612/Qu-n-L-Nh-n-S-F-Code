@@ -5,6 +5,13 @@
 
 #include "event.h"
 
-void search_events(Event list[], int countEvent, char eId[]);
+typedef struct {
+    char studentId[15]; 
+    int role;             
+    char description[100]; 
+    char studentName[100];
+} StaffEntry;
+
+int search_events(Event list[], int countEvent, char eId[]);
 
 #endif
