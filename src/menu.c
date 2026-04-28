@@ -95,7 +95,7 @@ void runAdminMenu(Account *currentAcc, Account list[], int accountCount, Event e
                 displayAllEvents(eventList, *eventCount);
                 break;
             case 7: 
-                eventDetail(eventList, *eventCount);
+                // eventDetail(eventList, *eventCount);
                 break;
             case 8: 
                 // 8. Tim kiem su kien
