@@ -12,8 +12,7 @@ int search_events(Event list[], int countEvent, char eIdorName[])
 
     for (int i = 0; i < countEvent; i++)
     {
-        // ĐÃ SỬA: Chỉ so sánh eId (cả chuỗi) chứ không dùng eId[i]
-        if (strcmp(eIdorName, list[i].eventId) == 0 || strcmp(eIdorName, list[i].name) == 0 || strcmp(eIdorName, toupper(list[i].name)) == 0 || strcmp(eIdorName, toupper(list[i].eventId)) == 0)
+        if (stricmp(list[i].eventId, eIdorName) == 0 || strcasecmp(list[i].name, eIdorName) == 0)
         {
             Index = i;
 
