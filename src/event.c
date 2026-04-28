@@ -93,6 +93,7 @@ void editEvent(Event events[], int count) {
     printf("3. Dia diem: %s\n", events[foundIndex].location);
     printf("4. Ngay bat dau: %s\n", events[foundIndex].startDate);
     printf("5. Ngay ket thuc: %s\n", events[foundIndex].endDate);
+
     
     printf("\nNhap ten moi: ");
     scanf(" %[^\n]", events[foundIndex].name);
@@ -271,3 +272,19 @@ void displayAllEvents(Event events[], int count) {
     }
     printf("------------------------------------------------------------------------------------------------------------\n");
 }
+
+void viewMemberProfile(Account *currentAcc) {
+    printf("\n=========================================\n");
+    printf("           THONG TIN CA NHAN             \n");
+    printf("=========================================\n");
+    //printf("%-12s: %s\n", "Ho ten", currentAcc->username);
+    printf("%-12s: %s\n", "MSSV", currentAcc->studentid);
+    // printf("%-12s: %s\n", "Email", currentAcc->email);
+    // printf("%-12s: %s\n", "SDT", currentAcc->phone);
+    // printf("%-12s: %s\n", "Ban", currentAcc->dept);
+    printf("%-12s: %s\n", "Chuc vu", (currentAcc->role >= 1) ? "Ban Chu Nhiem (BCN)" : "Thanh vien");
+    printf("=========================================\n");
+    while (getchar() != '\n'); 
+    getchar();
+}
+

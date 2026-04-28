@@ -35,7 +35,7 @@ void MemberMenu() {
     printf("0. Dang xuat\n");
     printf("=========================================\n");
 }
-void runAdminMenu(Account *currentAcc, Account list[], int accountCount) {
+void runAdminMenu(Account *currentAcc, Account list[], int accountCount, Event eventList[], int *eventCount) {
     int choice;
     do {
         AdminMenu();
@@ -47,25 +47,55 @@ void runAdminMenu(Account *currentAcc, Account list[], int accountCount) {
 
         switch(choice) {
             case 1: 
-                // 1. Tao su kien moi
+                createEvent(eventList, eventCount);
                 break;
             case 2: 
-                // 2. Sua thong tin su kien
+                editEvent(eventList, *eventCount);
                 break;
             case 3: 
-                // 3. Xoa su kien
+                deleteEvent(eventList, eventCount);
                 break;
             case 4: 
-                // 4. Cap nhat trang thai su kien
+                updateEventStatus(eventList, *eventCount);
                 break;
-            case 5: 
-                // 5. Quan ly nhan su (Them/Sua/Xoa)
+            case 5: {
+                int subChoice;
+                do {
+                    printf("\n--- QUAN LY NHAN SU ---\n");
+                    printf("1. Them nhan su vao su kien\n");
+                    printf("2. Sua thong tin nhan su trong su kien\n");
+                    printf("3. Xoa nhan su khoi su kien\n");
+                    printf("0. Quay lai menu chinh\n");
+                    printf("Nhap lua chon cua ban: ");
+                    if (scanf("%d", &subChoice) != 1) {
+                        while(getchar() != '\n');
+                        subChoice = -1;
+                    }
+
+                    switch(subChoice) {
+                        case 1: 
+                            addStaffToEvent(eventList, *eventCount); 
+                            break;
+                        case 2: 
+                            editStaffRole(eventList, *eventCount); 
+                            break;
+                        case 3: 
+                            removeStaffFromEvent(eventList, *eventCount); 
+                            break;
+                        case 0: 
+                            printf(">> Quay lai menu Admin...\n");
+                            break;
+                        default: 
+                            printf(">> Loi: Lua chon khong hop le. Vui long nhap lai!\n");
+                    }
+                } while (subChoice != 0);
                 break;
+        	}
             case 6: 
-                // 6. Xem danh sach tat ca su kien
+                displayAllEvents(eventList, *eventCount);
                 break;
             case 7: 
-                // 7. Xem chi tiet mot su kien
+                eventDetail(eventList, *eventCount);
                 break;
             case 8: 
                 // 8. Tim kiem su kien
@@ -78,16 +108,14 @@ void runAdminMenu(Account *currentAcc, Account list[], int accountCount) {
                 saveAccounts(list, accountCount);
                 break;
             case 0: 
-                if (Logout(currentAcc, list, accountCount) == 0) {
-                    choice = -1; 
-                }
-                break; 
+                printf("\n>> Da dang xuat khoi tai khoan\n"); 
+                break;
             default: 
                 printf(">> Loi: Lua chon khong hop le. Vui long nhap lai!\n");
         }
     } while (choice != 0); 
 }
-void runMemberMenu(Account *currentAcc, Account list[], int accountCount) {
+void runMemberMenu(Account *currentAcc, Account list[], int accountCount, Event eventList[], int eventCount) {
     int choice;
     do {
         MemberMenu();
@@ -99,7 +127,7 @@ void runMemberMenu(Account *currentAcc, Account list[], int accountCount) {
 
         switch(choice) {
             case 1: 
-                // 1. Xem profile ca nhan
+                viewMemberProfile(currentAcc);
                 break;
             case 2: 
                 // 2. Xem danh sach su kien dang tham gia
@@ -115,9 +143,7 @@ void runMemberMenu(Account *currentAcc, Account list[], int accountCount) {
                 saveAccounts(list, accountCount);
                 break;
             case 0: 
-                if (Logout(currentAcc, list, accountCount) == 0) {
-                    choice = -1; 
-                }
+                printf("\n>> Da dang xuat khoi tai khoan\n"); 
                 break;
             default: 
                 printf(">> Loi: Lua chon khong hop le. Vui long nhap lai!\n");
