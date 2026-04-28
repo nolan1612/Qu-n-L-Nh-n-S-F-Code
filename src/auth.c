@@ -113,7 +113,7 @@ void changePassword(Account *currentAcc) {
         scanf(" %[^\n]", confirmPass);
 
         if (strcmp(newPass, confirmPass) != 0) {
-           printf(">> Loi: Mat khau moi va xac nhan khong khop!\n");
+            printf(">> Loi: Mat khau moi va xac nhan khong khop!\n");
         } 
         else{
         printf(">> Mat khau moi va xac nhan khop!\n");
