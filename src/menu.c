@@ -7,19 +7,19 @@
 #include "../includes/utils.h"
 void AdminMenu() {
     printf("\n=========================================\n");
-    printf("        BAN CHU NHIEM (ADMIN) MENU       \n");
+    printf("            ADMIN MENU                   \n");
     printf("=========================================\n");
-    printf("1. Tao su kien moi\n");
-    printf("2. Sua thong tin su kien\n");
-    printf("3. Xoa su kien\n");
-    printf("4. Cap nhat trang thai su kien\n");
-    printf("5. Quan ly nhan su (Them/Sua/Xoa)\n");
-    printf("6. Xem danh sach tat ca su kien\n");
-    printf("7. Xem chi tiet mot su kien\n");
-    printf("8. Tim kiem su kien\n");
-    printf("9. Xem lich su tham gia cua thanh vien\n");
-    printf("10. Doi mat khau\n");
-    printf("0. Dang xuat\n");
+    printf("1. Create new event\n");
+    printf("2. Edit event information\n");
+    printf("3. Delete event\n");
+    printf("4. Update event status\n");
+    printf("5. Manage staff (Add/Edit/Delete)\n");
+    printf("6. View all events list\n");
+    printf("7. View event details\n");
+    printf("8. Search events\n");
+    printf("9. View member participation history\n");
+    printf("10. Change password\n");
+    printf("0. Logout\n");
     printf("=========================================\n");
 }
 
@@ -39,7 +39,7 @@ void runAdminMenu(Account *currentAcc, Account list[], int accountCount, Event e
     int choice;
     do {
         AdminMenu();
-        printf("Nhap lua chon cua ban (0-10): ");
+        printf("Enter your choice (0-10):: ");
         if (scanf("%d", &choice) != 1) {
             while (getchar() != '\n'); 
             choice = -1;
@@ -61,12 +61,12 @@ void runAdminMenu(Account *currentAcc, Account list[], int accountCount, Event e
             case 5: {
                 int subChoice;
                 do {
-                    printf("\n--- QUAN LY NHAN SU ---\n");
-                    printf("1. Them nhan su vao su kien\n");
-                    printf("2. Sua thong tin nhan su trong su kien\n");
-                    printf("3. Xoa nhan su khoi su kien\n");
-                    printf("0. Quay lai menu chinh\n");
-                    printf("Nhap lua chon cua ban: ");
+                    printf("\n--- STAFF MANAGEMENT ---\n");
+                    printf("1. Add staff to event\n");
+                    printf("2. Edit staff role in event\n");
+                    printf("3. Remove staff from event\n");
+                    printf("0. Back to main menu\n");
+                    printf("Enter your choice: ");
                     if (scanf("%d", &subChoice) != 1) {
                         while(getchar() != '\n');
                         subChoice = -1;
@@ -83,10 +83,10 @@ void runAdminMenu(Account *currentAcc, Account list[], int accountCount, Event e
                             removeStaffFromEvent(eventList, *eventCount); 
                             break;
                         case 0: 
-                            printf(">> Quay lai menu Admin...\n");
+                            printf(">> Returning to Admin menu...\n");
                             break;
                         default: 
-                            printf(">> Loi: Lua chon khong hop le. Vui long nhap lai!\n");
+                            printf(">> Error: Invalid choice. Please try again!\n");
                     }
                 } while (subChoice != 0);
                 break;
@@ -98,20 +98,20 @@ void runAdminMenu(Account *currentAcc, Account list[], int accountCount, Event e
                 // eventDetail(eventList, *eventCount);
                 break;
             case 8: 
-                // 8. Tim kiem su kien
+                // 8. Search events
                 break;
             case 9: 
-                // 9. Xem lich su tham gia cua thanh vien
+                // 9. View member participation history
                 break;
             case 10: 
                 changePassword(currentAcc);
                 saveAccounts(list, accountCount);
                 break;
             case 0: 
-                printf("\n>> Da dang xuat khoi tai khoan\n"); 
+                printf("\n>> Logged out successfully\n"); 
                 break;
             default: 
-                printf(">> Loi: Lua chon khong hop le. Vui long nhap lai!\n");
+                printf(">> Error: Invalid choice. Please try again!\n");
         }
     } while (choice != 0); 
 }
@@ -119,34 +119,34 @@ void runMemberMenu(Account *currentAcc, Account list[], int accountCount, Event 
     int choice;
     do {
         MemberMenu();
-        printf("Nhap lua chon cua ban (0-5): ");
+        printf("Enter your choice (0-5): ");
         if (scanf("%d", &choice) != 1) {
-            while (getchar() != '\n'); 
+            while (getchar() != '\n');
             choice = -1;
         }
 
         switch(choice) {
-            case 1: 
+            case 1:
                 viewMemberProfile(currentAcc);
                 break;
-            case 2: 
-                // 2. Xem danh sach su kien dang tham gia
+            case 2:
+                // 2. View joined events list
                 break;
-            case 3: 
-                // 3. Xem chi tiet su kien minh tham gia
+            case 3:
+                // 3. View details of joined events
                 break;
-            case 4: 
-                // 4. Xem lich su su kien da tham gia
+            case 4:
+                // 4. View participation history
                 break;
-            case 5: 
+            case 5:
                 changePassword(currentAcc);
                 saveAccounts(list, accountCount);
                 break;
-            case 0: 
-                printf("\n>> Da dang xuat khoi tai khoan\n"); 
+            case 0:
+                printf("\n>> Logged out successfully\n");
                 break;
-            default: 
-                printf(">> Loi: Lua chon khong hop le. Vui long nhap lai!\n");
+            default:
+                printf(">> Error: Invalid choice. Please try again!\n");
         }
-    } while (choice != 0); 
+    } while (choice != 0);
 }
