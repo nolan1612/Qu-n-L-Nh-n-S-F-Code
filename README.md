@@ -85,6 +85,7 @@ gcc src/*.c -Iincludes -o main
 
 ## Project Structure
 ```bash
+
 ├── src/                # Source code
 ├── includes/           # Header files
 ├── data/               # Data storage
@@ -92,6 +93,7 @@ gcc src/*.c -Iincludes -o main
 │   └── accounts.dat
 ├── Makefile
 └── README.md
+```
 ---
 
 ## System Design
