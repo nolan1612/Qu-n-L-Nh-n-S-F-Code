@@ -24,7 +24,10 @@ typedef struct {
     StaffEntry staffList[MAX_STAFF_PER_EVENT];
 } Event;
 
-void generateEventId(char *dest, int currentCount);
+void generateEventId(char *dest, Event events[], int count);
+int getDaysDifference(const char* start, const char* end);
+int isValidDate(const char* date);
+int checkOverlap(Event events[], int count, const char* newStart, const char* newEnd, const char* ignoreEventId);
 void createEvent(Event events[], int *count);
 void editEvent(Event events[], int count);
 void updateEventStatus(Event events[], int count);
