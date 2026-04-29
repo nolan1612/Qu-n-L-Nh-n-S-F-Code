@@ -39,11 +39,7 @@ void runAdminMenu(Account *currentAcc, Account list[], int accountCount, Event e
     int choice;
     do {
         AdminMenu();
-        printf("Enter your choice (0-10):: ");
-        if (scanf("%d", &choice) != 1) {
-            while (getchar() != '\n'); 
-            choice = -1;
-        }
+        
 
         switch(choice) {
             case 1: 

@@ -77,7 +77,7 @@ void event_detail(Event list[], int countEvent)
                     printf(" Ma so sinh vien: %s\n", list[Index].staffList[i].studentId);
 
                     printf(" Vai tro: ");
-                    // ĐÃ SỬA BUG LOGIC: Dùng chuỗi else if liên hoàn
+                    
                     if (list[Index].staffList[i].role == 0)
                         {
                             printf("BCN\n");

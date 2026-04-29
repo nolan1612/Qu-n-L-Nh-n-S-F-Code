@@ -29,10 +29,7 @@ int main() {
         printf("-----------------------------------------\n");
         printf("Your choice: ");
         
-        if (scanf("%d", &choice) != 1) {
-            while (getchar() != '\n'); // Clear buffer if input is not an integer
-            continue;
-        }
+        choice = validInput(0,1);
 
         if (choice == 0) {
             printf("Goodbye! See you again.\n");
@@ -66,9 +63,7 @@ int main() {
                     break;
                 }
             }
-        } else {
-            printf(">> Error: Invalid choice!\n");
-        }
+        } 
     }
     return 0;
 }
