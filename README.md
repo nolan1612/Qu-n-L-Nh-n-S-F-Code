@@ -77,7 +77,7 @@ make
 
 ./main
 
-👉 Or using gcc:
+Or using gcc:
 gcc src/*.c -Iincludes -o main
 ./main
 
