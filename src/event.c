@@ -139,23 +139,30 @@ void createEvent(Event events[], int *count) {
 void editEvent(Event events[], int count) {
     char searchId[10];
     int foundIndex = -1;
+    int attempts = 3;
 
     printf("\n--- EDIT EVENT INFORMATION ---\n");
-    printf("Enter event ID to edit (e.g., EV000001): ");
-    scanf(" %[^\n]", searchId);
-
-    for (int i = 0; i < count; i++) {
-        if (strcmp(events[i].eventId, searchId) == 0) {
-            foundIndex = i;
+    while (attempts > 0) {
+        printf("Enter event ID to edit (e.g., EV000001): ");
+        scanf(" %[^\n]", searchId);
+        foundIndex = -1;
+        for (int i = 0; i < count; i++) {
+            if (strcmp(events[i].eventId, searchId) == 0) {
+                foundIndex = i;
+                break;
+            }
+        }
+        if (foundIndex != -1) {
             break;
         }
+        attempts--;
+        if (attempts > 0) {
+            printf(">> Error: Cannot find event with ID %s! You have %d attempt(s) left.\n", searchId, attempts);
+        } else {
+            printf(">> Error: Cannot find event with ID %s! Maximum attempts reached. Exiting...\n", searchId);
+            return;
+        }
     }
-
-    if (foundIndex == -1) {
-        printf(">> Error: Cannot find event with ID %s!\n", searchId);
-        return;
-    }
-
     if (events[foundIndex].status == 2) {
         printf(">> Error: Cannot edit a finished event!\n");
         return;
@@ -226,21 +233,29 @@ void editEvent(Event events[], int count) {
 void updateEventStatus(Event events[], int count) {
     char searchId[10];
     int foundIndex = -1;
+    int attempts = 3;
 
     printf("\n--- UPDATE EVENT STATUS ---\n");
-    printf("Enter event ID (e.g., EV000001): ");
-    scanf(" %[^\n]", searchId);
-
-    for (int i = 0; i < count; i++) {
-        if (strcmp(events[i].eventId, searchId) == 0) {
-            foundIndex = i;
+    while (attempts > 0) {
+        printf("Enter event ID (e.g., EV000001): ");
+        scanf(" %[^\n]", searchId);
+        foundIndex = -1;
+        for (int i = 0; i < count; i++) {
+            if (strcmp(events[i].eventId, searchId) == 0) {
+                foundIndex = i;
+                break;
+            }
+        }
+        if (foundIndex != -1) {
             break;
         }
-    }
-
-    if (foundIndex == -1) {
-        printf(">> Error: Cannot find event %s!\n", searchId);
-        return;
+        attempts--;
+        if (attempts > 0) {
+            printf(">> Error: Cannot find event with ID %s! You have %d attempt(s) left.\n", searchId, attempts);
+        } else {
+            printf(">> Error: Cannot find event with ID %s! Maximum attempts reached. Exiting...\n", searchId);
+            return;
+        }
     }
 
     int currentStatus = events[foundIndex].status;
@@ -286,18 +301,28 @@ void updateEventStatus(Event events[], int count) {
 void deleteEvent(Event events[], int *count) {
     char searchId[10];
     int foundIndex = -1;
+    int attempts = 3;
     printf("\n--- DELETE EVENT ---\n");
-    printf("Enter event ID to delete (e.g., EV000001): ");
-    scanf(" %[^\n]", searchId);
-    for (int i = 0; i < *count; i++) {
-        if (strcmp(events[i].eventId, searchId) == 0) {
-            foundIndex = i;
+    while (attempts > 0) {
+        printf("Enter event ID to delete (e.g., EV000001): ");
+        scanf(" %[^\n]", searchId);
+        foundIndex = -1;
+        for (int i = 0; i < *count; i++) {
+            if (strcmp(events[i].eventId, searchId) == 0) {
+                foundIndex = i;
+                break;
+            }
+        }
+        if (foundIndex != -1) {
             break;
         }
-    }
-    if (foundIndex == -1) {
-        printf(">> Error: Cannot find event with ID %s!\n", searchId);
-        return;
+        attempts--;
+        if (attempts > 0) {
+            printf(">> Error: Cannot find event with ID %s! You have %d attempt(s) left.\n", searchId, attempts);
+        } else {
+            printf(">> Error: Cannot find event with ID %s! Maximum attempts reached. Exiting...\n", searchId);
+            return;
+        }
     }
     printf("Event name: %s\n", events[foundIndex].name);
     printf("Number of staff currently in the event: %d\n", events[foundIndex].staffCount);
@@ -334,14 +359,39 @@ void displayAllEvents(Event events[], int count) {
         return;
     }
     int filter;
-    printf("\n--- FILTER EVENT LIST ---\n");
-    printf("1. All\n");
-    printf("2. Not started\n");
-    printf("3. Ongoing\n");
-    printf("4. Finished\n");
-    printf("Select filter type: ");
-    scanf("%d", &filter);
-    int targetStatus = filter - 2; 
+    int attempts = 0;
+    int max_attempts = 3;
+    int valid_input = 0;
+    while (attempts < max_attempts) {
+        printf("\n--- FILTER EVENT LIST ---\n");
+        printf("1. All\n");
+        printf("2. Not started\n");
+        printf("3. Ongoing\n");
+        printf("4. Finished\n");
+        printf("Select filter type (1-4): ");
+        if (scanf("%d", &filter) != 1) {
+            while (getchar() != '\n');
+            printf(">> Error: Invalid input. Please enter a number.\n");
+        } 
+        else if (filter >= 1 && filter <= 4) {
+            valid_input = 1;
+            break;
+        } 
+        else {
+            printf(">> Error: Choice out of range. Please select between 1 and 4.\n");
+        }
+
+        attempts++;
+        if (attempts < max_attempts) {
+            printf(">> You have %d attempt(s) left.\n", max_attempts - attempts);
+        }
+    }
+    if (!valid_input) {
+        printf(">> Notice: Too many invalid attempts. Returning to previous menu.\n");
+        return;
+    }
+
+    int targetStatus = filter - 2;
 
     printf("\n%-10s | %-20s | %-12s | %-12s | %-15s | %-5s | %-15s\n", 
            "ID", "Event Name", "Start Date", "End Date", "Location", "Staff", "Status");
