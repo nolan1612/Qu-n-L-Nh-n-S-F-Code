@@ -9,18 +9,7 @@
 #include "../includes/report.h"
 #include "../includes/staff.h"
 #include "../includes/utils.h"
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <time.h> // Thu vien bat buoc de tinh toan ngay thang
 
-#include "../includes/auth.h"
-#include "../includes/event.h"
-#include "../includes/menu.h"
-#include "../includes/fileio.h"
-#include "../includes/report.h"
-#include "../includes/staff.h"
-#include "../includes/utils.h"
 
 int isValidDate(const char* date) {
     if (strlen(date) != 10) return 0;
@@ -88,50 +77,50 @@ void generateEventId(char *dest, Event events[], int count) {
 
 void createEvent(Event events[], int *count) {
     if (*count >= MAX_EVENTS) {
-        printf("He thong day, khong the tao them su kien!\n");
+        printf("System is full, cannot create more events!\n");
         return;
     }
 
     Event newEv;
     generateEventId(newEv.eventId, events, *count); 
     
-    printf("Nhap ten su kien: ");
+    printf("Enter event name: ");
     scanf(" %[^\n]", newEv.name);
     
-    printf("Nhap mo ta su kien: ");
+    printf("Enter event description: ");
     scanf(" %[^\n]", newEv.description);
     
-    printf("Nhap dia diem su kien: ");
+    printf("Enter event location: ");
     scanf(" %[^\n]", newEv.location);
     
     while (1) {
-        printf("Nhap ngay bat dau (YYYY-MM-DD): ");
+        printf("Enter start date (YYYY-MM-DD): ");
         scanf(" %[^\n]", newEv.startDate);
         if (!isValidDate(newEv.startDate)) {
-            printf("\033[1;31m>> Loi: Ngay bat dau sai dinh dang hoac khong ton tai!\033[0m\n");
+            printf("\033[1;31m>> Error: Start date is invalid or does not exist!\033[0m\n");
             continue;
         }
 
-        printf("Nhap ngay ket thuc (YYYY-MM-DD): ");
+        printf("Enter end date (YYYY-MM-DD): ");
         scanf(" %[^\n]", newEv.endDate);
         if (!isValidDate(newEv.endDate)) {
-            printf("\033[1;31m>> Loi: Ngay ket thuc sai dinh dang hoac khong ton tai!\033[0m\n");
+            printf("\033[1;31m>> Error: End date is invalid or does not exist!\033[0m\n");
             continue;
         }
 
         if (strcmp(newEv.endDate, newEv.startDate) < 0) {
-            printf("\033[1;31m>> Loi: Ngay ket thuc phai sau hoac bang ngay bat dau!\033[0m\n");
+            printf("\033[1;31m>> Error: End date must be after or equal to start date!\033[0m\n");
             continue;
         }
 
         int days = getDaysDifference(newEv.startDate, newEv.endDate);
         if (days < 4) {
-            printf("\033[1;31m>> Loi: Su kien phai keo dai it nhat 4 ngay (Hien tai la %d ngay)!\033[0m\n", days);
+            printf("\033[1;31m>> Error: Event must last at least 4 days (Currently %d days)!\033[0m\n", days);
             continue;
         }
 
         if (checkOverlap(events, *count, newEv.startDate, newEv.endDate, NULL)) {
-            printf("\033[1;33m>> Loi: Thoi gian nay bi trung/chong cheo voi mot su kien khac da ton tai!\033[0m\n");
+            printf("\033[1;33m>> Error: This time overlaps with another existing event!\033[0m\n");
             continue;
         }
 
@@ -144,15 +133,15 @@ void createEvent(Event events[], int *count) {
     events[*count] = newEv;
     (*count)++;
     saveEvents(events, *count);
-    printf(">> Thanh cong: Da tao su kien %s\n", newEv.eventId);
+    printf(">> Success: Created event %s\n", newEv.eventId);
 }
 
 void editEvent(Event events[], int count) {
     char searchId[10];
     int foundIndex = -1;
 
-    printf("\n--- SUA THONG TIN SU KIEN ---\n");
-    printf("Nhap ma su kien can sua (VD: EV000001): ");
+    printf("\n--- EDIT EVENT INFORMATION ---\n");
+    printf("Enter event ID to edit (e.g., EV000001): ");
     scanf(" %[^\n]", searchId);
 
     for (int i = 0; i < count; i++) {
@@ -163,74 +152,74 @@ void editEvent(Event events[], int count) {
     }
 
     if (foundIndex == -1) {
-        printf(">> Loi: Khong tim thay su kien co ma %s!\n", searchId);
+        printf(">> Error: Cannot find event with ID %s!\n", searchId);
         return;
     }
 
     if (events[foundIndex].status == 2) {
-        printf(">> Loi: Khong the sua su kien da ket thuc!\n");
+        printf(">> Error: Cannot edit a finished event!\n");
         return;
     }
 
     if (events[foundIndex].status == 1) {
         char confirm;
-        printf("!!! CANH BAO: Su kien nay dang DIEN RA. Ban co chac chan muon sua? (y/n): ");
+        printf("!!! WARNING: This event is ONGOING. Are you sure you want to edit? (y/n): ");
         scanf(" %c", &confirm);
         if (confirm != 'y' && confirm != 'Y') {
-            printf(">> Da huy thao tac sua.\n");
+            printf(">> Edit operation cancelled.\n");
             return;
         }
     }
 
-    printf("\nThong tin hien tai cua %s:\n", events[foundIndex].eventId);
-    printf("1. Ten: %s\n", events[foundIndex].name);
-    printf("2. Mo ta: %s\n", events[foundIndex].description);
-    printf("3. Dia diem: %s\n", events[foundIndex].location);
-    printf("4. Ngay bat dau: %s\n", events[foundIndex].startDate);
-    printf("5. Ngay ket thuc: %s\n", events[foundIndex].endDate);
+    printf("\nCurrent information of %s:\n", events[foundIndex].eventId);
+    printf("1. Name: %s\n", events[foundIndex].name);
+    printf("2. Description: %s\n", events[foundIndex].description);
+    printf("3. Location: %s\n", events[foundIndex].location);
+    printf("4. Start date: %s\n", events[foundIndex].startDate);
+    printf("5. End date: %s\n", events[foundIndex].endDate);
 
-    printf("\nNhap ten moi: ");
+    printf("\nEnter new name: ");
     scanf(" %[^\n]", events[foundIndex].name);
-    printf("Nhap mo ta moi: ");
+    printf("Enter new description: ");
     scanf(" %[^\n]", events[foundIndex].description);
-    printf("Nhap dia diem moi: ");
+    printf("Enter new location: ");
     scanf(" %[^\n]", events[foundIndex].location);
     
     while (1) {
-        printf("Nhap ngay bat dau moi (YYYY-MM-DD): ");
+        printf("Enter new start date (YYYY-MM-DD): ");
         scanf(" %[^\n]", events[foundIndex].startDate);
         if (!isValidDate(events[foundIndex].startDate)) {
-            printf("\033[1;31m>> Loi: Ngay bat dau sai dinh dang hoac khong ton tai!\033[0m\n");
+            printf("\033[1;31m>> Error: Start date is invalid or does not exist!\033[0m\n");
             continue;
         }
 
-        printf("Nhap ngay ket thuc moi (YYYY-MM-DD): ");
+        printf("Enter new end date (YYYY-MM-DD): ");
         scanf(" %[^\n]", events[foundIndex].endDate);
         if (!isValidDate(events[foundIndex].endDate)) {
-            printf("\033[1;31m>> Loi: Ngay ket thuc sai dinh dang hoac khong ton tai!\033[0m\n");
+            printf("\033[1;31m>> Error: End date is invalid or does not exist!\033[0m\n");
             continue;
         }
 
         if (strcmp(events[foundIndex].endDate, events[foundIndex].startDate) < 0) {
-            printf("\033[1;31m>> Loi: Ngay ket thuc phai sau hoac bang ngay bat dau!\033[0m\n");
+            printf("\033[1;31m>> Error: End date must be after or equal to start date!\033[0m\n");
             continue;
         }
 
         int days = getDaysDifference(events[foundIndex].startDate, events[foundIndex].endDate);
         if (days < 4) {
-            printf("\033[1;31m>> Loi: Su kien phai keo dai it nhat 4 ngay (Hien tai la %d ngay)!\033[0m\n", days);
+            printf("\033[1;31m>> Error: Event must last at least 4 days (Currently %d days)!\033[0m\n", days);
             continue;
         }
 
         if (checkOverlap(events, count, events[foundIndex].startDate, events[foundIndex].endDate, events[foundIndex].eventId)) {
-            printf("\033[1;33m>> Loi: Thoi gian moi bi trung lich voi su kien khac trong he thong!\033[0m\n");
+            printf("\033[1;33m>> Error: New time overlaps with another event in the system!\033[0m\n");
             continue;
         }
 
         break;
     }
 
-    printf(">> Thanh cong: Da cap nhat thong tin su kien %s.\n", searchId);
+    printf(">> Success: Updated information for event %s.\n", searchId);
     saveEvents(events, count);
 }
 
@@ -238,8 +227,8 @@ void updateEventStatus(Event events[], int count) {
     char searchId[10];
     int foundIndex = -1;
 
-    printf("\n--- CAP NHAT TRANG THAI SU KIEN ---\n");
-    printf("Nhap ma su kien (VD: EV000001): ");
+    printf("\n--- UPDATE EVENT STATUS ---\n");
+    printf("Enter event ID (e.g., EV000001): ");
     scanf(" %[^\n]", searchId);
 
     for (int i = 0; i < count; i++) {
@@ -250,45 +239,45 @@ void updateEventStatus(Event events[], int count) {
     }
 
     if (foundIndex == -1) {
-        printf(">> Loi: Khong tim thay su kien %s!\n", searchId);
+        printf(">> Error: Cannot find event %s!\n", searchId);
         return;
     }
 
     int currentStatus = events[foundIndex].status;
-    printf("Trang thai hien tai: ");
-    if (currentStatus == 0) printf("Chua bat dau\n");
-    else if (currentStatus == 1) printf("Dang dien ra\n");
-    else printf("Ket thuc\n");
+    printf("Current status: ");
+    if (currentStatus == 0) printf("Not started\n");
+    else if (currentStatus == 1) printf("Ongoing\n");
+    else printf("Finished\n");
 
     if (currentStatus == 2) {
-        printf(">> Loi: Su kien da KET THUC, khong the thay doi trang thai nua!\n");
+        printf(">> Error: Event is FINISHED, status cannot be changed anymore!\n");
         return;
     }
 
     if (currentStatus == 0) {
         char confirm;
-        printf("Ban muon chuyen sang [Dang dien ra]? (y/n): ");
+        printf("Do you want to change to [Ongoing]? (y/n): ");
         scanf(" %c", &confirm);
         
         if (confirm == 'y' || confirm == 'Y') {
             if (events[foundIndex].staffCount == 0) {
                 char force;
-                printf("!!! CANH BAO: Su kien chua co nhan su nao. Van tiep tuc? (y/n): "); 
+                printf("!!! WARNING: Event has no staff. Continue anyway? (y/n): "); 
                 scanf(" %c", &force);
                 if (force != 'y' && force != 'Y') return;
             }
             events[foundIndex].status = 1;
-            printf(">> Thanh cong: Su kien dang trong trang thai DIEN RA.\n");
+            printf(">> Success: Event is now ONGOING.\n");
         }
     } 
     else if (currentStatus == 1) {
         char confirm;
-        printf("Ban muon chuyen sang [Ket thuc]? (y/n): ");
+        printf("Do you want to change to [Finished]? (y/n): ");
         scanf(" %c", &confirm);
         
         if (confirm == 'y' || confirm == 'Y') {
             events[foundIndex].status = 2;
-            printf(">> Thanh cong: Su kien da KET THUC.\n");
+            printf(">> Success: Event is now FINISHED.\n");
         }
     }
 	saveEvents(events, count);
@@ -297,8 +286,8 @@ void updateEventStatus(Event events[], int count) {
 void deleteEvent(Event events[], int *count) {
     char searchId[10];
     int foundIndex = -1;
-    printf("\n--- XOA SU KIEN ---\n");
-    printf("Nhap ma su kien can xoa (VD: EV000001): ");
+    printf("\n--- DELETE EVENT ---\n");
+    printf("Enter event ID to delete (e.g., EV000001): ");
     scanf(" %[^\n]", searchId);
     for (int i = 0; i < *count; i++) {
         if (strcmp(events[i].eventId, searchId) == 0) {
@@ -307,27 +296,27 @@ void deleteEvent(Event events[], int *count) {
         }
     }
     if (foundIndex == -1) {
-        printf(">> Loi: Khong tim thay su kien co ma %s!\n", searchId);
+        printf(">> Error: Cannot find event with ID %s!\n", searchId);
         return;
     }
-    printf("Ten su kien: %s\n", events[foundIndex].name);
-    printf("So nhan su dang co trong su kien: %d\n", events[foundIndex].staffCount);
+    printf("Event name: %s\n", events[foundIndex].name);
+    printf("Number of staff currently in the event: %d\n", events[foundIndex].staffCount);
     if (events[foundIndex].status == 1) {
-        printf(">> Loi: Khong the xoa su kien dang dien ra!\n"); 
+        printf(">> Error: Cannot delete an ongoing event!\n"); 
         return;
     }
     char confirm1;
-    printf("!!! CANH BAO: Ban co chac chan muon xoa su kien nay khong? (y/n): ");
+    printf("!!! WARNING: Are you sure you want to delete this event? (y/n): ");
     scanf(" %c", &confirm1);
     if (confirm1 != 'y' && confirm1 != 'Y') {
-        printf(">> Da huy thao tac xoa.\n");
+        printf(">> Delete operation cancelled.\n");
         return;
     }
     char confirm2;
-    printf("!!! XAC NHAN LAN 2: Hanh dong nay se xoa vinh vien su kien va toan bo nhan su. Tiep tuc? (y/n): ");
+    printf("!!! 2ND CONFIRMATION: This action will permanently delete the event and all its staff. Continue? (y/n): ");
     scanf(" %c", &confirm2);
     if (confirm2 != 'y' && confirm2 != 'Y') {
-        printf(">> Da huy thao tac xoa.\n");
+        printf(">> Delete operation cancelled.\n");
         return;
     }
 
@@ -335,27 +324,27 @@ void deleteEvent(Event events[], int *count) {
         events[i] = events[i + 1];
     }
     (*count)--;
-    printf(">> Thanh cong: Da xoa su kien %s.\n", searchId);
+    printf(">> Success: Deleted event %s.\n", searchId);
     saveEvents(events, *count);
 }
 
 void displayAllEvents(Event events[], int count) {
     if (count == 0) {
-        printf(">> Thong bao: Danh sach su kien dang trong.\n");
+        printf(">> Notice: Event list is empty.\n");
         return;
     }
     int filter;
-    printf("\n--- LOC DANH SACH SU KIEN ---\n");
-    printf("1. Tat ca\n");
-    printf("2. Chua bat dau\n");
-    printf("3. Dang dien ra\n");
-    printf("4. Ket thuc\n");
-    printf("Chon kieu loc: ");
+    printf("\n--- FILTER EVENT LIST ---\n");
+    printf("1. All\n");
+    printf("2. Not started\n");
+    printf("3. Ongoing\n");
+    printf("4. Finished\n");
+    printf("Select filter type: ");
     scanf("%d", &filter);
     int targetStatus = filter - 2; 
 
     printf("\n%-10s | %-20s | %-12s | %-12s | %-15s | %-5s | %-15s\n", 
-           "Ma ID", "Ten Su Kien", "Bat dau", "Ket thuc", "Dia diem", "NS", "Trang thai");
+           "ID", "Event Name", "Start Date", "End Date", "Location", "Staff", "Status");
     printf("------------------------------------------------------------------------------------------------------------\n");
 
     int found = 0;
@@ -363,12 +352,12 @@ void displayAllEvents(Event events[], int count) {
         if (filter == 1 || events[i].status == targetStatus) {
             char statusStr[20];
             if (events[i].status == 0) {
-            	strcpy(statusStr, "Chua bat dau");
+            	strcpy(statusStr, "Not started");
 			}else if (events[i].status == 1) {
-				strcpy(statusStr, "Dang dien ra");
+				strcpy(statusStr, "Ongoing");
 			}
             else {
-            	strcpy(statusStr, "Ket thuc");
+            	strcpy(statusStr, "Finished");
 			}
             printf("%-10s | %-20s | %-12s | %-12s | %-15s | %-5d | %-15s\n", 
                    events[i].eventId, 
@@ -383,21 +372,21 @@ void displayAllEvents(Event events[], int count) {
     }
 
     if (!found) {
-        printf(">> Khong co su kien nao phu hop voi bo loc.\n");
+        printf(">> No events match the filter.\n");
     }
     printf("------------------------------------------------------------------------------------------------------------\n");
 }
 
 void viewMemberProfile(Account *currentAcc) {
     printf("\n=========================================\n");
-    printf("           THONG TIN CA NHAN             \n");
+    printf("           PERSONAL INFORMATION             \n");
     printf("=========================================\n");
-    //printf("%-12s: %s\n", "Ho ten", currentAcc->username);
-    printf("%-12s: %s\n", "MSSV", currentAcc->studentid);
+    //printf("%-12s: %s\n", "Full Name", currentAcc->username);
+    printf("%-12s: %s\n", "Student ID", currentAcc->studentid);
     // printf("%-12s: %s\n", "Email", currentAcc->email);
-    // printf("%-12s: %s\n", "SDT", currentAcc->phone);
-    // printf("%-12s: %s\n", "Ban", currentAcc->dept);
-    printf("%-12s: %s\n", "Chuc vu", (currentAcc->role >= 1) ? "Ban Chu Nhiem (BCN)" : "Thanh vien");
+    // printf("%-12s: %s\n", "Phone", currentAcc->phone);
+    // printf("%-12s: %s\n", "Dept", currentAcc->dept);
+    printf("%-12s: %s\n", "Role", (currentAcc->role >= 1) ? "Board of Directors (BOD)" : "Member");
     printf("=========================================\n");
     while (getchar() != '\n'); 
     getchar();
