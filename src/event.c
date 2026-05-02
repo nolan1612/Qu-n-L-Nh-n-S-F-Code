@@ -442,3 +442,73 @@ void viewMemberProfile(Account *currentAcc) {
     getchar();
 }
 
+void viewMemberHistory(Event events[], int count) {
+    char searchId[15];
+    int found = 0;
+    int attempts = 3;
+    printf("\n--- VIEW MEMBER PARTICIPATION HISTORY ---\n");
+    while (attempts > 0) {
+        printf("Enter Student ID to search: ");
+        scanf(" %[^\n]", searchId);
+        found = 0;
+        for (int i = 0; i < count; i++) {
+            for (int j = 0; j < events[i].staffCount; j++) {
+                if (strcmp(events[i].staffList[j].studentId, searchId) == 0) {
+                    found = 1;
+                    break;
+                }
+            }
+            if (found) {
+                break;
+            }
+        }
+
+        if (found) {
+            break;
+        }
+
+        attempts--;
+        if (attempts > 0) {
+            printf(">> Error: Cannot find any participation history for Student ID %s! You have %d attempt(s) left.\n", searchId, attempts);
+        } else {
+            printf(">> Error: Cannot find Student ID %s! Maximum attempts reached. Exiting...\n", searchId);
+            return;
+        }
+    }
+    printf("\n%-25s | %-10s | %-15s\n", "Event Name", "Role", "Status");
+    printf("----------------------------------------------------------\n");
+
+    for (int i = 0; i < count; i++) {
+        for (int j = 0; j < events[i].staffCount; j++) {
+            if (strcmp(events[i].staffList[j].studentId, searchId) == 0) {
+                char roleStr[20];
+                if (events[i].staffList[j].role == 0) {
+                    strcpy(roleStr, "Leader");
+                } else if (events[i].staffList[j].role == 1) {
+                    strcpy(roleStr, "Member");
+                } else if (events[i].staffList[j].role == 2) {
+                    strcpy(roleStr, "Support");
+                } else {
+                    strcpy(roleStr, "Unknown");
+                }
+                char statusStr[20];
+                if (events[i].status == 0) {
+                    strcpy(statusStr, "Not started");
+                } else if (events[i].status == 1) {
+                    strcpy(statusStr, "Ongoing");
+                } else if (events[i].status == 2) {
+                    strcpy(statusStr, "Finished");
+                } else {
+                    strcpy(statusStr, "Unknown");
+                }
+                printf("%-25s | %-10s | %-15s\n", 
+                       events[i].name, 
+                       roleStr, 
+                       statusStr);
+                       
+                break;
+            }
+        }
+    }
+    printf("----------------------------------------------------------\n");
+}
