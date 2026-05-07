@@ -219,3 +219,62 @@ void createFile(Event list[], int countEvent)
         }
     fclose(fptr);
 }
+
+void advancedStaffStatistics(Event events[], int eventCount, Account accounts[], int accountCount) {
+    printf("\n============================================================\n");
+    printf("                  ADVANCED STAFF STATISTICS                 \n");
+    printf("============================================================\n");
+    printf("\n--- 1. STAFF COUNT BY EVENT ---\n");
+    if (eventCount == 0) {
+        printf(">> Notice: No events in the system.\n");
+    } else {
+        printf("%-15s | %-30s | %-10s\n", "Event ID", "Event Name", "Staff Count");
+        printf("------------------------------------------------------------\n");
+        for (int i = 0; i < eventCount; i++) {
+            printf("%-15s | %-30s | %d/30\n", events[i].eventId, events[i].name, events[i].staffCount);
+        }
+    }
+
+    int participationCount[1000] = {0}; 
+    int maxParticipation = 0;
+
+    for (int i = 0; i < eventCount; i++) {
+        for (int j = 0; j < events[i].staffCount; j++) {
+            for (int k = 0; k < accountCount; k++) {
+                if (strcmp(events[i].staffList[j].studentId, accounts[k].studentid) == 0) {
+                    participationCount[k]++;
+                    break;
+                }
+            }
+        }
+    }
+
+    for (int i = 0; i < accountCount; i++) {
+        if (accounts[i].role == 0 && participationCount[i] > maxParticipation) {
+            maxParticipation = participationCount[i];
+        }
+    }
+    printf("\n--- 2. MEMBERS WITH THE MOST PARTICIPATION ---\n");
+    if (maxParticipation == 0) {
+        printf(">> Notice: No members have participated in any events yet.\n");
+    } else {
+        printf(">> Maximum participation: %d event(s)\n", maxParticipation);
+        for (int i = 0; i < accountCount; i++) {
+            if (accounts[i].role == 0 && participationCount[i] == maxParticipation) {
+                printf(" - Student ID: %-10s | Name: %s\n", accounts[i].studentid, accounts[i].username);
+            }
+        }
+    }
+    printf("\n--- 3. MEMBERS WITH NO PARTICIPATION ---\n");
+    int lazyFound = 0;
+    for (int i = 0; i < accountCount; i++) {
+        if (accounts[i].role == 0 && participationCount[i] == 0) {
+            printf(" - Student ID: %-10s | Name: %s\n", accounts[i].studentid, accounts[i].username);
+            lazyFound = 1;
+        }
+    }
+    if (!lazyFound) {
+        printf(">> Awesome! All members have participated in at least one event!\n");
+    }
+    printf("============================================================\n");
+}
