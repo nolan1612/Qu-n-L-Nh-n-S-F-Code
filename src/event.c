@@ -685,3 +685,60 @@ void viewMyParticipationHistory(Event events[], int count, Account *currentAcc) 
     }
     printf("------------------------------------------------------------------------------------\n");
 }
+
+void searchEventsByTimeRange(Event events[], int count) {
+    char searchStartDate[11];
+    char searchEndDate[11];
+
+    printf("\n============================================================\n");
+    printf("                SEARCH EVENTS BY TIME RANGE                 \n");
+    printf("============================================================\n");
+
+    if (count == 0) {
+        printf(">> Notice: No events in the system.\n");
+        return;
+    }
+
+    while (1) {
+        printf("Enter start date (YYYY-MM-DD or YYYY/MM/DD): ");
+        inputValidFormatDate(searchStartDate);
+
+        printf("Enter end date (YYYY-MM-DD or YYYY/MM/DD): ");
+        inputValidFormatDate(searchEndDate);
+
+        if (strcmp(searchEndDate, searchStartDate) < 0) {
+            printf("\033[1;31m>> Error: End date must be after or equal to start date!\033[0m\n");
+            continue;
+        }
+        break;
+    }
+
+    printf("\n%-10s | %-20s | %-12s | %-12s | %-15s\n", 
+           "ID", "Event Name", "Start Date", "End Date", "Status");
+    printf("--------------------------------------------------------------------------------\n");
+
+    int found = 0;
+    for (int i = 0; i < count; i++) {
+        if (strcmp(events[i].startDate, searchStartDate) >= 0 && 
+            strcmp(events[i].startDate, searchEndDate) <= 0) {
+            
+            char statusStr[20];
+            if (events[i].status == 0) strcpy(statusStr, "Not started");
+            else if (events[i].status == 1) strcpy(statusStr, "Ongoing");
+            else strcpy(statusStr, "Finished");
+
+            printf("%-10s | %-20s | %-12s | %-12s | %-15s\n", 
+                   events[i].eventId, 
+                   events[i].name, 
+                   events[i].startDate, 
+                   events[i].endDate, 
+                   statusStr);
+            found = 1;
+        }
+    }
+
+    if (!found) {
+        printf(">> Notice: No events found starting within this time range.\n");
+    }
+    printf("--------------------------------------------------------------------------------\n");
+}

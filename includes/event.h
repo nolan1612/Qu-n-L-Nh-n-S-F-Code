@@ -36,4 +36,5 @@ void viewMemberHistory(Event events[], int count);
 void viewJoinedEventsList(Event events[], int count, Account *currentAcc);
 void viewJoinedEventDetails(Event events[], int count, Account *currentAcc);
 void viewMyParticipationHistory(Event events[], int count, Account *currentAcc);
+void searchEventsByTimeRange(Event events[], int count);
 #endif

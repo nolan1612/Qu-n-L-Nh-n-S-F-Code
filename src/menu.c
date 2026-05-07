@@ -121,6 +121,12 @@ void runAdminMenu(Account *currentAcc, Account list[], int accountCount, Event e
                 }
                 choice = -1; 
                 break;
+            case 12:
+            	createFile(eventList, *eventCount);
+            	break;
+            case 13:
+            	searchEventsByTimeRange(eventList, *eventCount);
+            	break;
             default: 
                 printf(">> Error: Invalid choice. Please try again!\n");
         }
