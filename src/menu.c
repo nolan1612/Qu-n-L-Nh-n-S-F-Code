@@ -25,14 +25,14 @@ void AdminMenu() {
 
 void MemberMenu() {
     printf("\n=========================================\n");
-    printf("             THANH VIEN MENU             \n");
+    printf("               MEMBER MENU               \n");
     printf("=========================================\n");
-    printf("1. Xem profile ca nhan\n");
-    printf("2. Xem danh sach su kien dang tham gia\n");
-    printf("3. Xem chi tiet su kien minh tham gia\n");
-    printf("4. Xem lich su su kien da tham gia\n");
-    printf("5. Doi mat khau\n");
-    printf("0. Dang xuat\n");
+    printf("1. View personal profile\n");
+    printf("2. View joined events list\n");
+    printf("3. View joined event details\n");
+    printf("4. View participation history\n");
+    printf("5. Change password\n");
+    printf("0. Logout\n");
     printf("=========================================\n");
 }
 void runAdminMenu(Account *currentAcc, Account list[], int accountCount, Event eventList[], int *eventCount) {
@@ -95,7 +95,7 @@ void runAdminMenu(Account *currentAcc, Account list[], int accountCount, Event e
                 displayAllEvents(eventList, *eventCount);
                 break;
             case 7: 
-                eventDetail(eventList, *eventCount);
+                event_detail(eventList, *eventCount);
                 break;
             case 8: 
                 // 8. Search events
@@ -110,6 +110,12 @@ void runAdminMenu(Account *currentAcc, Account list[], int accountCount, Event e
             case 0: 
                 printf("\n>> Logged out successfully\n"); 
                 break;
+            case 11:
+            	create_file(eventList, *eventCount);
+            	break;
+            case 12:
+            	searchEventsByTimeRange(eventList, *eventCount);
+            	break;
             default: 
                 printf(">> Error: Invalid choice. Please try again!\n");
         }
