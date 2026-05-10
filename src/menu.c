@@ -22,6 +22,7 @@ void AdminMenu() {
     printf("9. View member participation history\n");
     printf("10. Change password\n");
     printf("11. Setup/Update Email\n"); 
+    printf("15. Generate admin secret Key\n");
     printf("0. Logout\n");
     printf("=========================================\n");
 }
@@ -79,7 +80,7 @@ void runAdminMenu(Account *currentAcc, Account list[], int accountCount, Event e
 
                     switch(subChoice) {
                         case 1: 
-                            addStaffToEvent(eventList, *eventCount); 
+                            addStaffToEvent(eventList, *eventCount, list, accountCount); 
                             break;
                         case 2: 
                             editStaffRole(eventList, *eventCount); 
@@ -114,6 +115,9 @@ void runAdminMenu(Account *currentAcc, Account list[], int accountCount, Event e
                 break;
             case 11: 
                 setupEmail(currentAcc, list, accountCount);
+                break;
+            case 15:
+                generatedSecretKey(6);
                 break;
             case 0: 
                 if (Logout(currentAcc, list, accountCount) == 1) {

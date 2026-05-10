@@ -19,16 +19,17 @@
 //     fclose(file);
 // }
 void saveAccounts(Account list[], int count) {
+  
     FILE *file = fopen("data/account.dat", "w"); 
     
     if (file == NULL) {
-        printf("Loi .dat!\n");
+        printf("\033[1;31m[Loi]\033[0m Khong the ghi file data/account.dat!\n");
         return;
     }
     
     for (int i = 0; i < count; i++) {
        
-        fprintf(file, "%s %s %s %s %d %d %d\n", 
+        fprintf(file, "%s|%s|%s|%s|%d|%d|%d\n", 
                 list[i].studentid, 
                 list[i].username,
                 list[i].password, 
@@ -72,7 +73,6 @@ void saveAccounts(Account list[], int count) {
 
 
 int loadAccounts(Account list[]) {
-   
     FILE *file = fopen("data/account.dat", "r"); 
     
     if (file == NULL) {
@@ -81,15 +81,16 @@ int loadAccounts(Account list[]) {
     }
     
     int count = 0;
-
-    while (fscanf(file, "%s %s %s %d %d %d", 
+    while (fscanf(file, " %[^|]|%[^|]|%[^|]|%[^|]|%d|%d|%d\n", 
                   list[count].studentid, 
                   list[count].username,   
                   list[count].password, 
+                  list[count].email,
                   &list[count].role, 
                   &list[count].isLocked, 
-                  &list[count].failCount) == 6) { 
+                  &list[count].failCount) == 7) { 
         count++;
+        if (count >= MAX_ACCOUNTS) break; 
     }
     
     fclose(file);
