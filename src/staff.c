@@ -18,14 +18,14 @@ void toUpperCaseStr(char str[]) {
     }
 }
 
-void addStaffToEvent(Event events[], int count) {
+void addStaffToEvent(Event events[], int count, Account list[], int accountCount) {
     char searchId[10];
     int foundIndex = -1;
-    int attempts = 0;
+    int attempts = 3;
 
     printf("\n--- ADD STAFF TO EVENT ---\n");
 
-    while (attempts < 3) {
+    while (attempts > 0) {
         printf("Enter event ID (Ex: EV000001): ");
         scanf(" %[^\n]", searchId);
 
@@ -40,12 +40,13 @@ void addStaffToEvent(Event events[], int count) {
             break;
         }
 
-        printf(">> Error: Cannot find event with ID %s!\n", searchId);
-        attempts++;
-    }
-
-    if (foundIndex == -1) {
-        return;
+        attempts--;
+        if (attempts > 0) {
+            printf(">> Error: Cannot find event with ID %s! You have %d attempt(s) left.\n", searchId, attempts);
+        } else {
+            printf(">> Error: Cannot find event with ID %s! Maximum attempts reached. Exiting...\n", searchId);
+            return;
+        }
     }
 
     if (events[foundIndex].status == 2) {
@@ -59,33 +60,47 @@ void addStaffToEvent(Event events[], int count) {
     }
 
     char mssvInput[50];
-    attempts = 0;
+    attempts = 3;
 
-    while (attempts < 3) {
-        int existed = 0;
+    while (attempts > 0) {
+        int existedInEvent = 0;
+        int existedInSystem = 0;
 
         printf("Enter staff student ID: ");
         scanf(" %[^\n]", mssvInput);
 
         toUpperCaseStr(mssvInput);
-
         for (int i = 0; i < events[foundIndex].staffCount; i++) {
             if (strcmp(events[foundIndex].staffList[i].studentId, mssvInput) == 0) {
-                existed = 1;
+                existedInEvent = 1;
                 break;
             }
         }
-
-        if (!existed) {
-            break;
+        for (int i = 0; i < accountCount; i++) {
+            if (strcmp(list[i].studentid, mssvInput) == 0) {
+                existedInSystem = 1;
+                break;
+            }
         }
-
-        printf(">> Error: Staff member %s already exists in the event!\n", mssvInput);
-        attempts++;
-    }
-
-    if (attempts == 3) {
-        return;
+        if (existedInEvent) {
+            attempts--;
+            if (attempts > 0) {
+                printf(">> Error: Staff member %s already exists in the event! You have %d attempt(s) left.\n", mssvInput, attempts);
+            } else {
+                printf(">> Error: Staff member %s already exists in the event! Maximum attempts reached. Exiting...\n", mssvInput);
+                return;
+            }
+        } else if (!existedInSystem) {
+            attempts--;
+            if (attempts > 0) {
+                printf(">> Error: Student ID %s does not exist in the system! You have %d attempt(s) left.\n", mssvInput, attempts);
+            } else {
+                printf(">> Error: Student ID %s does not exist in the system! Maximum attempts reached. Exiting...\n", mssvInput);
+                return;
+            }
+        } else {
+            break; 
+        }
     }
 
     int role;
@@ -112,11 +127,11 @@ void addStaffToEvent(Event events[], int count) {
 void editStaffRole(Event events[], int count) {
     char searchId[10];
     int foundIndex = -1;
-    int attempts = 0;
+    int attempts = 3;
 
     printf("\n--- EDIT STAFF INFORMATION IN EVENT ---\n");
 
-    while (attempts < 3) {
+    while (attempts > 0) {
         printf("Enter event ID (Ex: EV000001): ");
         scanf(" %[^\n]", searchId);
 
@@ -131,12 +146,13 @@ void editStaffRole(Event events[], int count) {
             break;
         }
 
-        printf(">> Error: Cannot find event with ID %s!\n", searchId);
-        attempts++;
-    }
-
-    if (foundIndex == -1) {
-        return;
+        attempts--;
+        if (attempts > 0) {
+            printf(">> Error: Cannot find event with ID %s! You have %d attempt(s) left.\n", searchId, attempts);
+        } else {
+            printf(">> Error: Cannot find event with ID %s! Maximum attempts reached. Exiting...\n", searchId);
+            return;
+        }
     }
 
     if (events[foundIndex].status == 1) {
@@ -152,9 +168,9 @@ void editStaffRole(Event events[], int count) {
     char mssvInput[50];
     int staffIndex = -1;
 
-    attempts = 0;
+    attempts = 3;
 
-    while (attempts < 3) {
+    while (attempts > 0) {
         printf("Enter student ID of the staff member to edit: ");
         scanf(" %[^\n]", mssvInput);
 
@@ -171,12 +187,13 @@ void editStaffRole(Event events[], int count) {
             break;
         }
 
-        printf(">> Error: Cannot find staff member %s in the event!\n", mssvInput);
-        attempts++;
-    }
-
-    if (staffIndex == -1) {
-        return;
+        attempts--;
+        if (attempts > 0) {
+            printf(">> Error: Cannot find staff member %s in the event! You have %d attempt(s) left.\n", mssvInput, attempts);
+        } else {
+            printf(">> Error: Cannot find staff member %s in the event! Maximum attempts reached. Exiting...\n", mssvInput);
+            return;
+        }
     }
 
     printf("Enter new role (0 = Leader, 1 = Member, 2 = Support): ");
@@ -186,18 +203,17 @@ void editStaffRole(Event events[], int count) {
     scanf(" %[^\n]", events[foundIndex].staffList[staffIndex].description);
 
     printf(">> Success: Updated staff member %s in event %s.\n", mssvInput, searchId);
-
     saveEvents(events, count);
 }
 
 void removeStaffFromEvent(Event events[], int count) {
     char searchId[10];
     int foundIndex = -1;
-    int attempts = 0;
+    int attempts = 3;
 
     printf("\n--- REMOVE STAFF FROM EVENT ---\n");
 
-    while (attempts < 3) {
+    while (attempts > 0) {
         printf("Enter event ID (Ex: EV000001): ");
         scanf(" %[^\n]", searchId);
 
@@ -212,12 +228,13 @@ void removeStaffFromEvent(Event events[], int count) {
             break;
         }
 
-        printf(">> Error: Cannot find event with ID %s!\n", searchId);
-        attempts++;
-    }
-
-    if (foundIndex == -1) {
-        return;
+        attempts--;
+        if (attempts > 0) {
+            printf(">> Error: Cannot find event with ID %s! You have %d attempt(s) left.\n", searchId, attempts);
+        } else {
+            printf(">> Error: Cannot find event with ID %s! Maximum attempts reached. Exiting...\n", searchId);
+            return;
+        }
     }
 
     if (events[foundIndex].status == 1) {
@@ -242,9 +259,9 @@ void removeStaffFromEvent(Event events[], int count) {
     char mssvInput[50];
     int staffIndex = -1;
 
-    attempts = 0;
+    attempts = 3;
 
-    while (attempts < 3) {
+    while (attempts > 0) {
         printf("Enter student ID of the staff member to remove: ");
         scanf(" %[^\n]", mssvInput);
 
@@ -261,12 +278,13 @@ void removeStaffFromEvent(Event events[], int count) {
             break;
         }
 
-        printf(">> Error: Cannot find staff member %s in the event!\n", mssvInput);
-        attempts++;
-    }
-
-    if (staffIndex == -1) {
-        return;
+        attempts--;
+        if (attempts > 0) {
+            printf(">> Error: Cannot find staff member %s in the event! You have %d attempt(s) left.\n", mssvInput, attempts);
+        } else {
+            printf(">> Error: Cannot find staff member %s in the event! Maximum attempts reached. Exiting...\n", mssvInput);
+            return;
+        }
     }
 
     char confirm;
