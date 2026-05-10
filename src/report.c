@@ -161,7 +161,7 @@ void createFile(Event list[], int countEvent)
     char eId[20];
     scanf(" %[^\n]", eId);
 
-    int Index = search_events(list, countEvent, eId);
+    int Index = eventSearch(list, countEvent, eId);
 
     if (Index != -1)
     {

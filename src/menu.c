@@ -79,7 +79,7 @@ void runAdminMenu(Account *currentAcc, Account list[], int accountCount, Event e
 
                     switch(subChoice) {
                         case 1: 
-                            addStaffToEvent(eventList, *eventCount); 
+                            addStaffToEvent(eventList, *eventCount, list, accountCount); 
                             break;
                         case 2: 
                             editStaffRole(eventList, *eventCount); 
