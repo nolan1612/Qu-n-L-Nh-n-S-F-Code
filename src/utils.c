@@ -193,4 +193,45 @@ int isValidEmail(char email[]){
     if (last == NULL || strlen(last) == 0) return 0;
     return 1;
 }
+int isValidphoneNumber(char phone[]){
+    if(phone == NULL || strlen(phone) == 0) return 0;
+    if(strlen(phone) < 10 || strlen(phone) > 11) return 0;
+    if(phone[0] != '0') return 0;
+    if(phone[1] != '2' && phone[1] != '3' && phone[1] != '5' &&
+    phone[1] != '7' && phone[1] != '8' && phone[1] != '9') return 0;
+    for(int i = 0; i <= strlen(phone) - 1; i++){
+        if(!isdigit(phone[i])) return 0;
+    }
+    return 1;
+}
+void toLowerCase(char str[]) {
+    for(int i = 0; str[i] != '\0'; i++){
+        str[i] = tolower(str[i]);
+    }
+}
+int getSearchScore(const char eventName[], const char searchInput[]) {
+    char nameCopy[256];
+    char searchCopy[256];
 
+
+    strncpy(nameCopy, eventName, sizeof(nameCopy) - 1);
+    nameCopy[sizeof(nameCopy) - 1] = '\0';
+    
+    strncpy(searchCopy, searchInput, sizeof(searchCopy) - 1);
+    searchCopy[sizeof(searchCopy) - 1] = '\0';
+    toLowerCase(nameCopy);
+    toLowerCase(searchCopy);
+    int checkout = 0;
+    char *word = strtok(searchCopy, " ");
+
+    while (word != NULL) {
+        if (strstr(nameCopy, word) != NULL) {
+            checkout++; 
+        } else {
+            checkout--;      
+        }
+        word = strtok(NULL, " "); 
+    }
+
+    return checkout; 
+}
