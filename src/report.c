@@ -11,7 +11,7 @@ int eventSearch(Event list[], int countEvent, char eIdorName[])
 
     for (int i = 0; i < countEvent; i++)
     {
-        if (stricmp(list[i].eventId, eIdorName) == 0 || strcasecmp(list[i].name, eIdorName) == 0)
+        if (strcmp(list[i].eventId, eIdorName) == 0 || strcasecmp(list[i].name, eIdorName) == 0)
         {
             Index = i;
 
@@ -32,6 +32,19 @@ int eventSearch(Event list[], int countEvent, char eIdorName[])
                                     printf("the event status: Unknown\n");
                                 }
 
+        if (list[i].status == 0)
+        {
+            printf("Event Status: Not Started\n");
+        } else if (list[i].status == 1)
+            {
+                printf("Event Status: Ongoing\n");
+            } else if (list[i].status == 2)
+                {
+                    printf("Event Status: Completed\n");
+                } else 
+                    {
+                        printf("Event Status: Unknown\n");
+                    }
             return Index;
         }
     }
