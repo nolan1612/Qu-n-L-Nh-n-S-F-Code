@@ -150,7 +150,7 @@ void editEvent(Event events[], int count) {
 
     printf("Current description: %s\n", events[foundIndex].description);
     printf("Enter new description: ");
-    scanf(" %499[^\n]", tempInput);
+    scanf(" %50[^\n]", tempInput);
     while (getchar() != '\n');
     if (strcmp(tempInput, "0") != 0) {
         strcpy(events[foundIndex].description, tempInput);

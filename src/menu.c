@@ -6,6 +6,7 @@
 #include "../includes/report.h"
 #include "../includes/staff.h"
 #include "../includes/utils.h"
+#include "../includes/request.h"
 
 void AdminMenu() {
     printf("\n=========================================\n");
@@ -23,6 +24,7 @@ void AdminMenu() {
     printf("10. Change password\n");
     printf("11. Setup/Update Email\n"); 
     printf("15. Generate admin secret Key\n");
+    printf("14. View unlock requests\n");
     printf("0. Logout\n");
     printf("=========================================\n");
 }
@@ -37,6 +39,7 @@ void MemberMenu() {
     printf("4. View participation history\n");
     printf("5. Change password\n");
     printf("6. Setup/Update Email\n"); 
+    printf("7. Submit unlock request\n");
     printf("0. Logout\n");
     printf("=========================================\n");
 }
@@ -45,7 +48,7 @@ void runAdminMenu(Account *currentAcc, Account list[], int accountCount, Event e
     int choice;
     do {
         AdminMenu();
-        printf("Enter your choice (0-11): ");
+        printf("Enter your choice (0-14): ");
         if (scanf("%d", &choice) != 1) {
             while (getchar() != '\n');
             choice = -1;
@@ -131,6 +134,10 @@ void runAdminMenu(Account *currentAcc, Account list[], int accountCount, Event e
             case 13:
             	searchEventsByTimeRange(eventList, *eventCount);
             	break;
+            case 14:
+            	viewUnlockRequests(list, accountCount);
+                saveAccounts(list, accountCount);
+            	break;
             default: 
                 printf(">> Error: Invalid choice. Please try again!\n");
         }
@@ -141,7 +148,7 @@ void runMemberMenu(Account *currentAcc, Account list[], int accountCount, Event 
     int choice;
     do {
         MemberMenu();
-        printf("Enter your choice (0-6): ");
+        printf("Enter your choice (0-7): ");
         if (scanf("%d", &choice) != 1) {
             while (getchar() != '\n');
             choice = -1;
@@ -166,6 +173,9 @@ void runMemberMenu(Account *currentAcc, Account list[], int accountCount, Event 
                 break;
             case 6:
                 setupEmail(currentAcc, list, accountCount);
+                break;
+            case 7:
+                sendUnlockRequest(currentAcc);
                 break;
             case 0:
                 if (Logout(currentAcc, list, accountCount) == 1) {
