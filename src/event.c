@@ -366,7 +366,21 @@ void displayAllEvents(Event events[], int count) {
         printf(">> Notice: Too many invalid attempts. Returning to previous menu.\n");
         return;
     }
-
+    int sortOrder;
+    printf("\n--- SORT EVENTS BY START DATE ---\n");
+    printf("1. Ascending (Oldest first)\n");
+    printf("2. Descending (Newest first)\n");
+    printf("3. Default (No sort)\n");
+    printf("Select sort order (1-3): ");
+    
+    if (scanf("%d", &sortOrder) != 1) {
+        while (getchar() != '\n');
+        sortOrder = 3;
+    }
+    
+    if (sortOrder == 1 || sortOrder == 2) {
+        sortEventsByStartDate(events, count, sortOrder);
+    }
     int targetStatus = filter - 2;
 
     printf("\n%-10s | %-20s | %-12s | %-12s | %-15s | %-5s | %-15s\n", 
@@ -779,4 +793,22 @@ void searchEventsByTimeRange(Event events[], int count) {
         printf(">> Notice: No events found starting within this time range.\n");
     }
     printf("--------------------------------------------------------------------------------\n");
+}
+
+void sortEventsByStartDate(Event events[], int count, int sortOrder) {
+    for (int i = 0; i < count - 1; i++) {
+        int targetIdx = i;
+        for (int j = i + 1; j < count; j++) {
+            int cmp = strcmp(events[j].startDate, events[targetIdx].startDate);
+            
+            if ((sortOrder == 1 && cmp < 0) || (sortOrder == 2 && cmp > 0)) {
+                targetIdx = j;
+            }
+        }
+        if (targetIdx != i) {
+            Event temp = events[i];
+            events[i] = events[targetIdx];
+            events[targetIdx] = temp;
+        }
+    }
 }
