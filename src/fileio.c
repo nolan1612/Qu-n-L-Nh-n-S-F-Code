@@ -76,7 +76,7 @@ int loadAccounts(Account list[]) {
     FILE *file = fopen("data/account.dat", "r"); 
     
     if (file == NULL) {
-        printf("[He thong] File data/account.dat chua ton tai!\n");
+        printf("[Error] File data/account.dat not exist!\n");
         return 0; 
     }
     
@@ -99,13 +99,13 @@ int loadAccounts(Account list[]) {
 void saveEvents(Event list[], int count) {
     FILE *file = fopen("data/events.dat", "wb"); 
     if (file == NULL) {
-        printf("\033[1;31m[Loi]\033[0m Khong the mo file events.dat de ghi!\n");
+        printf("\033[1;31m[Loi]\033[0m Can not open file events.dat for writing!\n");
         return;
     }
     size_t written = fwrite(list, sizeof(Event), count, file);
     
     if (written != (size_t)count) {
-        printf("\033[1;31m[Loi]\033[0m Ghi du lieu su kien bi loi!\n");
+        printf("\033[1;31m[Loi]\033[0m Failed to write all events to file!\n");
     }
     
     fclose(file);
