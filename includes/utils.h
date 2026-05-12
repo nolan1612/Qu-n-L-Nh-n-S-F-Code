@@ -16,4 +16,5 @@ int isValidDateStr(const char* date);
 int getDaysDifference(const char* start, const char* end);
 void inputValidFormatDate(char str[]);
 int isValidEmail(char email[]);
+int isValidphoneNumber(char phone[]);
 #endif

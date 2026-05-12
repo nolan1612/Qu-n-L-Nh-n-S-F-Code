@@ -84,6 +84,7 @@ void createEvent(Event events[], int *count) {
     
     newEv.status = 0;
     newEv.staffCount = 0;
+    newEv.requestCount = 0;
     
     events[*count] = newEv;
     (*count)++;
@@ -810,5 +811,90 @@ void sortEventsByStartDate(Event events[], int count, int sortOrder) {
             events[i] = events[targetIdx];
             events[targetIdx] = temp;
         }
+    }
+}
+
+
+void searchEventsByNameOrId(Event events[], int count) {
+    printf("\n============================================================\n");
+    printf("                  SEARCH EVENTS BY NAME/ID                  \n");
+    printf("============================================================\n");
+    
+    char searchInput[256] = ""; 
+    
+    if (count == 0) {
+        printf(">> Notice: No events in the system.\n");
+        return;
+    }
+
+    printf("Enter event name or ID to search: ");
+    while(getchar() != '\n'); 
+    if (scanf("%255[^\n]", searchInput) != 1) {
+        printf(">> Notice: Invalid search input.\n");
+        while(getchar() != '\n'); 
+        return;
+    }
+    while(getchar() != '\n');
+
+    int matchedIndexes[100];
+    int scores[100];
+    int matchCount = 0;
+
+    for (int i = 0; i < count; i++) {
+        int score = getSearchScore(events[i].name, searchInput);
+
+        char idCopy[50];
+        strcpy(idCopy, events[i].eventId);
+        toLowerCase(idCopy);
+
+        char searchCopy[256];
+        strcpy(searchCopy, searchInput);
+        toLowerCase(searchCopy);
+
+        if (strstr(idCopy, searchCopy) != NULL) {
+            score += 10;
+        }
+        
+        if (score > 0) {
+            matchedIndexes[matchCount] = i;
+            scores[matchCount] = score;
+            matchCount++;
+        }
+    }
+    
+    for (int i = 0; i < matchCount - 1; i++) {
+        for (int j = i + 1; j < matchCount; j++) {
+            if (scores[j] > scores[i]) {
+                int tempScore = scores[i];
+                scores[i] = scores[j];
+                scores[j] = tempScore;
+                int tempIdx = matchedIndexes[i];
+                matchedIndexes[i] = matchedIndexes[j];
+                matchedIndexes[j] = tempIdx;
+            }
+        }
+    }
+    
+    if (matchCount == 0) {
+        printf(">> Notice: No events matched your search.\n");
+    } else {
+        printf("\n%-10s | %-20s | %-12s | %-12s | %-15s\n", 
+               "ID", "Event Name", "Start Date", "End Date", "Status");
+        printf("--------------------------------------------------------------------------------\n");
+        for (int i = 0; i < matchCount; i++) {
+            int idx = matchedIndexes[i];
+            char statusStr[20];
+            if (events[idx].status == 0) strcpy(statusStr, "Not started");
+            else if (events[idx].status == 1) strcpy(statusStr, "Ongoing");
+            else strcpy(statusStr, "Finished");
+
+            printf("%-10s | %-20s | %-12s | %-12s | %-15s\n", 
+                   events[idx].eventId, 
+                   events[idx].name, 
+                   events[idx].startDate, 
+                   events[idx].endDate, 
+                   statusStr);
+        }
+        printf("--------------------------------------------------------------------------------\n");
     }
 }
