@@ -105,6 +105,8 @@ void viewUnlockRequests(Account list[], int accountCount) {
         list[idx].isLocked = 1;
         printf(">> Request denied. Account %s remains locked!\n", list[idx].studentid);
     }
-
     saveAccounts(list, accountCount);
 }
+
+
+
