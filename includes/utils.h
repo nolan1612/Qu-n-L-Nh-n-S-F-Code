@@ -17,4 +17,6 @@ int getDaysDifference(const char* start, const char* end);
 void inputValidFormatDate(char str[]);
 int isValidEmail(char email[]);
 int isValidphoneNumber(char phone[]);
+void toLowerCase(char str[]);                                      
+int getSearchScore(const char eventName[], const char searchInput[]);
 #endif

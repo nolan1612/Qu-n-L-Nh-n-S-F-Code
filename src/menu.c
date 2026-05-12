@@ -175,7 +175,11 @@ void runMemberMenu(Account *currentAcc, Account list[], int accountCount, Event 
                 setupEmail(currentAcc, list, accountCount);
                 break;
             case 7:
-                sendUnlockRequest(currentAcc);
+                if (currentAcc->isLocked != 0) {
+                    printf(">> Tai khoan cua ban khong bi khoa!\n");
+                } else {
+                    printf(">> Vui long dang xuat va dang nhap lai de gui yeu cau mo khoa.\n");
+                }
                 break;
             case 0:
                 if (Logout(currentAcc, list, accountCount) == 1) {
