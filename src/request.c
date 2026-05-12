@@ -24,7 +24,7 @@ void saveRequests(Request list[], int count) {
 // ===================== MEMBER =====================
 void sendUnlockRequest(Account *currentAcc) {
     if (currentAcc->isLocked == 0) {
-        printf(">> Tai khoan cua ban khong bi khoa!\n");
+        printf(">> Your account is not locked!\n");
         return;
     }
 
@@ -33,18 +33,18 @@ void sendUnlockRequest(Account *currentAcc) {
     int count = loadRequests(list);
     for (int i = 0; i < count; i++) {
         if (strcmp(list[i].studentid, currentAcc->studentid) == 0 && list[i].status == 0) {
-            printf(">> Ban da gui yeu cau truoc do, vui long cho BCN duyet!\n");
+            printf(">> You have already submitted a request, please wait for the admin to review!\n");
             return;
         }
     }
 
     char reason[200];
-    printf("Nhap ly do yeu cau mo khoa: ");
+    printf("Enter the reason for the unlock request: ");
     scanf(" %[^\n]", reason);
     clearBuffer();
 
-    if (!confirmAction("Xac nhan gui yeu cau mo khoa?")) {
-        printf(">> Da huy gui yeu cau.\n");
+    if (!confirmAction("Confirm sending the unlock request?")) {
+        printf(">> Request cancelled.\n");
         return;
     }
 
@@ -55,7 +55,7 @@ void sendUnlockRequest(Account *currentAcc) {
 
     list[count++] = req;
     saveRequests(list, count);
-    printf(">> Da gui yeu cau mo khoa den BCN. Vui long cho duyet!\n");
+    printf(">> Request submitted successfully. Please wait for the admin to review!\n");
 }
 
 // ===================== ADMIN =====================
@@ -67,10 +67,10 @@ void viewUnlockRequests(Account list[], int accountCount) {
     int pendingIndex[MAX_REQUESTS];
     int pendingCount = 0;
 
-    printf("\n--- DANH SACH YEU CAU MO KHOA ---\n");
+    printf("\n--- UNLOCK REQUESTS ---\n");
     for (int i = 0; i < count; i++) {
         if (reqList[i].status == 0) {
-            printf("[%d] MSSV: %10s | Ly do: %s\n",
+            printf("[%d] Student ID: %10s | Reason: %s\n",
                 pendingCount + 1,
                 reqList[i].studentid,
                 reqList[i].reason);
@@ -79,30 +79,30 @@ void viewUnlockRequests(Account list[], int accountCount) {
     }
 
     if (pendingCount == 0) {
-        printf(">> Khong co yeu cau nao dang cho duyet.\n");
+        printf(">> There are no requests pending review.\n");
         return;
     }
 
-    printf("\nNhap STT yeu cau muon xu ly (1 - %d): ", pendingCount);
+    printf("\nEnter the number of the request you want to process (1 - %d): ", pendingCount);
     int choice = validInput(1, pendingCount);
     int idx = pendingIndex[choice - 1];
 
-    printf("\nYeu cau cua MSSV: %s\n", reqList[idx].studentid);
-    printf("Ly do: %s\n", reqList[idx].reason);
+    printf("\nRequest for Student ID: %s\n", reqList[idx].studentid);
+    printf("Reason: %s\n", reqList[idx].reason);
 
-    if (confirmAction("Duyet yeu cau nay?")) {
+    if (confirmAction("Approve this request?")) {
         reqList[idx].status = 1;
         for (int i = 0; i < accountCount; i++) {
             if (strcmp(list[i].studentid, reqList[idx].studentid) == 0) {
                 list[i].isLocked = 0;
                 list[i].failCount = 0;
-                printf(">> Da duyet va mo khoa tai khoan %s!\n", list[i].studentid);
+                printf(">> Request approved and account unlocked %s!\n", list[i].studentid);
                 break;
             }
         }
     } else {
         reqList[idx].status = 2;
-        printf(">> Da tu choi yeu cau cua %s!\n", reqList[idx].studentid);
+        printf(">> Request denied for student %s!\n", reqList[idx].studentid);
     }
 
     saveRequests(reqList, count);
