@@ -65,7 +65,7 @@ void viewUnlockRequests(Account list[], int accountCount) {
     // int count = loadRequests(reqList);
 
     // Lọc và hiển thị danh sách chờ duyệt
-    int pendingIndex[MAX_REQUESTS];
+    int pendingIndex[MAX_ACCOUNTS];
     int pendingCount = 0;
 
     printf("\n--- UNLOCK REQUESTS ---\n");

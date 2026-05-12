@@ -176,9 +176,9 @@ void runMemberMenu(Account *currentAcc, Account list[], int accountCount, Event 
                 break;
             case 7:
                 if (currentAcc->isLocked != 0) {
-                    printf(">> Tai khoan cua ban khong bi khoa!\n");
+                    printf(">> Your account is not locked!\n");
                 } else {
-                    printf(">> Vui long dang xuat va dang nhap lai de gui yeu cau mo khoa.\n");
+                    printf(">> Please logout and login again to submit an unlock request.\n");
                 }
                 break;
             case 0:
