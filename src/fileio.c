@@ -29,11 +29,12 @@ void saveAccounts(Account list[], int count) {
     
     for (int i = 0; i < count; i++) {
        
-        fprintf(file, "%s|%s|%s|%s|%d|%d|%d\n", 
+        fprintf(file, "%s|%s|%s|%s|%s|%d|%d|%d\n", 
                 list[i].studentid, 
                 list[i].username,
                 list[i].password, 
                 list[i].email,
+                list[i].phone,
                 list[i].role, 
                 list[i].isLocked, 
                 list[i].failCount);
@@ -81,14 +82,15 @@ int loadAccounts(Account list[]) {
     }
     
     int count = 0;
-    while (fscanf(file, " %[^|]|%[^|]|%[^|]|%[^|]|%d|%d|%d\n", 
+    while (fscanf(file, " %[^|]|%[^|]|%[^|]|%[^|]|%[^|]|%d|%d|%d\n", 
                   list[count].studentid, 
                   list[count].username,   
                   list[count].password, 
                   list[count].email,
+                  list[count].phone,
                   &list[count].role, 
                   &list[count].isLocked, 
-                  &list[count].failCount) == 7) { 
+                  &list[count].failCount) == 8) { 
         count++;
         if (count >= MAX_ACCOUNTS) break; 
     }

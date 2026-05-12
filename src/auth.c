@@ -231,7 +231,7 @@ void Register(Account list[], int *accountCount){
     char inputidStuden[20];
     char inputUsername[50];
     char inputEmail[50];
-   // char inputPhoneNumber[20];
+    char inputPhoneNumber[20];
     char inputSecretKey[50];
     printf("=== REGISTER NEW ACCOUNT ===\n");
     while(1){
@@ -289,31 +289,31 @@ void Register(Account list[], int *accountCount){
         printf(">> Successfully input email!\n");
         break;
     }
-    // while(1){
-    //     printf("Input phone number:");
-    //     scanf(" %19[^\n]", inputPhoneNumber);
-    //     clearBuffer();
-    //     if (strcmp(inputPhoneNumber, "0") == 0) {
-    //         return; 
-    //     }
-    //     if(isValidphoneNumber(inputPhoneNumber) == 0){
-    //         printf(">> Error: Invalid phone number format! Please try again.\n");
-    //         continue;
-    //     }
-    //     int duplicate = 0;
-    //     for(int i = 0; i <= *accountCount - 1; i++){
-    //         if(strcmp(list[i].phone, inputPhoneNumber) == 0){
-    //             duplicate = 1;
-    //             break;
-    //         }
-    //     }
-    //     if (duplicate == 1) {
-    //         printf(">> Error: Phone number already exists in the system!\n");
-    //         continue;
-    //     }
-    //     printf(">> Successfully input phone number!\n");
-    //     break;
-    // }
+    while(1){
+        printf("Input phone number:");
+        scanf(" %19[^\n]", inputPhoneNumber);
+        clearBuffer();
+        if (strcmp(inputPhoneNumber, "0") == 0) {
+            return; 
+        }
+        if(isValidphoneNumber(inputPhoneNumber) == 0){
+            printf(">> Error: Invalid phone number format! Please try again.\n");
+            continue;
+        }
+        int duplicate = 0;
+        for(int i = 0; i <= *accountCount - 1; i++){
+            if(strcmp(list[i].phone, inputPhoneNumber) == 0){
+                duplicate = 1;
+                break;
+            }
+        }
+        if (duplicate == 1) {
+            printf(">> Error: Phone number already exists in the system!\n");
+            continue;
+        }
+        printf(">> Successfully input phone number!\n");
+        break;
+    }
     int finalrole = 0;
     printf("\n>> [Security] Do you have the admin secret key?");
     printf("\n>> If you are a member, just press '0' to skip this step and your account will be created with MEMBER role.\n");
@@ -343,7 +343,7 @@ void Register(Account list[], int *accountCount){
     strcpy(list[*accountCount].studentid, inputidStuden);
     strcpy(list[*accountCount].username, inputUsername);
     strcpy(list[*accountCount].email, inputEmail);
-    //strcpy(list[*accountCount].phone, inputPhoneNumber);
+    strcpy(list[*accountCount].phone, inputPhoneNumber);
     list[*accountCount].role = finalrole;
     list[*accountCount].failCount = 0;
     list[*accountCount].isLocked = 0;
