@@ -25,11 +25,13 @@ int main() {
         printf("         WELCOME TO F-CODE STAFF         \n");
         printf("=========================================\n");
         printf("1. Login\n");
+        printf("2. Forgot Password\n");
+        printf("3. Register\n");
         printf("0. Exit program\n");
         printf("-----------------------------------------\n");
         printf("Your choice: ");
         
-        choice = validInput(0,1);
+        choice = validInput(0,3);
 
         if (choice == 0) {
             printf("Goodbye! See you again.\n");
@@ -69,7 +71,13 @@ int main() {
         }
                 return 0;
             }
-        } 
+        } else if (choice == 2) {
+            forgotPassword(list, accountCount);
+        } else if (choice == 3) {
+            Register(list, &accountCount);
+            saveAccounts(list, accountCount);
+        }
     }
+    return 0;
 }
 
