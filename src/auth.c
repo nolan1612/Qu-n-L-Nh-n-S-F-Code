@@ -30,7 +30,7 @@ int checkPassword(char ps[], Account *account) {
         return -3;
     } 
     printf("Incorrect password! You have %d attempts left.\n", 3 - account->failCount);
-    return -1;  
+      return -1;
 }
 
 int Login(char mssv[], char ps[], Account list[], int accountCount) {    
