@@ -25,7 +25,6 @@ void AdminMenu() {
     printf("11. Setup/Update Email\n");
 	printf("12. Create report\n");
     printf("13. Approve join requests\n"); 
-    printf("15. Generate admin secret Key\n");
     printf("14. View unlock requests\n");
     printf("15. Generate admin secret Key\n");
     printf("16. Approve join requests\n");
