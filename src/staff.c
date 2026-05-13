@@ -398,7 +398,7 @@ void eventJoin(Event events[], int eventCount, Account *currentAcc) {
     printf(">> Success: Join request sent for event %s. Please wait for admin approval.\n", targetId);
 }
 
-void approveJoinRequests(Event events[], int count, Account list[], int accountCount) {
+void approveJoinRequests(Event events[], int count) {
     printf("\n--- APPROVE JOIN REQUESTS ---\n");
 
     int hasRequests = 0;

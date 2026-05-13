@@ -22,9 +22,10 @@ void AdminMenu() {
     printf("8. Search events\n");
     printf("9. View member participation history\n");
     printf("10. Change password\n");
-    printf("11. Setup/Update Email\n"); 
-    printf("12. Export event report\n");
-    printf("13. Search events by time range\n");
+    printf("11. Setup/Update Email\n");
+	printf("12. Create report\n");
+    printf("13. Approve join requests\n"); 
+    printf("15. Generate admin secret Key\n");
     printf("14. View unlock requests\n");
     printf("15. Generate admin secret Key\n");
     printf("16. Approve join requests\n");
@@ -44,7 +45,7 @@ void MemberMenu() {
     printf("5. Change password\n");
     printf("6. Setup/Update Email\n"); 
     printf("7. Submit unlock request\n");
-    printf("8. Join an event\n");
+    printf("8. Join event\n");
     printf("0. Logout\n");
     printf("=========================================\n");
 }
@@ -111,9 +112,36 @@ void runAdminMenu(Account *currentAcc, Account list[], int accountCount, Event e
             case 7: 
                 eventDetail(eventList, *eventCount);
                 break;
-            case 8: 
-                searchEventsByNameOrId(eventList, *eventCount);
+            case 8: {
+				int subChoice;
+                do {
+                    printf("\n--- SEARCH FILTER ---\n");
+                    printf("1. Search by name/ID\n");
+                    printf("2. Search by time\n");
+                    printf("0. Back to main menu\n");
+                    printf("Enter your choice: ");
+                    if (scanf("%d", &subChoice) != 1) {
+                        while(getchar() != '\n');
+                        subChoice = -1;
+                    }
+
+                    switch(subChoice) {
+                        case 1: 
+                        	printf("chay");
+                            searchEventsByNameOrId(eventList, *eventCount);
+                            break;
+                        case 2: 
+                            searchEventsByTimeRange(eventList, *eventCount);
+                            break;
+                        case 0: 
+                            printf(">> Returning to Admin menu...\n");
+                            break;
+                        default: 
+                            printf(">> Error: Invalid choice. Please try again!\n");
+                    }
+                } while (subChoice != 0);
                 break;
+			}
             case 9: 
                 viewMemberHistory(eventList, *eventCount);
                 break;
@@ -137,7 +165,7 @@ void runAdminMenu(Account *currentAcc, Account list[], int accountCount, Event e
             	createFile(eventList, *eventCount);
             	break;
             case 13:
-            	searchEventsByTimeRange(eventList, *eventCount);
+            	approveJoinRequests(eventList, *eventCount);
             	break;
             case 14:
             	viewUnlockRequests(list, accountCount);
@@ -227,8 +255,8 @@ void runRequest(Account *currentAcc, Request listRequests[], int accountCount)
         switch (choice) 
         {
         case 1:
-            sendUnlockRequest(currentAcc);
-            saveRequests(listRequests, accountCount);
+            //sendUnlockRequest(currentAcc);
+            //saveRequests(listRequests, accountCount);
             break;
         case 0:
             choice = -1;
