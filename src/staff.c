@@ -60,12 +60,11 @@ void addStaffToEvent(Event events[], int count, Account list[], int accountCount
     }
 
     char mssvInput[50];
-    int accountIndex = -1;
     attempts = 3;
 
     while (attempts > 0) {
         int existedInEvent = 0;
-        accountIndex = -1;
+        int existedInSystem = 0;
 
         printf("Enter staff student ID: ");
         scanf(" %[^\n]", mssvInput);
@@ -79,7 +78,7 @@ void addStaffToEvent(Event events[], int count, Account list[], int accountCount
         }
         for (int i = 0; i < accountCount; i++) {
             if (strcmp(list[i].studentid, mssvInput) == 0) {
-                accountIndex = i;
+                existedInSystem = 1;
                 break;
             }
         }
@@ -91,7 +90,7 @@ void addStaffToEvent(Event events[], int count, Account list[], int accountCount
                 printf(">> Error: Staff member %s already exists in the event! Maximum attempts reached. Exiting...\n", mssvInput);
                 return;
             }
-        } else if (accountIndex == -1) {
+        } else if (!existedInSystem) {
             attempts--;
             if (attempts > 0) {
                 printf(">> Error: Student ID %s does not exist in the system! You have %d attempt(s) left.\n", mssvInput, attempts);
@@ -105,16 +104,8 @@ void addStaffToEvent(Event events[], int count, Account list[], int accountCount
     }
 
     int role;
-    do {
-        printf("Enter role (0 = Leader, 1 = Member, 2 = Support): ");
-        if (scanf("%d", &role) != 1) {
-            clearBuffer();
-            role = -1;
-        }
-        if (role < 0 || role > 2) {
-            printf(">> Error: Role must be 0, 1, or 2.\n");
-        }
-    } while (role < 0 || role > 2);
+    printf("Enter role (0 = Leader, 1 = Member, 2 = Support): ");
+    scanf("%d", &role);
 
     char desc[100];
     printf("Enter task description: ");
@@ -123,7 +114,6 @@ void addStaffToEvent(Event events[], int count, Account list[], int accountCount
     int sCount = events[foundIndex].staffCount;
 
     strcpy(events[foundIndex].staffList[sCount].studentId, mssvInput);
-    strcpy(events[foundIndex].staffList[sCount].studentName, list[accountIndex].username);
     events[foundIndex].staffList[sCount].role = role;
     strcpy(events[foundIndex].staffList[sCount].description, desc);
 
@@ -206,18 +196,8 @@ void editStaffRole(Event events[], int count) {
         }
     }
 
-    int newRole;
-    do {
-        printf("Enter new role (0 = Leader, 1 = Member, 2 = Support): ");
-        if (scanf("%d", &newRole) != 1) {
-            clearBuffer();
-            newRole = -1;
-        }
-        if (newRole < 0 || newRole > 2) {
-            printf(">> Error: Role must be 0, 1, or 2.\n");
-        }
-    } while (newRole < 0 || newRole > 2);
-    events[foundIndex].staffList[staffIndex].role = newRole;
+    printf("Enter new role (0 = Leader, 1 = Member, 2 = Support): ");
+    scanf("%d", &events[foundIndex].staffList[staffIndex].role);
 
     printf("Enter new task description: ");
     scanf(" %[^\n]", events[foundIndex].staffList[staffIndex].description);
@@ -472,28 +452,14 @@ void approveJoinRequests(Event events[], int count) {
 
     if (decision == 'y' || decision == 'Y') {
         int newRole;
-        do {
-            printf("Assign role (1 = Member, 2 = Support): ");
-            scanf("%d", &newRole);
-            if (newRole != 1 && newRole != 2) {
-                printf(">> Error: Role must be 1 or 2.\n");
-            }
-        } while (newRole != 1 && newRole != 2);
+        printf("Assign role (1 = Member, 2 = Support): ");
+        scanf("%d", &newRole);
 
         char newDesc[100];
         printf("Enter task description for this student: ");
         scanf(" %[^\n]", newDesc);
         int sCount = events[evIndex].staffCount;
-        char studentName[50];
-        strcpy(studentName, searchStu);
-        for (int i = 0; i < accountCount; i++) {
-            if (strcmp(list[i].studentid, searchStu) == 0) {
-                strcpy(studentName, list[i].username);
-                break;
-            }
-        }
         strcpy(events[evIndex].staffList[sCount].studentId, searchStu);
-        strcpy(events[evIndex].staffList[sCount].studentName, studentName);
         events[evIndex].staffList[sCount].role = newRole;
         strcpy(events[evIndex].staffList[sCount].description, newDesc);
         
