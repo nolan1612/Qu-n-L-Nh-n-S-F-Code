@@ -186,19 +186,55 @@ void runMemberMenu(Account *currentAcc, Account list[], int accountCount, Event 
                 setupEmail(currentAcc, list, accountCount);
                 break;
             case 7:
-                sendUnlockRequest(currentAcc);
+                if (currentAcc->isLocked != 0) {
+                    printf(">> Your account is not locked!\n");
+                } else {
+                    printf(">> Please logout and login again to submit an unlock request.\n");
+                }
                 break;
             case 8:
                 eventJoin(eventList, eventCount, currentAcc);
                 break;
             case 0:
                 if (Logout(currentAcc, list, accountCount) == 1) {
+
                     return; 
                 }
                 choice = -1;
                 break;
             default:
                 printf(">> Error: Invalid choice. Please try again!\n");
+        }
+    } while (choice != 0);
+}
+
+
+void runRequest(Account *currentAcc, Request listRequests[], int accountCount)
+{
+    int choice;
+    do 
+    {
+        printf("Your account is lock\n");
+        printf("1. Send request to open your account\n");
+        printf("0. Back to wecome menu\n");
+        printf("Enter your choice: ");
+        if (scanf("%d", &choice) != 1) 
+        {
+            while (getchar() != '\n');
+            choice = -1;
+        }
+
+        switch (choice) 
+        {
+        case 1:
+            sendUnlockRequest(currentAcc);
+            saveRequests(listRequests, accountCount);
+            break;
+        case 0:
+            choice = -1;
+            break;
+        default:
+            printf(">> Error: Invalid choice. Please try again!\n");
         }
     } while (choice != 0);
 }

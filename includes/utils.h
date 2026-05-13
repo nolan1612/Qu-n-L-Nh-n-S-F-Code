@@ -20,10 +20,9 @@ int isValidDateNum(int year, int month, int day);
 int isValidDateStr(const char* date);
 int getDaysDifference(const char* start, const char* end);
 void inputValidFormatDate(char str[]);
-int isValidEmail(char email[]);
-int isValidphoneNumber(char phone[]);
 int checkPassword(char ps[], Account *account);
 int getSearchScore(const char eventName[], const char searchInput[]);
 void toLowerCase(char str[]);
 int checkPassword(char ps[], Account *account);
+int isValidEmail( char *email);
 #endif
