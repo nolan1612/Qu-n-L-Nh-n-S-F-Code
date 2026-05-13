@@ -23,17 +23,18 @@ void saveAccounts(Account list[], int count) {
     FILE *file = fopen("data/account.dat", "w"); 
     
     if (file == NULL) {
-        printf("\033[1;31m[Loi]\033[0m Khong the ghi file data/account.dat!\n");
+        printf("\033[1;31m[Error]\033[0m Cannot open file data/account.dat for writing!\n");
         return;
     }
     
     for (int i = 0; i < count; i++) {
        
-        fprintf(file, "%s|%s|%s|%s|%d|%d|%d\n", 
+        fprintf(file, "%s|%s|%s|%s|%s|%d|%d|%d\n", 
                 list[i].studentid, 
                 list[i].username,
                 list[i].password, 
                 list[i].email,
+                list[i].phone,
                 list[i].role, 
                 list[i].isLocked, 
                 list[i].failCount);
@@ -81,14 +82,15 @@ int loadAccounts(Account list[]) {
     }
     
     int count = 0;
-    while (fscanf(file, " %[^|]|%[^|]|%[^|]|%[^|]|%d|%d|%d\n", 
+    while (fscanf(file, " %19[^|]|%49[^|]|%19[^|]|%19[^|]|%19[^|]|%d|%d|%d\n", 
                   list[count].studentid, 
                   list[count].username,   
                   list[count].password, 
                   list[count].email,
+                  list[count].phone,
                   &list[count].role, 
                   &list[count].isLocked, 
-                  &list[count].failCount) == 7) { 
+                  &list[count].failCount) == 8) { 
         count++;
         if (count >= MAX_ACCOUNTS) break; 
     }
@@ -100,13 +102,13 @@ int loadAccounts(Account list[]) {
 void saveEvents(Event list[], int count) {
     FILE *file = fopen("data/events.dat", "wb"); 
     if (file == NULL) {
-        printf("\033[1;31m[Loi]\033[0m Can not open file events.dat for writing!\n");
+        printf("\033[1;31m[Error]\033[0m Can not open file events.dat for writing!\n");
         return;
     }
     size_t written = fwrite(list, sizeof(Event), count, file);
     
     if (written != (size_t)count) {
-        printf("\033[1;31m[Loi]\033[0m Failed to write all events to file!\n");
+        printf("\033[1;31m[Error]\033[0m Failed to write all events to file!\n");
     }
     
     fclose(file);
