@@ -9,7 +9,6 @@
 #include "../includes/report.h"
 #include "../includes/staff.h"
 #include "../includes/utils.h"
-int checkPassword(char ps[], Account *account);
 int Login(char mssv[], char ps[], Account list[], int accountCount) ;
 void changePassword(Account *currentAcc);
 int Logout(Account *currentAcc, Account list[], int accountCount);
@@ -17,23 +16,14 @@ void forgotPassword(Account list[], int accountCount);
 void setupEmail(Account *account, Account list[], int accountCount);
 void generatedSecretKey(int lenght);
 void Register(Account list[], int *accountCount);
-int checkPassword(char ps[], Account *account) {
-    if (strcmp(ps, account->password) == 0) {
-        account->failCount = 0; 
-        return 1; 
-    }
-
-    account->failCount++;
-    if (account->failCount >= 3) {
-        account->isLocked = 1;
-        printf("Incorrect password 3 times. This account has been locked!\n");
-        return -3;
-    } 
-    printf("Incorrect password! You have %d attempts left.\n", 3 - account->failCount);
-      return -1;
-}
 
 int Login(char mssv[], char ps[], Account list[], int accountCount) {    
+    StudentIdValidationResult idStatus = validateStudentID(mssv);
+    if (idStatus != STUDENT_ID_VALID) {
+        printf("%s\n", getStudentIDErrorMessage(idStatus));
+        return -2;
+    }
+
     int index = -1;
     for (int i = 0; i < accountCount; i++) {
         if (strcmp(mssv, list[i].studentid) == 0) {
@@ -135,7 +125,7 @@ int Logout(Account *currentAcc, Account list[], int accountCount) {
 }
 void forgotPassword(Account list[], int accountCount){
     char inputEmail[101];
-    char foundIndex = -1;
+    int foundIndex = -1;
     printf("==FORGOT PASSWORD==\n");
     printf("plz,input your email\n");
     scanf(" %[^\n]", inputEmail);
@@ -230,17 +220,24 @@ void Register(Account list[], int *accountCount){
     }
     char inputidStuden[20];
     char inputUsername[50];
+    
     char inputEmail[50];
-   // char inputPhoneNumber[20];
+    char inputPhoneNumber[20];
     char inputSecretKey[50];
+    
     printf("=== REGISTER NEW ACCOUNT ===\n");
     while(1){
         printf("Input student ID:");
         scanf(" %19[^\n]", inputidStuden);
-       clearBuffer();
+        clearBuffer();
        if(strcmp(inputidStuden, "0") == 0){
         printf(">> Action canceled. Returning to menu...\n");
         return;
+       }
+       StudentIdValidationResult idStatus = validateStudentID(inputidStuden);
+       if(idStatus != STUDENT_ID_VALID){
+            printf("%s Please try again.\n", getStudentIDErrorMessage(idStatus));
+            continue;
        }
        int exist = 0;
        for(int i = 0; i <= *accountCount - 1; i++){
@@ -256,9 +253,22 @@ void Register(Account list[], int *accountCount){
        break;
     }
     
+    while(1){
         printf("Input username:");
         scanf(" %49[^\n]", inputUsername);
         clearBuffer();
+         if(strcmp(inputUsername, "0") == 0){
+        printf(">> Action canceled. Returning to menu...\n");
+        return;
+       
+         NameValidationResult nameStatus = validateName(inputUsername);
+         if(nameStatus != NAME_VALID){
+            printf("%s Please try again.\n", getNameErrorMessage(nameStatus));
+            continue;
+         }
+        }
+    }
+
         printf("Input password:");
         char inputPassword[20];
         scanf(" %19[^\n]", inputPassword);
@@ -289,31 +299,31 @@ void Register(Account list[], int *accountCount){
         printf(">> Successfully input email!\n");
         break;
     }
-    // while(1){
-    //     printf("Input phone number:");
-    //     scanf(" %19[^\n]", inputPhoneNumber);
-    //     clearBuffer();
-    //     if (strcmp(inputPhoneNumber, "0") == 0) {
-    //         return; 
-    //     }
-    //     if(isValidphoneNumber(inputPhoneNumber) == 0){
-    //         printf(">> Error: Invalid phone number format! Please try again.\n");
-    //         continue;
-    //     }
-    //     int duplicate = 0;
-    //     for(int i = 0; i <= *accountCount - 1; i++){
-    //         if(strcmp(list[i].phone, inputPhoneNumber) == 0){
-    //             duplicate = 1;
-    //             break;
-    //         }
-    //     }
-    //     if (duplicate == 1) {
-    //         printf(">> Error: Phone number already exists in the system!\n");
-    //         continue;
-    //     }
-    //     printf(">> Successfully input phone number!\n");
-    //     break;
-    // }
+    while(1){
+        printf("Input phone number:");
+        scanf(" %19[^\n]", inputPhoneNumber);
+        clearBuffer();
+        if (strcmp(inputPhoneNumber, "0") == 0) {
+            return; 
+        }
+        if(isValidphoneNumber(inputPhoneNumber) == 0){
+            printf(">> Error: Invalid phone number format! Please try again.\n");
+            continue;
+        }
+        int duplicate = 0;
+        for(int i = 0; i <= *accountCount - 1; i++){
+            if(strcmp(list[i].phone, inputPhoneNumber) == 0){
+                duplicate = 1;
+                break;
+            }
+        }
+        if (duplicate == 1) {
+            printf(">> Error: Phone number already exists in the system!\n");
+            continue;
+        }
+        printf(">> Successfully input phone number!\n");
+        break;
+    }
     int finalrole = 0;
     printf("\n>> [Security] Do you have the admin secret key?");
     printf("\n>> If you are a member, just press '0' to skip this step and your account will be created with MEMBER role.\n");
@@ -322,7 +332,7 @@ void Register(Account list[], int *accountCount){
     if (strcmp(inputSecretKey, "0") == 0){
         printf(">> Your account was successfully created with MEMBER role!\n");
     } else{
-        char realKey[50];
+        char realKey[50] = "";
         FILE *f = fopen("secret.dat", "r");
         if(f != NULL){
             fscanf(f, "%49s", realKey);
@@ -335,6 +345,7 @@ void Register(Account list[], int *accountCount){
             if (f != NULL) {
                 fprintf(f, "USED");
                 fclose(f);
+            }
         } else{
             printf(">> Warning: Secret key is uncorrect or has already been used!\n");
             printf(">> Error: Incorrect secret key! Your account will be created with MEMBER role.\n");
@@ -342,13 +353,13 @@ void Register(Account list[], int *accountCount){
     }
     strcpy(list[*accountCount].studentid, inputidStuden);
     strcpy(list[*accountCount].username, inputUsername);
+    strcpy(list[*accountCount].password, inputPassword);
     strcpy(list[*accountCount].email, inputEmail);
-    //strcpy(list[*accountCount].phone, inputPhoneNumber);
+    strcpy(list[*accountCount].phone, inputPhoneNumber);
     list[*accountCount].role = finalrole;
     list[*accountCount].failCount = 0;
     list[*accountCount].isLocked = 0;
     (*accountCount)++;
     saveAccounts(list, *accountCount);
     printf("\n\033[1;32m>>Success: Account created successfully!\033[0m\n");
-}
 }

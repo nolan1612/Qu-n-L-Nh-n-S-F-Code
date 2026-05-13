@@ -101,6 +101,8 @@ void eventDetail(Event list[], int countEvent)
                         }
 
         printf("|=======================|===========================================|\n");
+    } else {
+        return;
     }
 
 

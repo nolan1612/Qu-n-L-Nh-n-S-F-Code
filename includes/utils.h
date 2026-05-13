@@ -5,6 +5,11 @@
 #include <string.h>
 #include <stdlib.h>
 #include <ctype.h>
+#include "auth.h"
+#include "validate.h"
+
+
+
 void clearBuffer();
 void trimNewLine(char str[]);
 int validInput(int min, int max);
@@ -17,4 +22,8 @@ int getDaysDifference(const char* start, const char* end);
 void inputValidFormatDate(char str[]);
 int isValidEmail(char email[]);
 int isValidphoneNumber(char phone[]);
+int checkPassword(char ps[], Account *account);
+int getSearchScore(const char eventName[], const char searchInput[]);
+void toLowerCase(char str[]);
+int checkPassword(char ps[], Account *account);
 #endif

@@ -10,6 +10,8 @@
 #include "../includes/report.h"
 #include "../includes/staff.h"
 #include "../includes/utils.h"
+#include "../includes/validate.h"
+
 void clearBuffer();
 void trimNewLine(char str[]);
 int validInput(int min, int max);
@@ -22,6 +24,10 @@ int getDaysDifference(const char* start, const char* end);
 void inputValidFormatDate(char str[]);
 int isValidphoneNumber(char phone[]);
 int isValidEmail(char email[]);
+int checkPassword(char ps[], Account *account);
+int getSearchScore(const char eventName[], const char searchInput[]);
+void toLowerCase(char str[]);
+int checkPassword(char ps[], Account *account);
 void clearBuffer() {
     while (getchar() != '\n');
 }
@@ -162,7 +168,7 @@ int confirmAction( char message[]) {
 int isValidEmail(char email[]){
     if(email == NULL || strlen(email) == 0) return 0;
     //kiem tra dau cach 
-    for(int i = 0; i <= strlen(email) - 1; i++){
+    for(size_t i = 0; i < strlen(email); i++){
         if(isspace(email[i])) return 0;
     }
     if(email[0] == '@') return 0;
@@ -198,7 +204,7 @@ int isValidphoneNumber(char phone[]){
     if(phone[0] != '0') return 0;
     if(phone[1] != '2' && phone[1] != '3' && phone[1] != '5' &&
     phone[1] != '7' && phone[1] != '8' && phone[1] != '9') return 0;
-    for(int i = 0; i <= strlen(phone) - 1; i++){
+    for(size_t i = 0; i < strlen(phone); i++){
         if(!isdigit(phone[i])) return 0;
     }
     return 1;
@@ -233,4 +239,19 @@ int getSearchScore(const char eventName[], const char searchInput[]) {
     }
 
     return checkout; 
+}
+int checkPassword(char ps[], Account *account) {
+    if (strcmp(ps, account->password) == 0) {
+        account->failCount = 0; 
+        return 1; 
+    }
+
+    account->failCount++;
+    if (account->failCount >= 3) {
+        account->isLocked = 1;
+        printf("Incorrect password 3 times. This account has been locked!\n");
+        return -3;
+    } 
+    printf("Incorrect password! You have %d attempts left.\n", 3 - account->failCount);
+      return -1;
 }

@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include "../includes/auth.h"
 #include "../includes/event.h"
 #include "../includes/menu.h"
@@ -7,12 +8,13 @@
 #include "../includes/report.h"
 #include "../includes/staff.h"
 #include "../includes/utils.h"
+#include "../includes/request.h"
 
 Account list[MAX_ACCOUNTS];
 Event eventList[MAX_EVENTS];
 
 int main() {
-    char mssv[10];
+    char mssv[20];
     char ps[20];
     int choice;
     
@@ -39,7 +41,7 @@ int main() {
         } else if (choice == 1) {
             printf("\n--- LOGIN ---\n");
             printf("Enter Student ID: ");
-            scanf(" %9[^\n]", mssv); 
+            scanf(" %19[^\n]", mssv); 
             
             while(1) {  
                 printf("Enter password: ");
@@ -57,19 +59,21 @@ int main() {
                     saveAccounts(list, accountCount); 
                     break;
                 } else if (status == -1) {
-    
-            saveAccounts(list, accountCount);
-            
-        } else if (status == -2) {
-        
-            break;
-            
-        } else if (status == -3) {
-            
-            saveAccounts(list, accountCount);
-            break;
-        }
-                return 0;
+                    saveAccounts(list, accountCount);
+                } else if (status == -2) {
+                    break;
+                } else if (status == -3) {
+                    for (int i = 0; i < accountCount; i++) {
+                        if (strcmp(list[i].studentid, mssv) == 0) {
+                            if (confirmAction("Do you want to submit an unlock request now?")) {
+                                sendUnlockRequest(&list[i]);
+                            }
+                            break;
+                        }
+                    }
+                    saveAccounts(list, accountCount);
+                    break;
+                }
             }
         } else if (choice == 2) {
             forgotPassword(list, accountCount);
