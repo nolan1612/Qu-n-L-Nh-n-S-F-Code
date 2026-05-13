@@ -22,8 +22,7 @@ int isValidDateNum(int year, int month, int day);
 int isValidDateStr(const char* date);
 int getDaysDifference(const char* start, const char* end);
 void inputValidFormatDate(char str[]);
-int isValidphoneNumber(char phone[]);
-int isValidEmail(char email[]);
+int isValidEmail(char *email);
 int checkPassword(char ps[], Account *account);
 int getSearchScore(const char eventName[], const char searchInput[]);
 void toLowerCase(char str[]);
@@ -165,7 +164,7 @@ int confirmAction( char message[]) {
         printf(">> Error: Invalid input! Please enter Y or N.\n");
     }
 }
-int isValidEmail(char email[]){
+int isValidEmail(char *email){
     if(email == NULL || strlen(email) == 0) return 0;
     //kiem tra dau cach 
     for(size_t i = 0; i < strlen(email); i++){
@@ -198,17 +197,7 @@ int isValidEmail(char email[]){
     if (last == NULL || strlen(last) == 0) return 0;
     return 1;
 }
-int isValidphoneNumber(char phone[]){
-    if(phone == NULL || strlen(phone) == 0) return 0;
-    if(strlen(phone) < 10 || strlen(phone) > 11) return 0;
-    if(phone[0] != '0') return 0;
-    if(phone[1] != '2' && phone[1] != '3' && phone[1] != '5' &&
-    phone[1] != '7' && phone[1] != '8' && phone[1] != '9') return 0;
-    for(size_t i = 0; i < strlen(phone); i++){
-        if(!isdigit(phone[i])) return 0;
-    }
-    return 1;
-}
+
 void toLowerCase(char str[]) {
     for(int i = 0; str[i] != '\0'; i++){
         str[i] = tolower(str[i]);

@@ -5,6 +5,7 @@
 #include <ctype.h>
 
 #include "../includes/validate.h"
+#include "../includes/utils.h"
 
 StudentIdValidationResult validateStudentID(const char id[]) {
     if (strlen(id) == 0 || id == NULL) return STUDENT_ID_EMPTY;
@@ -59,35 +60,88 @@ const char *getNameErrorMessage(NameValidationResult result){
 }
 
 EmailValidationResult validateEmail(const char email[]){
-    if(strlen(email) == 0) return EMAIL_EMPTY;
-    if(strchr(email, '@') == NULL || strchr(email, '.') == NULL) return EMAIL_INVALID_FORMAT;
+    if(email == NULL || strlen(email) == 0){
+        return EMAIL_EMPTY;
+    }
+
+    int atCount = 0;
+    int atIndex = -1;
+
+    for(int i = 0; email[i] != '\0'; i++){
+        if(email[i] == '@'){
+            atCount++;
+            atIndex = i;
+        }
+    }
+
+    if(atCount == 0){
+        return EMAIL_MISSING_AT;
+    }
+
+    if(atCount > 1){
+        return EMAIL_MULTIPLE_AT;
+    }
+
+    if(atIndex == 0){
+        return EMAIL_INVALID_FORMAT;
+    }
+
+    const char *domain = email + atIndex + 1;
+
+    if(strncmp(domain, "gmail", 5) != 0){
+        return EMAIL_MISSING_GMAIL;
+    }
+
+    if(strcmp(domain, "gmail.com") != 0){
+        return EMAIL_MISSING_DOT_COM;
+    }
+
     return EMAIL_VALID;
 }
+
 
 const char *getEmailErrorMessage(EmailValidationResult result){
     switch(result){
         case EMAIL_EMPTY:
             return "Email cannot be empty!";
+        case EMAIL_MISSING_AT:
+            return "Email must contain @!";
+        case EMAIL_MULTIPLE_AT:
+            return "Email cannot contain more than one @!";
+        case EMAIL_MISSING_GMAIL:
+            return "Email must use gmail!";
+        case EMAIL_MISSING_DOT_COM:
+            return "Email must end with gmail.com!";
         case EMAIL_INVALID_FORMAT:
-            return "Invalid email format! Email must contain '@' and '.' characters!";
+            return "Invalid email format!";
+        case EMAIL_VALID:
         default:
-            return "Unknown error!";
+            return "";
     }
 }
 
+
 PhoneValidationResult validatePhone(const char phone[]){
-    if(strlen(phone) == 0) return PHONE_EMPTY;
-    if(strlen(phone) < 10) return PHONE_TOO_SHORT;
-    if(strlen(phone) > 11) return PHONE_TOO_LONG;
-    for(size_t i = 0; i < strlen(phone); i++){
-        if(!isdigit(phone[i]) && phone[i] != '+' && phone[i] != '-' && phone[i] != ' '){
+    if(phone == NULL || strlen(phone) == 0) return PHONE_EMPTY;
+
+    size_t length = strlen(phone);
+
+    if(length < 10) return PHONE_TOO_SHORT;
+    if(length > 11) return PHONE_TOO_LONG;
+
+    for(size_t i = 0; i < length; i++){
+        if(!isdigit((unsigned char)phone[i])){
             return PHONE_INVALID_FORMAT;
         }
     }
+
     if(phone[0] != '0') return FIRST_DIGIT_INVALID;
-    if(phone[1] != '2' && phone[1] != '3'  && phone[1] != '5' 
-         && phone[1] != '7' && phone[1] != '8' 
-         && phone[1] != '9') return SECOND_DIGIT_INVALID;
+
+    if(phone[1] != '2' && phone[1] != '3' && phone[1] != '5' &&
+       phone[1] != '7' && phone[1] != '8' && phone[1] != '9'){
+        return SECOND_DIGIT_INVALID;
+    }
+
     return PHONE_VALID;
 }
 
@@ -104,7 +158,9 @@ const char *getPhoneErrorMessage(PhoneValidationResult result){
         case SECOND_DIGIT_INVALID:
             return "Invalid phone number format! The second digit of the phone number must be one of the following: '2', '3', '5', '7', '8', or '9'!";
         case PHONE_INVALID_FORMAT:
-            return "Invalid phone number format! Phone number can only contain digits, '+', '-', and spaces!";
+            return "Phone number can only contain digits";
+            case PHONE_VALID:
+            return "";
         default:
             return "Unknown error!";
     }

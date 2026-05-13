@@ -25,11 +25,16 @@ typedef enum{
 } NameValidationResult;
 
 
-typedef enum{
+typedef enum {
     EMAIL_VALID = 0,
     EMAIL_EMPTY,
+    EMAIL_MULTIPLE_AT,
+    EMAIL_MISSING_AT,
+    EMAIL_MISSING_GMAIL,
+    EMAIL_MISSING_DOT_COM,
     EMAIL_INVALID_FORMAT
 } EmailValidationResult;
+
 
 typedef enum{
     PHONE_VALID = 0,
