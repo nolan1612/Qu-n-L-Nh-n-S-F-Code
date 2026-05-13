@@ -175,7 +175,11 @@ void runMemberMenu(Account *currentAcc, Account list[], int accountCount, Event 
                 setupEmail(currentAcc, list, accountCount);
                 break;
             case 7:
-                sendUnlockRequest(currentAcc);
+                if (currentAcc->isLocked != 0) {
+                    printf(">> Your account is not locked!\n");
+                } else {
+                    printf(">> Please logout and login again to submit an unlock request.\n");
+                }
                 break;
             case 0:
                 if (Logout(currentAcc, list, accountCount) == 1) {
