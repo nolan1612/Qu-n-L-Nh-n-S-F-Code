@@ -27,6 +27,7 @@ int checkPassword(char ps[], Account *account);
 int getSearchScore(const char eventName[], const char searchInput[]);
 void toLowerCase(char str[]);
 int checkPassword(char ps[], Account *account);
+void inputString(char str[], int size);
 void clearBuffer() {
     while (getchar() != '\n');
 }
@@ -243,4 +244,8 @@ int checkPassword(char ps[], Account *account) {
     } 
     printf("Incorrect password! You have %d attempts left.\n", 3 - account->failCount);
       return -1;
+}
+void inputString(char str[], int size) {
+    fgets(str, size, stdin);
+    str[strcspn(str, "\n")] = '\0';
 }
