@@ -8,12 +8,16 @@
 #include "../includes/utils.h"
 
 StudentIdValidationResult validateStudentID(const char id[]) {
-    if (strlen(id) == 0 || id == NULL) return STUDENT_ID_EMPTY;
+    if (id == NULL || strlen(id) == 0) return STUDENT_ID_EMPTY;
     if (strlen(id) < 8) return STUDENT_ID_TOO_SHORT;
-    if (strlen(id) > 12) return STUDENT_ID_TOO_LONG;
-    if(id[0] != 'S' && id[1] != 'E') return FIRST_SECOND_DIGIT_INVALID;
-    for(size_t i = 0; i < strlen(id); i++){
-        if(!isdigit(id[i]) && !(i == 0 && id[i] == 'S') && !(i == 1 && id[i] == 'E')) return STUDENT_ID_HAS_NON_DIGIT;
+    if (strlen(id) > 8) return STUDENT_ID_TOO_LONG;
+    if (id[0] != 'S' || id[1] != 'E') return FIRST_SECOND_DIGIT_INVALID;
+    else{
+        for(size_t i = 2; i < strlen(id); i++){
+            if(!isdigit((unsigned char)id[i])){
+                return STUDENT_ID_HAS_NON_DIGIT;
+            }
+        }
     }
     return STUDENT_ID_VALID;
 }
@@ -22,13 +26,15 @@ const char *getStudentIDErrorMessage(StudentIdValidationResult result){
         case STUDENT_ID_EMPTY:
             return "Student ID cannot be empty!";
         case STUDENT_ID_TOO_SHORT:
-            return "Student ID must be at least 8 characters long!";
+            return "Student ID must be 8 characters long!";
         case STUDENT_ID_TOO_LONG:
-            return "Student ID cannot be longer than 12 characters!";
+            return "Student ID cannot be longer than 8 characters!";
         case STUDENT_ID_HAS_NON_DIGIT:
-            return "Student ID can only contain digits!";
+            return "Student ID can only contain digits after the first two characters!";
         case FIRST_SECOND_DIGIT_INVALID:
             return "Invalid Student ID format! Student ID must start with 'S' followed by 'E'!";
+        case STUDENT_ID_VALID:
+            return "";
         default:
             return "Unknown error!";
 
@@ -36,12 +42,29 @@ const char *getStudentIDErrorMessage(StudentIdValidationResult result){
 }
 
 NameValidationResult validateName(const char name[]){
-    if(strlen(name) == 0 || name == NULL) return NAME_EMPTY;
+    if(name == NULL || strlen(name) == 0) return NAME_EMPTY;
     if(strlen(name) > 20) return NAME_TOO_LONG;
+    int neWord = 1;
     for(size_t i = 0; i < strlen(name); i++){
-        if(!isalpha(name[i]) && name[i] != ' '){
+        if(!isalpha((unsigned char)name[i]) && !isspace((unsigned char)name[i])){
             return NAME_HAS_INVALID_CHAR;
         }
+        if(isalpha((unsigned char)name[i])){
+            if(neWord){
+                if(!isupper((unsigned char)name[i])){
+                    return NAME_FIRST_LETTER_NOT_UPPPERCASE;
+                }
+                neWord = 0;
+
+            }else{
+                if(!islower((unsigned char)name[i])){
+                    return NAME_INVALID_FORMAT;
+                }
+            }
+        }
+        else if(isspace((unsigned char)name[i])){
+        neWord = 1;
+        } 
     }
     return NAME_VALID;
 }
@@ -54,6 +77,42 @@ const char *getNameErrorMessage(NameValidationResult result){
             return "Name cannot be longer than 20 characters!";
         case NAME_HAS_INVALID_CHAR:
             return "Name can only contain letters and spaces!";
+        case NAME_FIRST_LETTER_NOT_UPPPERCASE:
+            return "Invalid name format! The first letter of each word must be uppercase!";
+        case NAME_INVALID_FORMAT:
+            return "Invalid name format! After the first letter, all letters must be lowercase!";
+        case NAME_VALID:
+            return "";
+        default:
+            return "Unknown error!";
+    }
+}
+
+PasswordValidationResult validatePassword(const char password[]){
+    if(password == NULL || strlen(password) == 0) return PASSWORD_EMPTY;
+    if(strlen(password) < 6) return PASSWORD_TOO_SHORT;
+    if(strlen(password) > 20) return PASSWORD_TOO_LONG;
+    for(size_t i = 0; i < strlen(password); i++){
+        if(!isalpha((unsigned char)password[i]) && !isdigit((unsigned char)password[i])){
+            return PASSWORD_HAS_INVALID_CHAR;
+        }
+    }
+    
+    return PASSWORD_VALID;
+}
+
+const char *getPasswordErrorMessage(PasswordValidationResult result){
+    switch(result){
+        case PASSWORD_EMPTY:
+            return "Password cannot be empty!";
+        case PASSWORD_TOO_SHORT:
+            return "Password must be at least 6 characters long!";
+        case PASSWORD_TOO_LONG:
+            return "Password cannot be longer than 20 characters!";
+        case PASSWORD_HAS_INVALID_CHAR:
+            return "Password can only contain letters and digits!";
+        case PASSWORD_VALID:
+            return "";
         default:
             return "Unknown error!";
     }
