@@ -10,6 +10,8 @@
 #include "../includes/report.h"
 #include "../includes/staff.h"
 #include "../includes/utils.h"
+#include "../includes/validate.h"
+
 void clearBuffer();
 void trimNewLine(char str[]);
 int validInput(int min, int max);
@@ -20,8 +22,11 @@ int isValidDateNum(int year, int month, int day);
 int isValidDateStr(const char* date);
 int getDaysDifference(const char* start, const char* end);
 void inputValidFormatDate(char str[]);
-int isValidphoneNumber(char phone[]);
-int isValidEmail(char email[]);
+int isValidEmail(char *email);
+int checkPassword(char ps[], Account *account);
+int getSearchScore(const char eventName[], const char searchInput[]);
+void toLowerCase(char str[]);
+int checkPassword(char ps[], Account *account);
 void clearBuffer() {
     while (getchar() != '\n');
 }
@@ -66,9 +71,7 @@ int containsIgnoreCase(char str[], char strSub[]){
     return 0;
 }
 int isLeapYear(int year){
-    if(year % 400 == 0) return 1;
-    else if(year % 4 == 0 && year % 100 != 0) return 1;
-    return 0;
+    return(year % 400 == 0) || (year % 4 == 0 && year % 100 != 0);
 }
 
 int isValidDateNum(int year, int month, int day){
@@ -161,10 +164,10 @@ int confirmAction( char message[]) {
         printf(">> Error: Invalid input! Please enter Y or N.\n");
     }
 }
-int isValidEmail(char email[]){
+int isValidEmail(char *email){
     if(email == NULL || strlen(email) == 0) return 0;
     //kiem tra dau cach 
-    for(int i = 0; i <= strlen(email) - 1; i++){
+    for(size_t i = 0; i < strlen(email); i++){
         if(isspace(email[i])) return 0;
     }
     if(email[0] == '@') return 0;
@@ -194,17 +197,7 @@ int isValidEmail(char email[]){
     if (last == NULL || strlen(last) == 0) return 0;
     return 1;
 }
-int isValidphoneNumber(char phone[]){
-    if(phone == NULL || strlen(phone) == 0) return 0;
-    if(strlen(phone) < 10 || strlen(phone) > 11) return 0;
-    if(phone[0] != '0') return 0;
-    if(phone[1] != '2' && phone[1] != '3' && phone[1] != '5' &&
-    phone[1] != '7' && phone[1] != '8' && phone[1] != '9') return 0;
-    for(int i = 0; i <= strlen(phone) - 1; i++){
-        if(!isdigit(phone[i])) return 0;
-    }
-    return 1;
-}
+
 void toLowerCase(char str[]) {
     for(int i = 0; str[i] != '\0'; i++){
         str[i] = tolower(str[i]);
@@ -235,4 +228,19 @@ int getSearchScore(const char eventName[], const char searchInput[]) {
     }
 
     return checkout; 
+}
+int checkPassword(char ps[], Account *account) {
+    if (strcmp(ps, account->password) == 0) {
+        account->failCount = 0; 
+        return 1; 
+    }
+
+    account->failCount++;
+    if (account->failCount >= 3) {
+        account->isLocked = 1;
+        printf("Incorrect password 3 times. This account has been locked!\n");
+        return -3;
+    } 
+    printf("Incorrect password! You have %d attempts left.\n", 3 - account->failCount);
+      return -1;
 }

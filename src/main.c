@@ -94,7 +94,7 @@ int main() {
                 if (list[status].role == 1) {
                     runAdminMenu(&list[status], list, accountCount, eventList, &eventCount);
                 } else {
-                    runMemberMenu(&list[status], list, accountCount, eventList, &eventCount);
+                    runMemberMenu(&list[status], list, accountCount);
                 }
                 saveAccounts(list, accountCount); 
             } else if (status == -2) {

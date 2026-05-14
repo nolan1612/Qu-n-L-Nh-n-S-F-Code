@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <ctype.h>
 #include <time.h>
 #include "../includes/auth.h"
 #include "../includes/event.h"
@@ -65,7 +66,7 @@ void createEvent(Event events[], int *count) {
             continue;
         }
 
-        int days = getDaysDifference(newEv.startDate, newEv.endDate);
+        int days = getDaysDifference(newEv.startDate, newEv.endDate) + 1;
         if (days < 4) {
             printf("\033[1;31m>> Error: Event must last at least 4 days (Currently %d days)!\033[0m\n", days);
             continue;
@@ -187,9 +188,13 @@ void editEvent(Event events[], int count) {
             continue;
         }
 
-        int days = getDaysDifference(finalStart, finalEnd);
+        int days = getDaysDifference(finalStart, finalEnd) + 1;
         if (days < 4) {
             printf("\033[1;31m>> Error: Event must last at least 4 days (Currently %d days)!\033[0m\n", days);
+            continue;
+        }
+        if (days > 100) {
+            printf("\033[1;31m>> Error: Event take to long (Currently %d days)!\033[0m\n", days);
             continue;
         }
 
@@ -422,11 +427,11 @@ void viewMemberProfile(Account *currentAcc) {
     printf("\n=========================================\n");
     printf("           PERSONAL INFORMATION             \n");
     printf("=========================================\n");
-    //printf("%-12s: %s\n", "Full Name", currentAcc->username);
+    printf("%-12s: %s\n", "Full Name", currentAcc->username);
     printf("%-12s: %s\n", "Student ID", currentAcc->studentid);
-    // printf("%-12s: %s\n", "Email", currentAcc->email);
-    // printf("%-12s: %s\n", "Phone", currentAcc->phone);
-    // printf("%-12s: %s\n", "Dept", currentAcc->dept);
+    printf("%-12s: %s\n", "Email", currentAcc->email);
+    printf("%-12s: %s\n", "Phone", currentAcc->phone);
+    printf("%-12s: %s\n", "Dept", currentAcc->dept);
     printf("%-12s: %s\n", "Role", (currentAcc->role >= 1) ? "Board of Directors (BOD)" : "Member");
     printf("=========================================\n");
     while (getchar() != '\n'); 
@@ -836,8 +841,14 @@ void searchEventsByNameOrId(Event events[], int count) {
     }
     while(getchar() != '\n');
 
-    int matchedIndexes[100];
-    int scores[100];
+    int *matchedIndexes = malloc(sizeof(int) * count);
+    int *scores = malloc(sizeof(int) * count);
+    if (matchedIndexes == NULL || scores == NULL) {
+        printf(">> Error: Not enough memory to search events.\n");
+        free(matchedIndexes);
+        free(scores);
+        return;
+    }
     int matchCount = 0;
 
     for (int i = 0; i < count; i++) {
@@ -897,4 +908,6 @@ void searchEventsByNameOrId(Event events[], int count) {
         }
         printf("--------------------------------------------------------------------------------\n");
     }
+    free(matchedIndexes);
+    free(scores);
 }

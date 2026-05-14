@@ -3,7 +3,7 @@
 #define AUTH_H
 
 #define MAX_ACCOUNTS 500
-#define MAX_FAIL_ATTEMP 33
+#define MAX_FAIL_ATTEMP 3
 
 typedef struct {
     char studentid[20];
