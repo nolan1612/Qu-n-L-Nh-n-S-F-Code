@@ -39,7 +39,6 @@ void MemberMenu() {
     printf("4. View participation history\n");
     printf("5. Change password\n");
     printf("6. Setup/Update Email\n"); 
-    printf("7. Submit unlock request\n");
     printf("0. Logout\n");
     printf("=========================================\n");
 }
@@ -173,13 +172,6 @@ void runMemberMenu(Account *currentAcc, Account list[], int accountCount, Event 
                 break;
             case 6:
                 setupEmail(currentAcc, list, accountCount);
-                break;
-            case 7:
-                if (currentAcc->isLocked != 0) {
-                    printf(">> Your account is not locked!\n");
-                } else {
-                    printf(">> Please logout and login again to submit an unlock request.\n");
-                }
                 break;
             case 0:
                 if (Logout(currentAcc, list, accountCount) == 1) {
