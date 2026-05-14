@@ -9,8 +9,9 @@ typedef struct {
     char studentid[20];
     char username[50];
     char password[20];
-    char email[20];
+    char email[50];
     char phone[20];
+    char dept[50];
     int role; 
     int isLocked; 
     int failCount;
