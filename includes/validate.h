@@ -18,13 +18,22 @@ typedef enum {
 
 
 typedef enum{
-   NAME_VALID = 0,
-   NAME_EMPTY,
-   NAME_TOO_LONG,
-   NAME_HAS_INVALID_CHAR
+    NAME_VALID = 0,
+    NAME_EMPTY,
+    NAME_TOO_LONG,
+    NAME_HAS_INVALID_CHAR,
+    NAME_FIRST_DIGIT_UPPERCASE,
+    NAME_FIRST_LETTER_NOT_UPPPERCASE,
+    NAME_INVALID_FORMAT
 } NameValidationResult;
 
-
+typedef enum {
+    PASSWORD_VALID = 0,
+    PASSWORD_EMPTY,
+    PASSWORD_TOO_SHORT,
+    PASSWORD_TOO_LONG,
+    PASSWORD_HAS_INVALID_CHAR
+} PasswordValidationResult;
 typedef enum {
     EMAIL_VALID = 0,
     EMAIL_EMPTY,
@@ -51,6 +60,9 @@ const char *getStudentIDErrorMessage(StudentIdValidationResult result);
 
 NameValidationResult validateName(const char name[]);
 const char *getNameErrorMessage(NameValidationResult result);
+
+PasswordValidationResult validatePassword(const char password[]);
+const char *getPasswordErrorMessage(PasswordValidationResult result);
 
 EmailValidationResult validateEmail(const char email[]);
 const char *getEmailErrorMessage(EmailValidationResult result);
