@@ -164,7 +164,7 @@ void runAdminMenu(Account *currentAcc, Account list[], int accountCount, Event e
             	createFile(eventList, *eventCount);
             	break;
             case 13:
-            	approveJoinRequests(eventList, *eventCount);
+            	approveJoinRequests(eventList, *eventCount, list, accountCount);
             	break;
             case 14:
             	viewUnlockRequests(list, accountCount);
@@ -208,16 +208,6 @@ void runMemberMenu(Account *currentAcc, Account list[], int accountCount, Event 
                 break;
             case 6:
                 setupEmail(currentAcc, list, accountCount);
-                break;
-            case 7:
-                if (currentAcc->isLocked != 0) {
-                    printf(">> Your account is not locked!\n");
-                } else {
-                    printf(">> Please logout and login again to submit an unlock request.\n");
-                }
-                break;
-            case 8:
-                eventJoin(eventList, eventCount, currentAcc);
                 break;
             case 0:
                 if (Logout(currentAcc, list, accountCount) == 1) {

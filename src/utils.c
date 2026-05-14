@@ -27,6 +27,7 @@ int checkPassword(char ps[], Account *account);
 int getSearchScore(const char eventName[], const char searchInput[]);
 void toLowerCase(char str[]);
 int checkPassword(char ps[], Account *account);
+void inputString(char str[], int size);
 void clearBuffer() {
     while (getchar() != '\n');
 }
@@ -251,4 +252,7 @@ int checkId(char mssv[], Account list[], int accountCount){
         }
     }
     return -1;
+void inputString(char str[], int size) {
+    fgets(str, size, stdin);
+    str[strcspn(str, "\n")] = '\0';
 }

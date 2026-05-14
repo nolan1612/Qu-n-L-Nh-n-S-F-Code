@@ -18,12 +18,6 @@ void generatedSecretKey(int lenght);
 void Register(Account list[], int *accountCount);
 
 int Login(char mssv[], char ps[], Account list[], int accountCount) {    
-    StudentIdValidationResult idStatus = validateStudentID(mssv);
-    if (idStatus != STUDENT_ID_VALID) {
-        printf("%s\n", getStudentIDErrorMessage(idStatus));
-        return -2;
-    }
-
     int index = -1;
     for (int i = 0; i < accountCount; i++) {
         if (strcmp(mssv, list[i].studentid) == 0) {
@@ -48,26 +42,26 @@ void changePassword(Account *currentAcc) {
     char oldPass[20], newPass[20], confirmPass[20];
     int failCount = 0; 
     
-    printf("\n--- DOI MAT KHAU ---\n");
+    printf("\n--- CHANGE PASSWORD ---\n");
 
     
     while(1) {
-        printf("Nhap mat khau cu: ");
-        scanf(" %[^\n]", oldPass);
+        printf("Enter old password: ");
+        inputString(oldPass, sizeof(oldPass));
 
         if (strcmp(oldPass, "0") == 0) {
-            printf(">> Da huy doi mat khau. Quay lai menu...\n");
+            printf(">> Change password canceled. Returning to menu...\n");
             return; 
         }
 
         if (strcmp(oldPass, currentAcc->password) != 0) {
             failCount++; 
-            printf(">> Loi: Mat khau cu khong chinh xac!\n");
-            printf(">> Hay thu lai. Ban con %d lan thu.\n", 3 - failCount);
+            printf(">> Error: Incorrect old password!\n");
+            printf(">> Please try again. You have %d attempts left.\n", 3 - failCount);
             
-            // Nếu sai từ 3 lần trở lên, tung phao cứu sinh
+           
             if (failCount >= 3) {
-                printf("\033[1;33m[Meo]\033[0m Neu ban da quen mat khau, hay go '0' de thoat ra va nho Admin reset nhe!\n");
+                printf("\033[1;33m[Tip]\033[0m If you forgot your password, type '0' to exit and ask Admin to reset it!\n");
             }
         } else {
             break; 
@@ -76,60 +70,59 @@ void changePassword(Account *currentAcc) {
 
 
     while(1) {
-        printf("Nhap mat khau moi (Go '0' de huy): "); 
-        scanf(" %[^\n]", newPass);
-        
+        printf("Enter new password (Type '0' to cancel): "); 
+        inputString(newPass, sizeof(newPass));
+
         if (strcmp(newPass, "0") == 0) {
-            printf(">> Da huy doi mat khau. Quay lai menu...\n");
+            printf(">> Change password canceled. Returning to menu...\n");
             return; 
         }
 
         if (strcmp(newPass, currentAcc->password) == 0) {
-            printf(">> Loi: Mat khau moi khong duoc giong mat khau hien tai!\n");
+            printf(">> Error: New password cannot be the same as the current password!\n");
             continue; 
         }
 
-        printf("Xac nhan mat khau moi: ");
-        scanf(" %[^\n]", confirmPass);
+        printf("Confirm new password: ");
+        inputString(confirmPass, sizeof(confirmPass));
 
         if (strcmp(confirmPass, "0") == 0) {
-            printf(">> Da huy doi mat khau. Quay lai menu...\n");
+            printf(">> Change password canceled. Returning to menu...\n");
             return; 
         }
 
         if (strcmp(newPass, confirmPass) != 0) {
-            printf(">> Loi: Mat khau moi va xac nhan khong khop!\n");
+            printf(">> Error: New password and confirmation do not match!\n");
         } 
         else{
             strcpy(currentAcc->password, newPass);
-            printf("\033[1;32m>> Thanh cong: Da thay doi mat khau!\033[0m\n");
+            printf("\033[1;32m>> Success: Password has been changed!\033[0m\n");
             break; 
         }
     }
 }
 
-
-
 int Logout(Account *currentAcc, Account list[], int accountCount) {
-    printf("Xac nhan dang xuat? (y/n): ");
-    char choice;
-    scanf(" %c", &choice);
+    printf("Confirm logout? (y/n): ");
+    char choiceInput[10];
+    inputString(choiceInput, sizeof(choiceInput));
+    char choice = choiceInput[0];
     if (choice == 'y' || choice == 'Y') {
         saveAccounts(list, accountCount);
-        printf(">> Da dang xuat thanh cong. Hen gap lai %s!\n", currentAcc->studentid);
+        printf(">> Logged out successfully. See you again, %s!\n", currentAcc->username);
         return 1;
     } else {
-        printf(">> Huy dang xuat.\n");
+        printf(">> Logout canceled.\n");
         return 0;
     }
-
 }
+
 void forgotPassword(Account list[], int accountCount){
     char inputEmail[101];
     int foundIndex = -1;
     printf("==FORGOT PASSWORD==\n");
     printf("plz,input your email\n");
-    scanf(" %[^\n]", inputEmail);
+    inputString(inputEmail, sizeof(inputEmail));
     
     if (strcmp(inputEmail, "0") == 0) {
         printf(">> Action canceled. Returning to menu...\n");
@@ -152,15 +145,16 @@ void forgotPassword(Account list[], int accountCount){
     char newPass[20], confirmPass[20];
     while(1) {
         printf(">> Account found! Enter new password (Type '0' to cancel): ");
-        scanf(" %[^\n]", newPass); 
-        
+        inputString(newPass, sizeof(newPass));
+
         if (strcmp(newPass, "0") == 0) {
             printf(">> Action canceled. Returning to menu...\n");
             return;
         }
 
         printf("Confirm new password: ");
-        scanf(" %[^\n]", confirmPass);
+        inputString(confirmPass, sizeof(confirmPass));
+        confirmPass[strcspn(confirmPass, "\n")] = '\0';
 
         if (strcmp(newPass, confirmPass) != 0) {
             printf(">> Error: Password confirmation does not match. Please try again!\n");
@@ -181,13 +175,14 @@ void setupEmail(Account *account, Account list[], int accountCount) {
 
     while (1) {
         printf("Input new email: ");
-        scanf(" %99[^\n]", email);
+        inputString(email, sizeof(email));
 
-        if (isValidEmail(email)) {
-            break; // hợp lệ → thoát vòng lặp
+        EmailValidationResult emailStatus = validateEmail(email);
+        if (emailStatus != EMAIL_VALID) {
+            printf("%s Please try again.\n", getEmailErrorMessage(emailStatus));
+            continue;
         }
-
-        printf("Invalid email! Please try again.\n");
+        break;
     }
 
     strncpy(account->email, email, sizeof(account->email) - 1);
@@ -221,7 +216,7 @@ void Register(Account list[], int *accountCount){
     }
     char inputidStuden[20];
     char inputUsername[50];
-    
+    char inputPassword[20];
     char inputEmail[50];
     char inputPhoneNumber[20];
     char inputSecretKey[50];
@@ -229,8 +224,7 @@ void Register(Account list[], int *accountCount){
     printf("=== REGISTER NEW ACCOUNT ===\n");
     while(1){
         printf("Input student ID:");
-        scanf(" %19[^\n]", inputidStuden);
-        clearBuffer();
+        inputString(inputidStuden, sizeof(inputidStuden));
        if(strcmp(inputidStuden, "0") == 0){
         printf(">> Action canceled. Returning to menu...\n");
         return;
@@ -256,9 +250,8 @@ void Register(Account list[], int *accountCount){
     
     while(1){
         printf("Input username:");
-        scanf(" %49[^\n]", inputUsername);
-        clearBuffer();
-         if(strcmp(inputUsername, "0") == 0){
+        inputString(inputUsername, sizeof(inputUsername));
+        if(strcmp(inputUsername, "0") == 0){
         printf(">> Action canceled. Returning to menu...\n");
         return;
          }
@@ -269,18 +262,26 @@ void Register(Account list[], int *accountCount){
             continue;
          }
          break;
-        }
+    }
     
-
+    while(1){
         printf("Input password:");
-        char inputPassword[20];
-        scanf(" %19[^\n]", inputPassword);
-        clearBuffer();
-        
+        inputString(inputPassword, sizeof(inputPassword));
+        if(strcmp(inputPassword, "0") == 0){
+        printf(">> Action canceled. Returning to menu...\n");
+        return;
+        }
+        PasswordValidationResult passStatus = validatePassword(inputPassword);
+        if(passStatus != PASSWORD_VALID){
+            printf("%s Please try again.\n", getPasswordErrorMessage(passStatus));
+            continue;
+        }
+        break;
+    }
+
     while(1){
         printf("Input email:");
-        scanf(" %49[^\n]", inputEmail);
-        clearBuffer();
+        inputString(inputEmail, sizeof(inputEmail));
         if (strcmp(inputEmail, "0") == 0) {
             return; 
         }
@@ -303,10 +304,10 @@ void Register(Account list[], int *accountCount){
        
         break;
     }
+
     while(1){
         printf("Input phone number:");
-        scanf(" %19[^\n]", inputPhoneNumber);
-        clearBuffer();
+        inputString(inputPhoneNumber, sizeof(inputPhoneNumber));
         if (strcmp(inputPhoneNumber, "0") == 0) {
             return; 
         }
@@ -332,8 +333,7 @@ void Register(Account list[], int *accountCount){
     int finalrole = 0;
     printf("\n>> [Security] Do you have the admin secret key?");
     printf("\n>> If you are a member, just press '0' to skip this step and your account will be created with MEMBER role.\n");
-    scanf(" %49[^\n]", inputSecretKey);
-    clearBuffer();
+    inputString(inputSecretKey, sizeof(inputSecretKey));
     if (strcmp(inputSecretKey, "0") == 0){
         printf(">> Your account was successfully created with MEMBER role!\n");
     } else{
