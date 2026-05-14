@@ -82,7 +82,7 @@ int loadAccounts(Account list[]) {
     }
     
     int count = 0;
-    while (fscanf(file, " %19[^|]|%49[^|]|%19[^|]|%19[^|]|%19[^|]|%d|%d|%d\n", 
+    while (fscanf(file, " %19[^|]|%49[^|]|%19[^|]|%49[^|]|%19[^|]|%d|%d|%d\n", 
                   list[count].studentid, 
                   list[count].username,   
                   list[count].password, 
