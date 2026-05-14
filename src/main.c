@@ -41,11 +41,21 @@ int main() {
             printf("Goodbye! See you again.\n");
             break;
         } else if (choice == 1) {
-            do {
                 printf("\n--- LOGIN ---\n");
-                printf("Enter Student ID: ");
-                scanf(" %9[^\n]", mssv); 
-                
+
+               while (1) {
+
+                        printf("Nhap MSSV: ");
+                        scanf("%s", mssv);
+
+                        int index = checkId(mssv, list, accountCount);
+
+                        if (index != -1) {
+                            break;
+                        }
+                        printf(">> Error: Student ID does not exist! Please try again.\n");
+                    }   
+
                 while(1) 
                 {  
                     printf("Enter password: ");
@@ -65,19 +75,18 @@ int main() {
                     } else if (status == -1) 
                             {
                                 saveAccounts(list, accountCount);
-                                
-                                
-                            } else if (status == -2) 
-                                    {  
-                                        continue;
-                                    } else if (status == -3) 
+                            } else if (status == -3) 
                                         {                                   
                                             saveAccounts(list, accountCount);
                                             runRequest(currentAcc, listRequests, accountCount);
-                                            break;
-                                        }  
+
+                                            if (choice == -1) 
+                                            {
+                                                printf(">> Returning to welcome menu...\n");
+                                            }
+                                            
+                                        } 
                 }
-            } while (1);
             } else if (choice == 2) {
                 forgotPassword(list, accountCount);
             } else if (choice == 3) {
@@ -85,7 +94,6 @@ int main() {
                 saveAccounts(list, accountCount);
             } 
     }
-
     return 0;
 }
 

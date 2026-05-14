@@ -31,24 +31,10 @@ int Login(char mssv[], char ps[], Account list[], int accountCount) {
             break;
         }
     }
-    if (index == -1) {
-        printf("MSSV khong ton tai!\n");
-        return -2;
-    }
+
     if (list[index].isLocked == 1) {
         printf("Tai khoan nay da bi khoa!\n");
-        printf("Ban co muon gui yeu cau mo khoa den BCN khong?\n");
-        if (confirmAction("Gui yeu cau?")) {
-            list[index].isLocked = 2; 
-            saveAccounts(list, accountCount);
-            printf(">> Da gui yeu cau. Vui long cho BCN duyet!\n");
-        }
         return -3; 
-    }
-
-    if (list[index].isLocked == 2) {
-        printf("Tai khoan dang cho BCN duyet yeu cau mo khoa!\n");
-        return -3;
     }
 
     int result = checkPassword(ps, &list[index]);

@@ -244,3 +244,11 @@ int checkPassword(char ps[], Account *account) {
     printf("Incorrect password! You have %d attempts left.\n", 3 - account->failCount);
       return -1;
 }
+int checkId(char mssv[], Account list[], int accountCount){
+    for(int i = 0; i <= accountCount - 1; i++){
+        if(strcmp(mssv, list[i].studentid) == 0){
+            return i;
+        }
+    }
+    return -1;
+}
