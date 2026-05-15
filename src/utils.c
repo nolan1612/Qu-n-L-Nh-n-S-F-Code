@@ -252,6 +252,7 @@ int checkId(char mssv[], Account list[], int accountCount){
         }
     }
     return -1;
+}
 void inputString(char str[], int size) {
     fgets(str, size, stdin);
     str[strcspn(str, "\n")] = '\0';
