@@ -25,23 +25,10 @@ int Login(char mssv[], char ps[], Account list[], int accountCount) {
             break;
         }
     }
-    if (index == -1) {
-        return -2;
-    }
-    if (list[index].isLocked == 1) {
-        printf("This account has been locked!\n");
-        printf("Do you want to send an unlock request to the Admin?\n");
-        if (confirmAction("Send request?")) {
-            list[index].isLocked = 2; 
-            saveAccounts(list, accountCount);
-            printf(">> Request sent. Please wait for the Admin to approve!\n");
-        }
-        return -3; 
-    }
 
-    if (list[index].isLocked == 2) {
-        printf("Account is waiting for Admin to approve the unlock request!\n");
-        return -3;
+    if (list[index].isLocked == 1) {
+        printf("Tai khoan nay da bi khoa!\n");
+        return -3; 
     }
 
     int result = checkPassword(ps, &list[index]);

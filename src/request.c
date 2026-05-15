@@ -61,20 +61,20 @@ void sendUnlockRequest(Account *currentAcc) {
 
 // ===================== ADMIN =====================
 void viewUnlockRequests(Account list[], int accountCount) {
-    // Request reqList[MAX_REQUESTS];
-    // int count = loadRequests(reqList);
+    Request reqList[MAX_REQUESTS];
+    int count = loadRequests(reqList);
 
     // Lọc và hiển thị danh sách chờ duyệt
-    int pendingIndex[MAX_ACCOUNTS];
+    int pendingIndex[MAX_REQUESTS];
     int pendingCount = 0;
 
     printf("\n--- UNLOCK REQUESTS ---\n");
-    for (int i = 0; i < accountCount; i++) {
-        if (list[i].isLocked == 2) {
+    for (int i = 0; i < count; i++) {
+        if (reqList[i].status == 0) {
             printf("[%d] Student ID: %10s | Reason: %s\n",
                 pendingCount + 1,
-                list[i].studentid,
-                list[i].username);
+                reqList[i].studentid,
+                reqList[i].reason);
             pendingIndex[pendingCount++] = i;
         }
     }
@@ -86,26 +86,38 @@ void viewUnlockRequests(Account list[], int accountCount) {
 
     printf("\nEnter the number of the request you want to process (1 - %d): ", pendingCount);
     int choice = validInput(1, pendingCount);
-    int idx = pendingIndex[choice - 1];
+    int reqIdx = pendingIndex[choice - 1];
 
-    printf("\nRequest for Student ID: %s\n", list[idx].studentid);
-    printf("Username: %s\n", list[idx].username);
+    int accIdx = -1;
+    for (int i = 0; i < accountCount; i++) {
+        if (strcmp(list[i].studentid, reqList[reqIdx].studentid) == 0) {
+            accIdx = i; // Tìm thấy index thực sự trong mảng Account
+            break;
+        }
+    }
+
+    if (accIdx == -1) {
+        printf(">> Error: Account for Student ID %s no longer exists!\n", reqList[reqIdx].studentid);
+        return;
+    }
+
+    printf("\nRequest for Student ID: %s\n", list[accIdx].studentid);
+    printf("Reason: %s\n", reqList[reqIdx].reason);
 
     if (confirmAction("Approve this request?")) {
-        // reqList[idx].status = 1;
-        // for (int i = 0; i < accountCount; i++) {
-        //     if (strcmp(list[i].studentid, reqList[idx].studentid) == 0) {
-                list[idx].isLocked = 0;
-                list[idx].failCount = 0;
-                printf(">> Request approved and account unlocked %s!\n", list[idx].studentid);
-        //         break;
-        //     }
-        // }
+        // reqList[reqIdx].status = 1;       
+                list[accIdx].isLocked = 0; // mở
+                list[accIdx].failCount = 0; // reset lần nhập lại
+                reqList[reqIdx].status = 1; // duyệt
+                printf(">> Request approved and account unlocked %s!\n", list[accIdx].studentid);
+        reqList[reqIdx].status = 1;
     } else {
-        list[idx].isLocked = 1;
-        printf(">> Request denied. Account %s remains locked!\n", list[idx].studentid);
+        list[accIdx].isLocked = 1; //bị khóa
+        reqList[reqIdx].status = 2; // bị từ chối
+        printf(">> Request denied. Account %s remains locked!\n", list[accIdx].studentid);
     }
     saveAccounts(list, accountCount);
+    saveRequests(reqList, count);
 }
 
 
