@@ -171,9 +171,6 @@ void runAdminMenu(Account *currentAcc, Account list[], int accountCount, Event e
                 saveAccounts(list, accountCount);
             	break;
             case 16:
-                approveJoinRequests(eventList, *eventCount);
-                break;
-            case 17:
                 advancedStaffStatistics(eventList, *eventCount, list, accountCount);
                 break;
             default: 
