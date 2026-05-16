@@ -27,8 +27,7 @@ void AdminMenu() {
     printf("13. Approve join requests\n"); 
     printf("14. View unlock requests\n");
     printf("15. Generate admin secret Key\n");
-    printf("16. Approve join requests\n");
-    printf("17. Advanced staff statistics\n");
+    printf("16. Advanced staff statistics\n");
     printf("0. Logout\n");
     printf("=========================================\n");
 }
@@ -43,8 +42,7 @@ void MemberMenu() {
     printf("4. View participation history\n");
     printf("5. Change password\n");
     printf("6. Setup/Update Email\n"); 
-    printf("7. Submit unlock request\n");
-    printf("8. Join event\n");
+    printf("7. Join event\n");
     printf("0. Logout\n");
     printf("=========================================\n");
 }
@@ -164,7 +162,7 @@ void runAdminMenu(Account *currentAcc, Account list[], int accountCount, Event e
             	createFile(eventList, *eventCount);
             	break;
             case 13:
-            	approveJoinRequests(eventList, *eventCount, list, accountCount);
+            	approveJoinRequests(eventList, *eventCount);
             	break;
             case 14:
             	viewUnlockRequests(list, accountCount);
@@ -209,6 +207,9 @@ void runMemberMenu(Account *currentAcc, Account list[], int accountCount, Event 
             case 6:
                 setupEmail(currentAcc, list, accountCount);
                 break;
+            case 7:
+            	eventJoin(eventList, eventCount,currentAcc);
+            	break;
             case 0:
                 if (Logout(currentAcc, list, accountCount) == 1) {
 
@@ -241,11 +242,12 @@ void runRequest(Account *currentAcc, Request listRequests[], int accountCount)
         switch (choice) 
         {
         case 1:
-            //sendUnlockRequest(currentAcc);
+            sendUnlockRequest(currentAcc, accountCount);
             //saveRequests(listRequests, accountCount);
             break;
         case 0:
-            choice = -1;
+            printf(">> Returning to welcome menu...\n");
+            return;
             break;
         default:
             printf(">> Error: Invalid choice. Please try again!\n");

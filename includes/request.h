@@ -1,19 +1,17 @@
 #ifndef REQUEST_H
 #define REQUEST_H
 
-#include "auth.h"
-
 #define MAX_REQUESTS 500
 
 typedef struct {
-    char studentid[20];
-    char reason[200];
-    int status; // 0: chờ | 1: duyệt | 2: từ chối
+    char mssv[20];
+    char name[50];
 } Request;
 
 int loadRequests(Request list[]);
 void saveRequests(Request list[], int count);
-void sendUnlockRequest(Account *currentAcc);
+void sendUnlockRequest(Account *currentAcc, int accountCount);
 void viewUnlockRequests(Account list[], int accountCount);
+void deleteUnlockRequest(Request requests[], int requestCount, char mssv[]);
 
 #endif

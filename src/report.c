@@ -59,164 +59,152 @@ void eventDetail(Event list[], int countEvent)
         printf("|       EVENT INFORMATION       |\n");
         printf("|===============================|\n");
 
-        printf("\n|=====================|===========================================|\n");
-        printf("|\tEvent Code       \t|%s\n", list[Index].eventId);
-        printf("|=======================|===========================================|\n");
-        printf("|\tEvent Name       \t|%s\n", list[Index].name);
-        printf("|=======================|===========================================|\n");
-        printf("|\tEvent Description\t|%s\n", list[Index].description);
-        printf("|=======================|===========================================|\n");
-        printf("|\tEvent Location   \t|%s\n", list[Index].location);
-        printf("|=======================|===========================================|\n");
-        printf("|\tEvent Start Date \t|%s\n", list[Index].startDate);
-        printf("|=======================|===========================================|\n");
-        printf("|\tEvent End Date   \t|%s\n", list[Index].endDate);
-        printf("|=======================|===========================================|\n");
-        
-        if (list[Index].status == 0)
-            {
-                printf("|\tEvent Status     \t|Not Started\n");
-            } else if (list[Index].status == 1)
-                {
-                    printf("|\tEvent Status     \t|Ongoing\n");
-                } else if (list[Index].status == 2)
-                    {
-                        printf("|\tEvent Status     \t|Completed\n");
-                    } else 
-                        {
-                            printf("|\tEvent Status     \t|Unknown\n");
-                        }
+        printf("Event Code: %s\n", list[Index].eventId);
+        printf("Event Name: %s\n", list[Index].name);
 
-        printf("|=======================|===========================================|\n");
-    } else {
-        return;
-    }
-    if (list[Index].staffCount == 0)
+        if (list[Index].description[0] == '\0') 
         {
-            printf(">> Announcement: No staff have been assigned to this event yet!\n");
-            return;
+            printf("Event Description: No description provided\n");
+        } else 
+            {
+                printf("Event Description: %s\n", list[Index].description);
+            }
+
+        printf("Event Location: %s\n", list[Index].location);
+        printf("Event Start Date: %s\n", list[Index].startDate);
+        printf("Event End Date: %s\n", list[Index].endDate);
+
+        const char* status[] = {"Not Start", "Ongoing", "Complete", "Unknown"};
+        int r = list[Index].status;
+        const char* statusEvent = (r >= 0 && r <= 2) ? status[r] : status[3];
+        printf("the event status: %s\n", statusEvent);
+
+        if (list[Index].staffCount == 0)
+        {
+            printf("No staff have been assigned to this event yet!\n");
         } else
-            {      
+        {   
+            printf("+---------------------------+--------------+------------+----------------------------------+\n");
+            printf("|        LIST OF STAFF FOR THE EVENT (Total: %d)                                         |\n", list[Index].staffCount);
+            printf("+---------------------------+--------------+------------+----------------------------------+\n");
+            // Căn lề cố định: Tên (25 ký tự), ID (12 ký tự), Chức vụ (10 ký tự), Nhiệm vụ (30 ký tự)
+            printf("| %-25s | %-12s | %-10s | %-32s |\n", "Name", "ID", "Role", "Responsibilities");
+            printf("+---------------------------+--------------+------------+----------------------------------+\n");
 
-                printf("|=========================================|\n");
-                printf("|       LIST OF STAFF FOR THE EVENT       |\n");
-                printf("|=========================================|\n");
-                printf("|Name                   |ID                     |Role                      |Responsibilities\n");  
+            const char* ROLE_NAMES[] = {"BCN", "Member", "Support", "Unassigned"};
 
-                for (int i = 0; i < list[Index].staffCount; i++)
-                {   
-                    printf("|%s\t\t\t\t", list[Index].staffList[i].studentName);
+            for (int i = 0; i < list[Index].staffCount; i++)
+            {   
+                // Tối ưu lấy Role Name
+                int r = list[Index].staffList[i].role;
+                const char* roleStr = (r >= 0 && r <= 2) ? ROLE_NAMES[r] : ROLE_NAMES[3];
 
-                    printf("|%s\t\t\t\t", list[Index].staffList[i].studentId);
-
-                    if (list[Index].staffList[i].role == 0)
-                        {
-                            printf("|BCN\t\t\t\t");
-                        } else if (list[Index].staffList[i].role == 1)
-                            {
-                                printf("|Member\t\t\t\t");
-                            } else if (list[Index].staffList[i].role == 2)
-                                {
-                                    printf("|Support\t\t\t\t");
-                                } else 
-                                    {
-                                        printf("|Unassigned\t\t\t\t");
-                                    }
-
-                    if (strlen(list[Index].staffList[i].description) == 0)
-                        {
-                            printf("|No responsibilities assigned\n");
-                        } else
-                            {
-                                printf("|%s\n", list[Index].staffList[i].description);
-                            }
+                // Tối ưu kiểm tra chuỗi rỗng bằng ký tự '\0' thay vì dùng strlen
+                const char* descStr = list[Index].staffList[i].description;
+                if (descStr[0] == '\0') {
+                    descStr = "No responsibilities assigned";
                 }
-            }  
+
+                // In một dòng dữ liệu thẳng hàng tuyệt đối
+                printf("| %-25s | %-12s | %-10s | %-32s |\n", 
+                        list[Index].staffList[i].studentName,
+                        list[Index].staffList[i].studentId,
+                        roleStr,
+                        descStr);
+            }
+            printf("+---------------------------+--------------+------------+----------------------------------+\n");
+        }  
+    } else 
+        {
+            printf("The event code or name you entered does not exist!\n");
+        }
 }
 
 void createFile(Event list[], int countEvent)
 {
-    FILE *fptr;
-    fptr = fopen("report.txt", "w");
-    if (fptr == NULL)
-    {
-        printf("Error creating report file!\n");
-        return;
-    }
-    printf("search name of event you want to create report for: ");
+    printf("Search name or ID of event you want to create report for: ");
     char eId[20];
-    scanf(" %[^\n]", eId);
+    
+    // [FIX]: Giới hạn nhập tối đa 19 ký tự để chống lỗi tràn bộ nhớ (Buffer Overflow)
+    scanf(" %19[^\n]", eId);
 
+    // Tìm kiếm sự kiện
     int Index = eventSearch(list, countEvent, eId);
 
     if (Index != -1)
     {
+        CREATE_DIR("reports");
+
+        char filename[100];
+        snprintf(filename, sizeof(filename), "reports/%s_report.txt", list[Index].eventId);
+
+        FILE *fptr = fopen(filename, "w");
+        if (fptr == NULL)
+        {
+            printf("\033[1;31m>> Error:\033[0m Can not create report file at %s!\n", filename);
+            return;
+        }
+
+        const char* status[] = {"Not Start", "Ongoing", "Complete", "Unknown"};
+        int r = list[Index].status;
+        const char* statusEvent = (r >= 0 && r <= 2) ? status[r] : status[3];
+
         fprintf(fptr, "Event Code: %s\n", list[Index].eventId);
         fprintf(fptr, "Event Name: %s\n", list[Index].name);
-        fprintf(fptr, "Event Description: %s\n", list[Index].description);
+
+        if (list[Index].description[0] == '\0') 
+        {
+            fprintf(fptr, "Event Description: No description provided\n");
+        } else 
+            {
+                fprintf(fptr, "Event Description: %s\n", list[Index].description);
+            }
+
         fprintf(fptr, "Event Location: %s\n", list[Index].location);
         fprintf(fptr, "Event Start Date: %s\n", list[Index].startDate);
         fprintf(fptr, "Event End Date: %s\n", list[Index].endDate);
-
-        if (list[Index].status == 0)
-            {
-                fprintf(fptr, "the event status: Not Start\n");
-            } else if (list[Index].status == 1)
-                    {
-                        fprintf(fptr, "the event status: Ongoing\n");
-                    } else if (list[Index].status == 2)
-                            {
-                                fprintf(fptr, "the event status: Complete\n");
-                            } else 
-                                {
-                                    fprintf(fptr, "the event status: Unknown\n");
-                                }
-
+        fprintf(fptr, "the event status: %s\n", statusEvent);
+        
         if (list[Index].staffCount == 0)
         {
             fprintf(fptr, "No staff have been assigned to this event yet!\n");
         } else
+        {   
+            fprintf(fptr, "+---------------------------+--------------+------------+----------------------------------+\n");
+            fprintf(fptr, "|        LIST OF STAFF FOR THE EVENT (Total: %d)                                         |\n", list[Index].staffCount);
+            fprintf(fptr, "+---------------------------+--------------+------------+----------------------------------+\n");
+            // Căn lề cố định: Tên (25 ký tự), ID (12 ký tự), Chức vụ (10 ký tự), Nhiệm vụ (30 ký tự)
+            fprintf(fptr, "| %-25s | %-12s | %-10s | %-32s |\n", "Name", "ID", "Role", "Responsibilities");
+            fprintf(fptr, "+---------------------------+--------------+------------+----------------------------------+\n");
+
+            const char* ROLE_NAMES[] = {"BCN", "Member", "Support", "Unassigned"};
+
+            for (int i = 0; i < list[Index].staffCount; i++)
             {   
-                fprintf(fptr, "|=========================================|\n");
-                fprintf(fptr, "|       LIST OF STAFF FOR THE EVENT       |\n");
-                fprintf(fptr, "|=========================================|\n");
-                fprintf(fptr, "|Name                   |ID                     |Role                      |Responsibilities\n");
+                int r = list[Index].staffList[i].role;
+                const char* roleStr = (r >= 0 && r <= 2) ? ROLE_NAMES[r] : ROLE_NAMES[3];
 
-                for (int i = 0; i < list[Index].staffCount; i++)
-                {   
-
-                    fprintf(fptr, "|%s\t\t\t\t", list[Index].staffList[i].studentName);
-
-                    fprintf(fptr, "|%s\t\t\t\t", list[Index].staffList[i].studentId);
-
-                    if (list[Index].staffList[i].role == 0)
-                        {
-                            fprintf(fptr, "|BCN\t\t\t\t");
-                        } else if (list[Index].staffList[i].role == 1)
-                            {
-                                fprintf(fptr, "|Member\t\t\t\t");
-                            } else if (list[Index].staffList[i].role == 2)
-                                {
-                                    fprintf(fptr, "|Support\t\t\t\t");
-                                } else 
-                                    {
-                                        fprintf(fptr, "|Unassigned\t\t\t\t");
-                                    }
-
-                    if (strlen(list[Index].staffList[i].description) == 0)
-                        {
-                            fprintf(fptr, "|No responsibilities assigned\n");
-                        } else
-                            {
-                                fprintf(fptr, "|%s\n", list[Index].staffList[i].description);
-                            }
+                const char* descStr = list[Index].staffList[i].description;
+                if (descStr[0] == '\0') {
+                    descStr = "No responsibilities assigned";
                 }
-            }  
+
+                fprintf(fptr, "| %-25s | %-12s | %-10s | %-32s |\n", 
+                        list[Index].staffList[i].studentName,
+                        list[Index].staffList[i].studentId,
+                        roleStr,
+                        descStr);
+            }
+            fprintf(fptr, "+---------------------------+--------------+------------+----------------------------------+\n");
+        }  
+        fclose(fptr);
+        
+        printf("\033[1;32m>> Success:\033[0m Report saved successfully to '%s'\n", filename);
+        
     } else
-        {
-            fprintf(fptr, "Event with the given ID or name does not exist!\n");
-        }
-    fclose(fptr);
+    {
+        printf("\033[1;31m>> Error:\033[0m Event with the given ID or name does not exist!\n");
+    }
 }
 
 void advancedStaffStatistics(Event events[], int eventCount, Account accounts[], int accountCount) {
