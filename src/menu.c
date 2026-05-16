@@ -241,11 +241,12 @@ void runRequest(Account *currentAcc, Request listRequests[], int accountCount)
         switch (choice) 
         {
         case 1:
-            //sendUnlockRequest(currentAcc);
-            //saveRequests(listRequests, accountCount);
+            sendUnlockRequest(currentAcc, accountCount);
+            saveRequests(listRequests, accountCount);
             break;
         case 0:
-            choice = -1;
+            printf(">> Returning to welcome menu...\n");
+            return;
             break;
         default:
             printf(">> Error: Invalid choice. Please try again!\n");
