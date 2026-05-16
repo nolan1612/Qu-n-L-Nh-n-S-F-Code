@@ -10,6 +10,8 @@
 #include "../includes/report.h"
 #include "../includes/staff.h"
 #include "../includes/utils.h"
+#include "../includes/validate.h"
+
 void clearBuffer();
 void trimNewLine(char str[]);
 int validInput(int min, int max);
@@ -20,7 +22,12 @@ int isValidDateNum(int year, int month, int day);
 int isValidDateStr(const char* date);
 int getDaysDifference(const char* start, const char* end);
 void inputValidFormatDate(char str[]);
-int isValidEmail(char email[]);
+int isValidEmail(char *email);
+int checkPassword(char ps[], Account *account);
+int getSearchScore(const char eventName[], const char searchInput[]);
+void toLowerCase(char str[]);
+int checkPassword(char ps[], Account *account);
+void inputString(char str[], int size);
 void clearBuffer() {
     while (getchar() != '\n');
 }
@@ -65,9 +72,7 @@ int containsIgnoreCase(char str[], char strSub[]){
     return 0;
 }
 int isLeapYear(int year){
-    if(year % 400 == 0) return 1;
-    else if(year % 4 == 0 && year % 100 != 0) return 1;
-    return 0;
+    return(year % 400 == 0) || (year % 4 == 0 && year % 100 != 0);
 }
 
 int isValidDateNum(int year, int month, int day){
@@ -160,10 +165,10 @@ int confirmAction( char message[]) {
         printf(">> Error: Invalid input! Please enter Y or N.\n");
     }
 }
-int isValidEmail(char email[]){
+int isValidEmail(char *email){
     if(email == NULL || strlen(email) == 0) return 0;
     //kiem tra dau cach 
-    for(int i = 0; i <= strlen(email) - 1; i++){
+    for(size_t i = 0; i < strlen(email); i++){
         if(isspace(email[i])) return 0;
     }
     if(email[0] == '@') return 0;
@@ -194,3 +199,61 @@ int isValidEmail(char email[]){
     return 1;
 }
 
+void toLowerCase(char str[]) {
+    for(int i = 0; str[i] != '\0'; i++){
+        str[i] = tolower(str[i]);
+    }
+}
+int getSearchScore(const char eventName[], const char searchInput[]) {
+    char nameCopy[256];
+    char searchCopy[256];
+
+
+    strncpy(nameCopy, eventName, sizeof(nameCopy) - 1);
+    nameCopy[sizeof(nameCopy) - 1] = '\0';
+    
+    strncpy(searchCopy, searchInput, sizeof(searchCopy) - 1);
+    searchCopy[sizeof(searchCopy) - 1] = '\0';
+    toLowerCase(nameCopy);
+    toLowerCase(searchCopy);
+    int checkout = 0;
+    char *word = strtok(searchCopy, " ");
+
+    while (word != NULL) {
+        if (strstr(nameCopy, word) != NULL) {
+            checkout++; 
+        } else {
+            checkout--;      
+        }
+        word = strtok(NULL, " "); 
+    }
+
+    return checkout; 
+}
+int checkPassword(char ps[], Account *account) {
+    if (strcmp(ps, account->password) == 0) {
+        account->failCount = 0; 
+        return 1; 
+    }
+
+    account->failCount++;
+    if (account->failCount >= 3) {
+        account->isLocked = 1;
+        printf("Incorrect password 3 times. This account has been locked!\n");
+        return -3;
+    } 
+    printf("Incorrect password! You have %d attempts left.\n", 3 - account->failCount);
+      return -1;
+}
+int checkId(char mssv[], Account list[], int accountCount){
+    for(int i = 0; i <= accountCount - 1; i++){
+        if(strcmp(mssv, list[i].studentid) == 0){
+            return i;
+        }
+    }
+    return -1;
+}
+void inputString(char str[], int size) {
+    fgets(str, size, stdin);
+    str[strcspn(str, "\n")] = '\0';
+}

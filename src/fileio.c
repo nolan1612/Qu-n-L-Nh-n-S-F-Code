@@ -19,20 +19,22 @@
 //     fclose(file);
 // }
 void saveAccounts(Account list[], int count) {
+  
     FILE *file = fopen("data/account.dat", "w"); 
     
     if (file == NULL) {
-        printf("Loi .dat!\n");
+        printf("\033[1;31m[Error]\033[0m Cannot open file data/account.dat for writing!\n");
         return;
     }
     
     for (int i = 0; i < count; i++) {
        
-        fprintf(file, "%s %s %s %s %d %d %d\n", 
+        fprintf(file, "%s|%s|%s|%s|%s|%d|%d|%d\n", 
                 list[i].studentid, 
                 list[i].username,
                 list[i].password, 
                 list[i].email,
+                list[i].phone,
                 list[i].role, 
                 list[i].isLocked, 
                 list[i].failCount);
@@ -72,24 +74,25 @@ void saveAccounts(Account list[], int count) {
 
 
 int loadAccounts(Account list[]) {
-   
     FILE *file = fopen("data/account.dat", "r"); 
     
     if (file == NULL) {
-        printf("[He thong] File data/account.dat chua ton tai!\n");
+        printf("[Error] File data/account.dat not exist!\n");
         return 0; 
     }
     
     int count = 0;
-
-    while (fscanf(file, "%s %s %s %d %d %d", 
+    while (fscanf(file, " %19[^|]|%49[^|]|%19[^|]|%49[^|]|%19[^|]|%d|%d|%d\n", 
                   list[count].studentid, 
                   list[count].username,   
                   list[count].password, 
+                  list[count].email,
+                  list[count].phone,
                   &list[count].role, 
                   &list[count].isLocked, 
-                  &list[count].failCount) == 6) { 
+                  &list[count].failCount) == 8) { 
         count++;
+        if (count >= MAX_ACCOUNTS) break; 
     }
     
     fclose(file);
@@ -99,13 +102,13 @@ int loadAccounts(Account list[]) {
 void saveEvents(Event list[], int count) {
     FILE *file = fopen("data/events.dat", "wb"); 
     if (file == NULL) {
-        printf("\033[1;31m[Loi]\033[0m Khong the mo file events.dat de ghi!\n");
+        printf("\033[1;31m[Error]\033[0m Can not open file events.dat for writing!\n");
         return;
     }
     size_t written = fwrite(list, sizeof(Event), count, file);
     
     if (written != (size_t)count) {
-        printf("\033[1;31m[Loi]\033[0m Ghi du lieu su kien bi loi!\n");
+        printf("\033[1;31m[Error]\033[0m Failed to write all events to file!\n");
     }
     
     fclose(file);

@@ -306,3 +306,172 @@ void removeStaffFromEvent(Event events[], int count) {
 
     saveEvents(events, count);
 }
+
+void eventJoin(Event events[], int eventCount, Account *currentAcc) {
+    printf("\n--- EVENT CAN PARTICIPATE IN ---\n");
+    if (eventCount == 0) {
+        printf(">> Notice: No events in the system.\n");
+        return;
+    }
+    int availableCount = 0;
+    printf("%-15s | %-30s | %-10s | %-15s\n", "Event ID", "Event Name", "Staff", "Pending Requests");
+    printf("-------------------------------------------------------------------------------\n");   
+    for (int i = 0; i < eventCount; i++) {
+        if (events[i].status != 2 && events[i].staffCount < 30) {
+            int alreadyJoined = 0;
+            for (int j = 0; j < events[i].staffCount; j++) {
+                if (strcmp(events[i].staffList[j].studentId, currentAcc->studentid) == 0) {
+                    alreadyJoined = 1; 
+                    break;
+                }
+            }
+            int alreadyRequested = 0;
+            for (int j = 0; j < events[i].requestCount; j++) {
+                if (strcmp(events[i].requestList[j], currentAcc->studentid) == 0) {
+                    alreadyRequested = 1; 
+                    break;
+                }
+            }
+            if (!alreadyJoined && !alreadyRequested) {
+                printf("%-15s | %-30s | %d/30      | %d\n", 
+                       events[i].eventId, events[i].name, events[i].staffCount, events[i].requestCount);
+                availableCount++;
+            }
+        }
+    }
+
+    if (availableCount == 0) {
+        printf(">> Notice: There are no new events available for you to join right now.\n");
+        return;
+    }
+
+    char targetId[15];
+    printf("\nEnter Event ID you want to join (or '0' to cancel): ");
+    scanf(" %[^\n]", targetId);
+
+    if (strcmp(targetId, "0") == 0) {
+        printf(">> Cancelled.\n");
+        return;
+    }
+
+    int foundIndex = -1;
+    for (int i = 0; i < eventCount; i++) {
+        if (strcmp(events[i].eventId, targetId) == 0) {
+            foundIndex = i; 
+            break;
+        }
+    }
+
+    if (foundIndex == -1) {
+        printf(">> Error: Event ID not found!\n");
+        return;
+    }
+
+    if (events[foundIndex].requestCount >= 30) {
+        printf(">> Error: Request queue is full for this event!\n");
+        return;
+    }
+    strcpy(events[foundIndex].requestList[events[foundIndex].requestCount], currentAcc->studentid);
+    events[foundIndex].requestCount++; 
+    
+    saveEvents(events, eventCount);
+    printf(">> Success: Join request sent for event %s. Please wait for admin approval.\n", targetId);
+}
+
+void approveJoinRequests(Event events[], int count) {
+    printf("\n--- APPROVE JOIN REQUESTS ---\n");
+
+    int hasRequests = 0;
+    printf("%-10s | %-25s | %-15s\n", "Event ID", "Event Name", "Pending Student");
+    printf("------------------------------------------------------------\n");
+    for (int i = 0; i < count; i++) {
+        for (int j = 0; j < events[i].requestCount; j++) {
+            printf("%-10s | %-25s | %-15s\n", 
+                   events[i].eventId, 
+                   events[i].name, 
+                   events[i].requestList[j]);
+            hasRequests = 1;
+        }
+    }
+
+    if (!hasRequests) {
+        printf(">> Notice: No pending join requests at the moment.\n");
+        return;
+    }
+
+    char searchEv[15], searchStu[50];
+    printf("\nEnter Event ID to process: ");
+    scanf(" %[^\n]", searchEv);
+
+    int evIndex = -1;
+    for (int i = 0; i < count; i++) {
+        if (strcmp(events[i].eventId, searchEv) == 0) {
+            evIndex = i; 
+            break;
+        }
+    }
+    if (evIndex == -1) {
+        printf(">> Error: Event not found.\n");
+        return;
+    }
+
+    if (events[evIndex].requestCount == 0) {
+        printf(">> Error: No pending requests for this event.\n");
+        return;
+    }
+
+    printf("Enter Student ID to approve/reject: ");
+    scanf(" %[^\n]", searchStu);
+    for (int i = 0; searchStu[i] != '\0'; i++) {
+        if (searchStu[i] >= 'a' && searchStu[i] <= 'z') {
+            searchStu[i] = searchStu[i] - 32;
+        }
+    }
+
+    int reqIndex = -1;
+    for (int j = 0; j < events[evIndex].requestCount; j++) {
+        if (strcmp(events[evIndex].requestList[j], searchStu) == 0) {
+            reqIndex = j; 
+            break;
+        }
+    }
+
+    if (reqIndex == -1) {
+        printf(">> Error: No pending request found for this student in this event.\n");
+        return;
+    }
+
+    if (events[evIndex].staffCount >= 30) {
+        printf(">> Error: Cannot approve. Event has reached max capacity (30 staff)!\n");
+        return;
+    }
+
+    char decision;
+    printf("Approve this student? (y = Yes/Approve, n = No/Reject): ");
+    scanf(" %c", &decision);
+
+    if (decision == 'y' || decision == 'Y') {
+        int newRole;
+        printf("Assign role (1 = Member, 2 = Support): ");
+        scanf("%d", &newRole);
+
+        char newDesc[100];
+        printf("Enter task description for this student: ");
+        scanf(" %[^\n]", newDesc);
+        int sCount = events[evIndex].staffCount;
+        strcpy(events[evIndex].staffList[sCount].studentId, searchStu);
+        events[evIndex].staffList[sCount].role = newRole;
+        strcpy(events[evIndex].staffList[sCount].description, newDesc);
+        
+        events[evIndex].staffCount++;
+
+        printf(">> Success: Student %s has been APPROVED for event %s.\n", searchStu, searchEv);
+    } else {
+        printf(">> Success: Request from %s has been REJECTED.\n", searchStu);
+    }
+    for (int k = reqIndex; k < events[evIndex].requestCount - 1; k++) {
+        strcpy(events[evIndex].requestList[k], events[evIndex].requestList[k + 1]);
+    }
+    events[evIndex].requestCount--;
+    saveEvents(events, count);
+}

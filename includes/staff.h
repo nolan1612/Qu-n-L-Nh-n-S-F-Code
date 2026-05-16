@@ -5,9 +5,10 @@
 #include "event.h"
 
 void toUpperCaseStr(char str[]);
-void addStaffToEvent(Event events[], int count);
 void editStaffRole(Event events[], int count);
 void removeStaffFromEvent(Event events[], int count);
 void viewMemberHistory(Event events[], int count);
 void addStaffToEvent(Event events[], int count, Account list[], int accountCount);
+void eventJoin(Event events[], int eventCount, Account *currentAcc);
+void approveJoinRequests(Event events[], int count);
 #endif

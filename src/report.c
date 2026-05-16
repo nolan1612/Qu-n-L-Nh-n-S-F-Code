@@ -32,19 +32,6 @@ int eventSearch(Event list[], int countEvent, char eIdorName[])
                                     printf("the event status: Unknown\n");
                                 }
 
-        if (list[i].status == 0)
-        {
-            printf("Event Status: Not Started\n");
-        } else if (list[i].status == 1)
-            {
-                printf("Event Status: Ongoing\n");
-            } else if (list[i].status == 2)
-                {
-                    printf("Event Status: Completed\n");
-                } else 
-                    {
-                        printf("Event Status: Unknown\n");
-                    }
             return Index;
         }
     }
@@ -101,9 +88,9 @@ void eventDetail(Event list[], int countEvent)
                         }
 
         printf("|=======================|===========================================|\n");
+    } else {
+        return;
     }
-
-
     if (list[Index].staffCount == 0)
         {
             printf(">> Announcement: No staff have been assigned to this event yet!\n");
@@ -147,7 +134,6 @@ void eventDetail(Event list[], int countEvent)
             }  
 }
 
-
 void createFile(Event list[], int countEvent)
 {
     FILE *fptr;
@@ -161,7 +147,7 @@ void createFile(Event list[], int countEvent)
     char eId[20];
     scanf(" %[^\n]", eId);
 
-    int Index = search_events(list, countEvent, eId);
+    int Index = eventSearch(list, countEvent, eId);
 
     if (Index != -1)
     {
