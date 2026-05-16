@@ -25,4 +25,6 @@ int getSearchScore(const char eventName[], const char searchInput[]);
 void toLowerCase(char str[]);
 int checkPassword(char ps[], Account *account);
 int isValidEmail( char *email);
+void inputString(char str[], int size);
+int checkId(char mssv[], Account list[], int accountCount);
 #endif
