@@ -60,6 +60,16 @@ void createEvent(Event events[], int *count) {
 
         printf("Enter end date (YYYY-MM-DD or YYYY/MM/DD): ");
         inputValidFormatDate(newEv.endDate);
+        
+        char currentDate[15];
+        time_t t = time(NULL);
+        struct tm tm = *localtime(&t);
+        sprintf(currentDate, "%04d-%02d-%02d", tm.tm_year + 1900, tm.tm_mon + 1, tm.tm_mday);
+
+        if (strcmp(newEv.startDate, currentDate) < 0) {
+            printf("\033[1;31m>> Error: Start date cannot be in the past (Current date is %s)!\033[0m\n", currentDate);
+            continue;
+        }
 
         if (strcmp(newEv.endDate, newEv.startDate) < 0) {
             printf("\033[1;31m>> Error: End date must be after or equal to start date!\033[0m\n");
@@ -178,10 +188,27 @@ void editEvent(Event events[], int count) {
         printf("Enter new end date (YYYY-MM-DD or YYYY/MM/DD): ");
         scanf(" %14[^\n]", tempEnd);
         while (getchar() != '\n');
+        
+        for(int k = 0; tempStart[k] != '\0'; k++) if(tempStart[k] == '/') tempStart[k] = '-';
+        for(int k = 0; tempEnd[k] != '\0'; k++) if(tempEnd[k] == '/') tempEnd[k] = '-';
 
         char finalStart[15], finalEnd[15];
         strcpy(finalStart, (strcmp(tempStart, "0") == 0) ? events[foundIndex].startDate : tempStart);
         strcpy(finalEnd, (strcmp(tempEnd, "0") == 0) ? events[foundIndex].endDate : tempEnd);
+        
+        if (!isValidDateStr(finalStart) || !isValidDateStr(finalEnd)) {
+            printf("\033[1;31m>> Error: Invalid date format or date does not exist!\033[0m\n");
+            continue;
+        }
+        
+        char currentDate[15];
+        time_t t = time(NULL);
+        struct tm tm = *localtime(&t);
+        sprintf(currentDate, "%04d-%02d-%02d", tm.tm_year + 1900, tm.tm_mon + 1, tm.tm_mday);
+        if (strcmp(tempStart, "0") != 0 && strcmp(finalStart, currentDate) < 0) {
+            printf("\033[1;31m>> Error: New start date cannot be in the past (Current date is %s)!\033[0m\n", currentDate);
+            continue;
+        }
 
         if (strcmp(finalEnd, finalStart) < 0) {
             printf("\033[1;31m>> Error: End date must be after or equal to start date!\033[0m\n");
