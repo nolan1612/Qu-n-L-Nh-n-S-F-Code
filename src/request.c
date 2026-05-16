@@ -16,7 +16,7 @@ int loadRequests(Request list[]) {
 }
 
 
-void saveRequest(Request list[], int count) {
+void saveRequests(Request list[], int count) {
     FILE *f = fopen("data/request.dat", "w");
     if (f == NULL) {
         printf("\033[1;31m[Error]\033[0m Can not open file request.dat for writing!\n");
@@ -67,8 +67,6 @@ void sendUnlockRequest(Account *currentAcc, int accountCount) {
 void viewUnlockRequests(Account list[], int accountCount) 
 {
     Request requests[100];
-    Account accounts[100];
-
     int requestCount = loadRequests(requests);
 
     if (requestCount == 0) {
@@ -110,18 +108,18 @@ void viewUnlockRequests(Account list[], int accountCount)
     if (confirmAction("Approve this request?: ")){
     for (int i = 0; i < accountCount; i++) {
 
-        if (strcmp(accounts[i].studentid, mssv) == 0) {
+        if (strcmp(list[i].studentid, mssv) == 0) {
 
-            accounts[i].isLocked = 0;
-            accounts[i].failCount = 0;
+            list[i].isLocked = 0;
+            list[i].failCount = 0;
 
             printf("\nAccount unlocked for %s - %s\n",
-                   accounts[i].username,
-                   accounts[i].studentid);
+                   list[i].username,
+                   list[i].studentid);
             break;
         }
     }
-    saveAccounts(accounts, accountCount);
+    saveAccounts(list, accountCount);
 
     deleteUnlockRequest(requests, requestCount, mssv);
     } else 

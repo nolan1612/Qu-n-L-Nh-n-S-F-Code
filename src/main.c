@@ -72,20 +72,18 @@ int main() {
                         }
                         saveAccounts(list, accountCount); 
                         break;
-                    } else if (status == -1) 
-                            {
-                                saveAccounts(list, accountCount);
-                            } else if (status == -3) 
-                                        {                                   
-                                            saveAccounts(list, accountCount);
-                                            runRequest(currentAcc, listRequests, accountCount);
+                    } else if (status == -1) {
+                        saveAccounts(list, accountCount);
+                    } else if (status == -3) {                                   
+                        saveAccounts(list, accountCount);
+                        int lockedIndex = checkId(mssv, list, accountCount);
+                        runRequest(&list[lockedIndex], listRequests, accountCount);
 
-                                            if (choice == -1) 
-                                            {
-                                                printf(">> Returning to welcome menu...\n");
-                                            }
+                    	if (choice == -1) {
+                            printf(">> Returning to welcome menu...\n");
+                        }
                                             
-                                        } 
+                    } 
                 }
             } else if (choice == 2) {
                 forgotPassword(list, accountCount);
