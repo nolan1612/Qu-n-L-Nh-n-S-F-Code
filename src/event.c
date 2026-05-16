@@ -77,8 +77,8 @@ void createEvent(Event events[], int *count) {
         }
 
         int days = getDaysDifference(newEv.startDate, newEv.endDate) + 1;
-        if (days < 4) {
-            printf("\033[1;31m>> Error: Event must last at least 4 days (Currently %d days)!\033[0m\n", days);
+        if (days < 1) {
+            printf("\033[1;31m>> Error: Event must last at least 1 days (Currently %d days)!\033[0m\n", days);
             continue;
         }
         if (days > 100) {
@@ -216,8 +216,8 @@ void editEvent(Event events[], int count) {
         }
 
         int days = getDaysDifference(finalStart, finalEnd) + 1;
-        if (days < 4) {
-            printf("\033[1;31m>> Error: Event must last at least 4 days (Currently %d days)!\033[0m\n", days);
+        if (days < 1) {
+            printf("\033[1;31m>> Error: Event must last at least 1 days (Currently %d days)!\033[0m\n", days);
             continue;
         }
         if (days > 100) {
