@@ -1,8 +1,11 @@
 // Khai bao cac tinh nang nang cao
 #ifdef _WIN32
-    #include <direct.h> 
+    #include <direct.h>
+    #define CREATE_DIR(path) _mkdir(path)
 #else
-    #include <sys/stat.h> 
+    #include <sys/stat.h>
+    #include <sys/types.h>
+    #define CREATE_DIR(path) mkdir(path, 0777)
 #endif
 #ifndef REPORT_H
 #define REPORT_H
