@@ -3,7 +3,7 @@
 #define EVENT_H
 #include "auth.h"
 #define MAX_STAFF_PER_EVENT 30
-#define MAX_EVENTS 1000000
+#define MAX_EVENTS 100000
 
 typedef struct {
     char studentId[15]; 
@@ -22,6 +22,8 @@ typedef struct {
     int status;             
     int staffCount;         
     StaffEntry staffList[MAX_STAFF_PER_EVENT];
+    int requestCount;
+	char requestList[30][50];
 } Event;
 
 void generateEventId(char *dest, Event events[], int count);
@@ -36,4 +38,7 @@ void viewMemberHistory(Event events[], int count);
 void viewJoinedEventsList(Event events[], int count, Account *currentAcc);
 void viewJoinedEventDetails(Event events[], int count, Account *currentAcc);
 void viewMyParticipationHistory(Event events[], int count, Account *currentAcc);
+void searchEventsByTimeRange(Event events[], int count);
+void sortEventsByStartDate(Event events[], int count, int sortOrder);
+void searchEventsByNameOrId(Event events[], int count);
 #endif

@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <ctype.h>
 #include <time.h>
 #include "../includes/auth.h"
 #include "../includes/event.h"
@@ -65,12 +66,15 @@ void createEvent(Event events[], int *count) {
             continue;
         }
 
-        int days = getDaysDifference(newEv.startDate, newEv.endDate);
+        int days = getDaysDifference(newEv.startDate, newEv.endDate) + 1;
         if (days < 4) {
             printf("\033[1;31m>> Error: Event must last at least 4 days (Currently %d days)!\033[0m\n", days);
             continue;
         }
-
+        if (days > 100) {
+            printf("\033[1;31m>> Error: Event take to long (Currently %d days)!\033[0m\n", days);
+            continue;
+        }
         if (checkOverlap(events, *count, newEv.startDate, newEv.endDate, NULL)) {
             printf("\033[1;33m>> Error: This time overlaps with another existing event!\033[0m\n");
             continue;
@@ -81,6 +85,7 @@ void createEvent(Event events[], int *count) {
     
     newEv.status = 0;
     newEv.staffCount = 0;
+    newEv.requestCount = 0;
     
     events[*count] = newEv;
     (*count)++;
@@ -92,11 +97,14 @@ void editEvent(Event events[], int count) {
     char searchId[10];
     int foundIndex = -1;
     int attempts = 3;
+    char tempInput[256];
 
     printf("\n--- EDIT EVENT INFORMATION ---\n");
     while (attempts > 0) {
         printf("Enter event ID to edit (e.g., EV000001): ");
-        scanf(" %[^\n]", searchId);
+        scanf(" %9[^\n]", searchId);
+        while (getchar() != '\n'); 
+
         foundIndex = -1;
         for (int i = 0; i < count; i++) {
             if (strcmp(events[i].eventId, searchId) == 0) {
@@ -115,6 +123,7 @@ void editEvent(Event events[], int count) {
             return;
         }
     }
+
     if (events[foundIndex].status == 2) {
         printf(">> Error: Cannot edit a finished event!\n");
         return;
@@ -124,46 +133,81 @@ void editEvent(Event events[], int count) {
         char confirm;
         printf("!!! WARNING: This event is ONGOING. Are you sure you want to edit? (y/n): ");
         scanf(" %c", &confirm);
+        while (getchar() != '\n');
         if (confirm != 'y' && confirm != 'Y') {
             printf(">> Edit operation cancelled.\n");
             return;
         }
     }
 
-    printf("\nCurrent information of %s:\n", events[foundIndex].eventId);
-    printf("1. Name: %s\n", events[foundIndex].name);
-    printf("2. Description: %s\n", events[foundIndex].description);
-    printf("3. Location: %s\n", events[foundIndex].location);
-    printf("4. Start date: %s\n", events[foundIndex].startDate);
-    printf("5. End date: %s\n", events[foundIndex].endDate);
+    printf("\nNote: Enter '0' to keep the current information.\n");
 
-    printf("\nEnter new name: ");
-    scanf(" %[^\n]", events[foundIndex].name);
+    printf("Current name: %s\n", events[foundIndex].name);
+    printf("Enter new name: ");
+    scanf(" %199[^\n]", tempInput); 
+    while (getchar() != '\n');
+    if (strcmp(tempInput, "0") != 0) {
+        strcpy(events[foundIndex].name, tempInput);
+    }
+
+    printf("Current description: %s\n", events[foundIndex].description);
     printf("Enter new description: ");
-    scanf(" %[^\n]", events[foundIndex].description);
+    scanf(" %50[^\n]", tempInput);
+    while (getchar() != '\n');
+    if (strcmp(tempInput, "0") != 0) {
+        strcpy(events[foundIndex].description, tempInput);
+    }
+
+    printf("Current location: %s\n", events[foundIndex].location);
     printf("Enter new location: ");
-    scanf(" %[^\n]", events[foundIndex].location);
+    scanf(" %99[^\n]", tempInput);
+    while (getchar() != '\n');
+    if (strcmp(tempInput, "0") != 0) {
+        strcpy(events[foundIndex].location, tempInput);
+    }
+
     while (1) {
+        char tempStart[15], tempEnd[15];
+        
+        printf("Current start date: %s\n", events[foundIndex].startDate);
         printf("Enter new start date (YYYY-MM-DD or YYYY/MM/DD): ");
-        inputValidFormatDate(events[foundIndex].startDate);
+        scanf(" %14[^\n]", tempStart);
+        while (getchar() != '\n');
+
+        printf("Current end date: %s\n", events[foundIndex].endDate);
         printf("Enter new end date (YYYY-MM-DD or YYYY/MM/DD): ");
-        inputValidFormatDate(events[foundIndex].endDate);
-        if (strcmp(events[foundIndex].endDate, events[foundIndex].startDate) < 0) {
+        scanf(" %14[^\n]", tempEnd);
+        while (getchar() != '\n');
+
+        char finalStart[15], finalEnd[15];
+        strcpy(finalStart, (strcmp(tempStart, "0") == 0) ? events[foundIndex].startDate : tempStart);
+        strcpy(finalEnd, (strcmp(tempEnd, "0") == 0) ? events[foundIndex].endDate : tempEnd);
+
+        if (strcmp(finalEnd, finalStart) < 0) {
             printf("\033[1;31m>> Error: End date must be after or equal to start date!\033[0m\n");
             continue;
         }
-        int days = getDaysDifference(events[foundIndex].startDate, events[foundIndex].endDate);
+
+        int days = getDaysDifference(finalStart, finalEnd) + 1;
         if (days < 4) {
             printf("\033[1;31m>> Error: Event must last at least 4 days (Currently %d days)!\033[0m\n", days);
             continue;
         }
-        if (checkOverlap(events, count, events[foundIndex].startDate, events[foundIndex].endDate, events[foundIndex].eventId)) {
+        if (days > 100) {
+            printf("\033[1;31m>> Error: Event take to long (Currently %d days)!\033[0m\n", days);
+            continue;
+        }
+
+        if (checkOverlap(events, count, finalStart, finalEnd, events[foundIndex].eventId)) {
             printf("\033[1;33m>> Error: New time overlaps with another event in the system!\033[0m\n");
             continue;
         }
 
+        strcpy(events[foundIndex].startDate, finalStart);
+        strcpy(events[foundIndex].endDate, finalEnd);
         break;
     }
+
     printf(">> Success: Updated information for event %s.\n", searchId);
     saveEvents(events, count);
 }
@@ -328,7 +372,21 @@ void displayAllEvents(Event events[], int count) {
         printf(">> Notice: Too many invalid attempts. Returning to previous menu.\n");
         return;
     }
-
+    int sortOrder;
+    printf("\n--- SORT EVENTS BY START DATE ---\n");
+    printf("1. Ascending (Oldest first)\n");
+    printf("2. Descending (Newest first)\n");
+    printf("3. Default (No sort)\n");
+    printf("Select sort order (1-3): ");
+    
+    if (scanf("%d", &sortOrder) != 1) {
+        while (getchar() != '\n');
+        sortOrder = 3;
+    }
+    
+    if (sortOrder == 1 || sortOrder == 2) {
+        sortEventsByStartDate(events, count, sortOrder);
+    }
     int targetStatus = filter - 2;
 
     printf("\n%-10s | %-20s | %-12s | %-12s | %-15s | %-5s | %-15s\n", 
@@ -369,10 +427,10 @@ void viewMemberProfile(Account *currentAcc) {
     printf("\n=========================================\n");
     printf("           PERSONAL INFORMATION             \n");
     printf("=========================================\n");
-    //printf("%-12s: %s\n", "Full Name", currentAcc->username);
+    printf("%-12s: %s\n", "Full Name", currentAcc->username);
     printf("%-12s: %s\n", "Student ID", currentAcc->studentid);
-    // printf("%-12s: %s\n", "Email", currentAcc->email);
-    // printf("%-12s: %s\n", "Phone", currentAcc->phone);
+    printf("%-12s: %s\n", "Email", currentAcc->email);
+    printf("%-12s: %s\n", "Phone", currentAcc->phone);
     // printf("%-12s: %s\n", "Dept", currentAcc->dept);
     printf("%-12s: %s\n", "Role", (currentAcc->role >= 1) ? "Board of Directors (BOD)" : "Member");
     printf("=========================================\n");
@@ -684,4 +742,172 @@ void viewMyParticipationHistory(Event events[], int count, Account *currentAcc) 
                "Finished");
     }
     printf("------------------------------------------------------------------------------------\n");
+}
+
+void searchEventsByTimeRange(Event events[], int count) {
+    char searchStartDate[11];
+    char searchEndDate[11];
+
+    printf("\n============================================================\n");
+    printf("                SEARCH EVENTS BY TIME RANGE                 \n");
+    printf("============================================================\n");
+
+    if (count == 0) {
+        printf(">> Notice: No events in the system.\n");
+        return;
+    }
+
+    while (1) {
+        printf("Enter start date (YYYY-MM-DD or YYYY/MM/DD): ");
+        inputValidFormatDate(searchStartDate);
+
+        printf("Enter end date (YYYY-MM-DD or YYYY/MM/DD): ");
+        inputValidFormatDate(searchEndDate);
+
+        if (strcmp(searchEndDate, searchStartDate) < 0) {
+            printf("\033[1;31m>> Error: End date must be after or equal to start date!\033[0m\n");
+            continue;
+        }
+        break;
+    }
+
+    printf("\n%-10s | %-20s | %-12s | %-12s | %-15s\n", 
+           "ID", "Event Name", "Start Date", "End Date", "Status");
+    printf("--------------------------------------------------------------------------------\n");
+
+    int found = 0;
+    for (int i = 0; i < count; i++) {
+        if (strcmp(events[i].startDate, searchStartDate) >= 0 && 
+            strcmp(events[i].startDate, searchEndDate) <= 0) {
+            
+            char statusStr[20];
+            if (events[i].status == 0) strcpy(statusStr, "Not started");
+            else if (events[i].status == 1) strcpy(statusStr, "Ongoing");
+            else strcpy(statusStr, "Finished");
+
+            printf("%-10s | %-20s | %-12s | %-12s | %-15s\n", 
+                   events[i].eventId, 
+                   events[i].name, 
+                   events[i].startDate, 
+                   events[i].endDate, 
+                   statusStr);
+            found = 1;
+        }
+    }
+
+    if (!found) {
+        printf(">> Notice: No events found starting within this time range.\n");
+    }
+    printf("--------------------------------------------------------------------------------\n");
+}
+
+void sortEventsByStartDate(Event events[], int count, int sortOrder) {
+    for (int i = 0; i < count - 1; i++) {
+        int targetIdx = i;
+        for (int j = i + 1; j < count; j++) {
+            int cmp = strcmp(events[j].startDate, events[targetIdx].startDate);
+            
+            if ((sortOrder == 1 && cmp < 0) || (sortOrder == 2 && cmp > 0)) {
+                targetIdx = j;
+            }
+        }
+        if (targetIdx != i) {
+            Event temp = events[i];
+            events[i] = events[targetIdx];
+            events[targetIdx] = temp;
+        }
+    }
+}
+
+
+void searchEventsByNameOrId(Event events[], int count) {
+    printf("\n============================================================\n");
+    printf("                  SEARCH EVENTS BY NAME/ID                  \n");
+    printf("============================================================\n");
+    
+    char searchInput[256] = ""; 
+    
+    if (count == 0) {
+        printf(">> Notice: No events in the system.\n");
+        return;
+    }
+
+    printf("Enter event name or ID to search: ");
+    while(getchar() != '\n'); 
+    if (scanf("%255[^\n]", searchInput) != 1) {
+        printf(">> Notice: Invalid search input.\n");
+        while(getchar() != '\n'); 
+        return;
+    }
+    while(getchar() != '\n');
+
+    int *matchedIndexes = malloc(sizeof(int) * count);
+    int *scores = malloc(sizeof(int) * count);
+    if (matchedIndexes == NULL || scores == NULL) {
+        printf(">> Error: Not enough memory to search events.\n");
+        free(matchedIndexes);
+        free(scores);
+        return;
+    }
+    int matchCount = 0;
+
+    for (int i = 0; i < count; i++) {
+        int score = getSearchScore(events[i].name, searchInput);
+
+        char idCopy[50];
+        strcpy(idCopy, events[i].eventId);
+        toLowerCase(idCopy);
+
+        char searchCopy[256];
+        strcpy(searchCopy, searchInput);
+        toLowerCase(searchCopy);
+
+        if (strstr(idCopy, searchCopy) != NULL) {
+            score += 10;
+        }
+        
+        if (score > 0) {
+            matchedIndexes[matchCount] = i;
+            scores[matchCount] = score;
+            matchCount++;
+        }
+    }
+    
+    for (int i = 0; i < matchCount - 1; i++) {
+        for (int j = i + 1; j < matchCount; j++) {
+            if (scores[j] > scores[i]) {
+                int tempScore = scores[i];
+                scores[i] = scores[j];
+                scores[j] = tempScore;
+                int tempIdx = matchedIndexes[i];
+                matchedIndexes[i] = matchedIndexes[j];
+                matchedIndexes[j] = tempIdx;
+            }
+        }
+    }
+    
+    if (matchCount == 0) {
+        printf(">> Notice: No events matched your search.\n");
+    } else {
+        printf("\n%-10s | %-20s | %-12s | %-12s | %-15s\n", 
+               "ID", "Event Name", "Start Date", "End Date", "Status");
+        printf("--------------------------------------------------------------------------------\n");
+        for (int i = 0; i < matchCount; i++) {
+            int idx = matchedIndexes[i];
+            char statusStr[20];
+            if (events[idx].status == 0) strcpy(statusStr, "Not started");
+            else if (events[idx].status == 1) strcpy(statusStr, "Ongoing");
+            else strcpy(statusStr, "Finished");
+
+            printf("%-10s | %-20s | %-12s | %-12s | %-15s\n", 
+                   events[idx].eventId, 
+                   events[idx].name, 
+                   events[idx].startDate, 
+                   events[idx].endDate, 
+                   statusStr);
+        }
+        printf("--------------------------------------------------------------------------------\n");
+    }
+    free(matchedIndexes);
+    free(scores);
 }

@@ -1,7 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <ctype.h>
 #include "../includes/event.h"
 #include "../includes/report.h"
 
@@ -16,29 +15,30 @@ int eventSearch(Event list[], int countEvent, char eIdorName[])
         {
             Index = i;
 
-            printf("The event code is: %s\n", list[i].eventId);
-            printf("The event name is: %s\n", list[i].name);
+            printf("The event code: %s\n", list[i].eventId);
+            printf("The event name: %s\n", list[i].name);
 
-        if (list[i].status == 0)
-        {
-            printf("Event Status: Not Started\n");
-        } else if (list[i].status == 1)
+            if (list[i].status == 0)
             {
-                printf("Event Status: Ongoing\n");
-            } else if (list[i].status == 2)
-                {
-                    printf("Event Status: Completed\n");
-                } else 
+                printf("the event status: Not Start\n");
+            } else if (list[i].status == 1)
                     {
-                        printf("Event Status: Unknown\n");
-                    }
+                        printf("the event status: Ongoing\n");
+                    } else if (list[i].status == 2)
+                            {
+                                printf("the event status: Complete\n");
+                            } else 
+                                {
+                                    printf("the event status: Unknown\n");
+                                }
+
             return Index;
         }
     }
 
     if (Index == -1)
     {
-        printf("The event you are looking for does not exist!\n");
+        printf("The event code or name you entered does not exist!\n");
     }   
     
     return Index;
@@ -48,48 +48,49 @@ int eventSearch(Event list[], int countEvent, char eIdorName[])
 void eventDetail(Event list[], int countEvent)
 {
     char eId[20];
-    printf("Enter the event code you want to view details for (e.g., EV000001) or the event name: ");
+    printf("Enter the event code you want to view details for (e.g., EV000001) or the event name:");
     scanf(" %[^\n]", eId);
-
-
 
     int Index = eventSearch(list, countEvent, eId);
 
     if (Index != -1)
     {
         printf("|===============================|\n");
-        printf("|       EVENT DETAILS       |\n");
+        printf("|       EVENT INFORMATION       |\n");
         printf("|===============================|\n");
 
-        printf("\n|===============================================================|\n");
-        printf("Event Code                   :%s\n", list[Index].eventId);
-        printf("Event Name                   :%s\n", list[Index].name);
-        printf("Event Description            :%s\n", list[Index].description);
-        printf("Event Location               :%s\n", list[Index].location);
-        printf("Event Start Date             :%s\n", list[Index].startDate);
-        printf("Event End Date               :%s\n", list[Index].endDate);
-
-        if (list[Index].status == 0)
-        {
-            printf("Event Status                 :Not Started\n");
-        } else if (list[Index].status == 1)
-            {
-                printf("Event Status                 :Ongoing\n");
-            } else if (list[Index].status == 2)
-                {
-                    printf("Event Status                 :Completed\n");
-                } else 
-                    {
-                        printf("Event Status                 :Unknown\n");
-                    }
-
-        printf("|=================================================================|\n");
-    }
-
-    printf("|=======================================|\n");
-    printf("|     EVENT PARTICIPANTS LIST           |\n");
-    printf("|=======================================|\n");
+        printf("\n|=====================|===========================================|\n");
+        printf("|\tEvent Code       \t|%s\n", list[Index].eventId);
+        printf("|=======================|===========================================|\n");
+        printf("|\tEvent Name       \t|%s\n", list[Index].name);
+        printf("|=======================|===========================================|\n");
+        printf("|\tEvent Description\t|%s\n", list[Index].description);
+        printf("|=======================|===========================================|\n");
+        printf("|\tEvent Location   \t|%s\n", list[Index].location);
+        printf("|=======================|===========================================|\n");
+        printf("|\tEvent Start Date \t|%s\n", list[Index].startDate);
+        printf("|=======================|===========================================|\n");
+        printf("|\tEvent End Date   \t|%s\n", list[Index].endDate);
+        printf("|=======================|===========================================|\n");
         
+        if (list[Index].status == 0)
+            {
+                printf("|\tEvent Status     \t|Not Started\n");
+            } else if (list[Index].status == 1)
+                {
+                    printf("|\tEvent Status     \t|Ongoing\n");
+                } else if (list[Index].status == 2)
+                    {
+                        printf("|\tEvent Status     \t|Completed\n");
+                    } else 
+                        {
+                            printf("|\tEvent Status     \t|Unknown\n");
+                        }
+
+        printf("|=======================|===========================================|\n");
+    } else {
+        return;
+    }
     if (list[Index].staffCount == 0)
         {
             printf(">> Announcement: No staff have been assigned to this event yet!\n");
@@ -131,5 +132,148 @@ void eventDetail(Event list[], int countEvent)
                             }
                 }
             }  
-} 
-  
+}
+
+void createFile(Event list[], int countEvent)
+{
+    FILE *fptr;
+    fptr = fopen("report.txt", "w");
+    if (fptr == NULL)
+    {
+        printf("Error creating report file!\n");
+        return;
+    }
+    printf("search name of event you want to create report for: ");
+    char eId[20];
+    scanf(" %[^\n]", eId);
+
+    int Index = eventSearch(list, countEvent, eId);
+
+    if (Index != -1)
+    {
+        fprintf(fptr, "Event Code: %s\n", list[Index].eventId);
+        fprintf(fptr, "Event Name: %s\n", list[Index].name);
+        fprintf(fptr, "Event Description: %s\n", list[Index].description);
+        fprintf(fptr, "Event Location: %s\n", list[Index].location);
+        fprintf(fptr, "Event Start Date: %s\n", list[Index].startDate);
+        fprintf(fptr, "Event End Date: %s\n", list[Index].endDate);
+
+        if (list[Index].status == 0)
+            {
+                fprintf(fptr, "the event status: Not Start\n");
+            } else if (list[Index].status == 1)
+                    {
+                        fprintf(fptr, "the event status: Ongoing\n");
+                    } else if (list[Index].status == 2)
+                            {
+                                fprintf(fptr, "the event status: Complete\n");
+                            } else 
+                                {
+                                    fprintf(fptr, "the event status: Unknown\n");
+                                }
+
+        if (list[Index].staffCount == 0)
+        {
+            fprintf(fptr, "No staff have been assigned to this event yet!\n");
+        } else
+            {   
+                fprintf(fptr, "|=========================================|\n");
+                fprintf(fptr, "|       LIST OF STAFF FOR THE EVENT       |\n");
+                fprintf(fptr, "|=========================================|\n");
+                fprintf(fptr, "|Name                   |ID                     |Role                      |Responsibilities\n");
+
+                for (int i = 0; i < list[Index].staffCount; i++)
+                {   
+
+                    fprintf(fptr, "|%s\t\t\t\t", list[Index].staffList[i].studentName);
+
+                    fprintf(fptr, "|%s\t\t\t\t", list[Index].staffList[i].studentId);
+
+                    if (list[Index].staffList[i].role == 0)
+                        {
+                            fprintf(fptr, "|BCN\t\t\t\t");
+                        } else if (list[Index].staffList[i].role == 1)
+                            {
+                                fprintf(fptr, "|Member\t\t\t\t");
+                            } else if (list[Index].staffList[i].role == 2)
+                                {
+                                    fprintf(fptr, "|Support\t\t\t\t");
+                                } else 
+                                    {
+                                        fprintf(fptr, "|Unassigned\t\t\t\t");
+                                    }
+
+                    if (strlen(list[Index].staffList[i].description) == 0)
+                        {
+                            fprintf(fptr, "|No responsibilities assigned\n");
+                        } else
+                            {
+                                fprintf(fptr, "|%s\n", list[Index].staffList[i].description);
+                            }
+                }
+            }  
+    } else
+        {
+            fprintf(fptr, "Event with the given ID or name does not exist!\n");
+        }
+    fclose(fptr);
+}
+
+void advancedStaffStatistics(Event events[], int eventCount, Account accounts[], int accountCount) {
+    printf("\n============================================================\n");
+    printf("                  ADVANCED STAFF STATISTICS                 \n");
+    printf("============================================================\n");
+    printf("\n--- 1. STAFF COUNT BY EVENT ---\n");
+    if (eventCount == 0) {
+        printf(">> Notice: No events in the system.\n");
+    } else {
+        printf("%-15s | %-30s | %-10s\n", "Event ID", "Event Name", "Staff Count");
+        printf("------------------------------------------------------------\n");
+        for (int i = 0; i < eventCount; i++) {
+            printf("%-15s | %-30s | %d/30\n", events[i].eventId, events[i].name, events[i].staffCount);
+        }
+    }
+
+    int participationCount[1000] = {0}; 
+    int maxParticipation = 0;
+
+    for (int i = 0; i < eventCount; i++) {
+        for (int j = 0; j < events[i].staffCount; j++) {
+            for (int k = 0; k < accountCount; k++) {
+                if (strcmp(events[i].staffList[j].studentId, accounts[k].studentid) == 0) {
+                    participationCount[k]++;
+                    break;
+                }
+            }
+        }
+    }
+
+    for (int i = 0; i < accountCount; i++) {
+        if (accounts[i].role == 0 && participationCount[i] > maxParticipation) {
+            maxParticipation = participationCount[i];
+        }
+    }
+    printf("\n--- 2. MEMBERS WITH THE MOST PARTICIPATION ---\n");
+    if (maxParticipation == 0) {
+        printf(">> Notice: No members have participated in any events yet.\n");
+    } else {
+        printf(">> Maximum participation: %d event(s)\n", maxParticipation);
+        for (int i = 0; i < accountCount; i++) {
+            if (accounts[i].role == 0 && participationCount[i] == maxParticipation) {
+                printf(" - Student ID: %-10s | Name: %s\n", accounts[i].studentid, accounts[i].username);
+            }
+        }
+    }
+    printf("\n--- 3. MEMBERS WITH NO PARTICIPATION ---\n");
+    int lazyFound = 0;
+    for (int i = 0; i < accountCount; i++) {
+        if (accounts[i].role == 0 && participationCount[i] == 0) {
+            printf(" - Student ID: %-10s | Name: %s\n", accounts[i].studentid, accounts[i].username);
+            lazyFound = 1;
+        }
+    }
+    if (!lazyFound) {
+        printf(">> Awesome! All members have participated in at least one event!\n");
+    }
+    printf("============================================================\n");
+}
