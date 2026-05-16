@@ -11,6 +11,7 @@ typedef struct {
     char password[20];
     char email[20];
     char phone[20];
+    char reason[200];
     int role; 
     int isLocked; 
     int failCount;

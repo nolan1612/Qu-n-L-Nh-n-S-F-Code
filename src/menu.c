@@ -168,7 +168,6 @@ void runAdminMenu(Account *currentAcc, Account list[], int accountCount, Event e
             	break;
             case 14:
             	viewUnlockRequests(list, accountCount);
-                saveAccounts(list, accountCount);
             	break;
             case 16:
                 approveJoinRequests(eventList, *eventCount, list, accountCount);
@@ -226,7 +225,7 @@ void runMemberMenu(Account *currentAcc, Account list[], int accountCount, Event 
 }
 
 
-void runRequest(Account *currentAcc, Request listRequests[], int accountCount)
+void runRequest(Account *currentAcc, Account list[], int accountCount)
 {
     int choice;
     do 
@@ -244,14 +243,14 @@ void runRequest(Account *currentAcc, Request listRequests[], int accountCount)
         switch (choice) 
         {
         case 1:
-            //sendUnlockRequest(currentAcc);
+            sendUnlockRequest(currentAcc, list, accountCount);
             //saveRequests(listRequests, accountCount);
             break;
         case 0:
             choice = -1;
-            break;
+            return;  // Thoát hàm
         default:
             printf(">> Error: Invalid choice. Please try again!\n");
         }
-    } while (choice != 0);
+    } while (1);
 }

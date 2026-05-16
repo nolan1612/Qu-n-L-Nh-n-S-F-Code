@@ -431,7 +431,7 @@ void viewMemberProfile(Account *currentAcc) {
     printf("%-12s: %s\n", "Student ID", currentAcc->studentid);
     printf("%-12s: %s\n", "Email", currentAcc->email);
     printf("%-12s: %s\n", "Phone", currentAcc->phone);
-    printf("%-12s: %s\n", "Dept", currentAcc->dept);
+    // printf("%-12s: %s\n", "Dept", currentAcc->dept);
     printf("%-12s: %s\n", "Role", (currentAcc->role >= 1) ? "Board of Directors (BOD)" : "Member");
     printf("=========================================\n");
     while (getchar() != '\n'); 

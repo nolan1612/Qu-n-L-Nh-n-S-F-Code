@@ -59,22 +59,17 @@ int main() {
             }
 
             if (list[index].isLocked == 1) {
-                printf("Tai khoan nay da bi khoa!\n");
-                if (confirmAction("Gui yeu cau mo khoa den BCN?")) {
-                    list[index].isLocked = 2;
-                    list[index].failCount = 0; // ← fix lỗi 2: reset failCount
-                    saveAccounts(list, accountCount);
-                    printf(">> Da gui yeu cau. Vui long cho BCN duyet!\n");
-                }
-                continue;
+                 printf("Tai khoan nay da bi khoa!\n");
+    if (confirmAction("Gui yeu cau mo khoa den BCN?")) {
+        sendUnlockRequest(&list[index], list, accountCount);
+    }
+    continue;
             }
 
             if (list[index].isLocked == 2) {
                 printf("Tai khoan dang cho BCN duyet yeu cau mo khoa!\n");
                 continue;
             }
-
-
 
             int status ;
             do{
@@ -94,7 +89,7 @@ int main() {
                 if (list[status].role == 1) {
                     runAdminMenu(&list[status], list, accountCount, eventList, &eventCount);
                 } else {
-                    runMemberMenu(&list[status], list, accountCount);
+                    runMemberMenu(&list[status], list, accountCount, eventList, eventCount);
                 }
                 saveAccounts(list, accountCount); 
             } else if (status == -2) {
