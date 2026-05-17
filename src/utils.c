@@ -22,7 +22,6 @@ int isValidDateNum(int year, int month, int day);
 int isValidDateStr(const char* date);
 int getDaysDifference(const char* start, const char* end);
 void inputValidFormatDate(char str[]);
-int isValidEmail(char *email);
 int checkPassword(char ps[], Account *account);
 int getSearchScore(const char eventName[], const char searchInput[]);
 void toLowerCase(char str[]);
@@ -165,39 +164,9 @@ int confirmAction( char message[]) {
         printf(">> Error: Invalid input! Please enter Y or N.\n");
     }
 }
-int isValidEmail(char *email){
-    if(email == NULL || strlen(email) == 0) return 0;
-    //kiem tra dau cach 
-    for(size_t i = 0; i < strlen(email); i++){
-        if(isspace(email[i])) return 0;
-    }
-    if(email[0] == '@') return 0;
-
-    char copy[101];
-    strncpy(copy, email, sizeof(copy) - 1);
-    copy[sizeof(copy) - 1] = '\0';
-
-    char *part1 = strtok(copy, "@");
-    char *part2 = strtok(NULL, "@");
-    char *extra = strtok(NULL, "@");
-
-    if(part1 == NULL || part2 == NULL) return 0;
-    if(extra != NULL) return 0;
-
-    char part2cpy[101];
-    strncpy(part2cpy, part2, sizeof(part2cpy) - 1);
-    part2cpy[sizeof(part2cpy) - 1] = '\0';
-
-    char *token = strtok(part2cpy, ".");
-    char *last = NULL;
-    while (token != NULL) {
-        last  = token;
-        token = strtok(NULL, ".");
-    }
-  
-    if (last == NULL || strlen(last) == 0) return 0;
-    return 1;
-}
+#include <stdio.h>
+#include <string.h>
+#include <ctype.h>
 
 void toLowerCase(char str[]) {
     for(int i = 0; str[i] != '\0'; i++){

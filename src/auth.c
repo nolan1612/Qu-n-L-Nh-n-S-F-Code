@@ -118,30 +118,41 @@ int Logout(Account *currentAcc, Account list[], int accountCount) {
 }
 
 void forgotPassword(Account list[], int accountCount){
-    char inputEmail[101];
-    int foundIndex = -1;
+    int foundIndex;
+    char inputEmail[101]; 
     printf("==FORGOT PASSWORD==\n");
-    printf("plz,input your email\n");
-    inputString(inputEmail, sizeof(inputEmail));
-    
-    if (strcmp(inputEmail, "0") == 0) {
-        printf(">> Action canceled. Returning to menu...\n");
-        return;
-    }
-    if (isValidEmail(inputEmail) == 0) {
-        printf(">> Error: Invalid email format!\n");
-        return;
-    }
-    for(int i = 0; i <= accountCount - 1; i++){
-        if(strcmp(list[i].email, inputEmail) == 0){
-            foundIndex = i;
-            break;
+
+    while(1){
+        printf("Input your email (Type '0' to cancel): ");
+        scanf(" %49[^\n]", inputEmail);
+		clearBuffer();
+        
+        if (strcmp(inputEmail, "0") == 0) {
+            printf(">> Action canceled. Returning to menu...\n");
+            return; 
         }
+
+        EmailValidationResult emailStatus = validateEmail(inputEmail);
+        if (emailStatus != EMAIL_VALID) {
+            printf("%s Please try again.\n", getEmailErrorMessage(emailStatus));
+            continue;
+        }
+        
+        foundIndex = -1;
+        for(int i = 0; i <= accountCount - 1; i++){
+            if(strcmp(list[i].email, inputEmail) == 0){
+                foundIndex = i;
+                break;
+            }
+        }
+        if (foundIndex == -1) {
+            printf(">> Error: Email does not exist in the system!\n");
+            continue;
+        }
+
+        break;
     }
-    if (foundIndex == -1) {
-        printf(">> Error: Email does not exist in the system!\n");
-        return;
-    }
+    
     char newPass[20], confirmPass[20];
     while(1) {
         printf(">> Account found! Enter new password (Type '0' to cancel): ");
@@ -152,9 +163,15 @@ void forgotPassword(Account list[], int accountCount){
             return;
         }
 
+        PasswordValidationResult passStatus = validatePassword(newPass);
+        if(passStatus != PASSWORD_VALID){
+            printf("%s Please try again.\n", getPasswordErrorMessage(passStatus));
+            continue;
+        }
+
         printf("Confirm new password: ");
         inputString(confirmPass, sizeof(confirmPass));
-        confirmPass[strcspn(confirmPass, "\n")] = '\0';
+        
 
         if (strcmp(newPass, confirmPass) != 0) {
             printf(">> Error: Password confirmation does not match. Please try again!\n");
