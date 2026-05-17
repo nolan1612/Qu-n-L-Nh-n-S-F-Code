@@ -45,7 +45,7 @@ int main() {
 
             while (1) {
 
-                printf("Nhap MSSV: ");
+                printf("Student Id: ");
                 scanf("%s", mssv);
 
                 int index = checkId(mssv, list, accountCount);
