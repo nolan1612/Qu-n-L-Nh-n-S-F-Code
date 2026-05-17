@@ -22,10 +22,8 @@ int isValidDateNum(int year, int month, int day);
 int isValidDateStr(const char* date);
 int getDaysDifference(const char* start, const char* end);
 void inputValidFormatDate(char str[]);
-int checkPassword(char ps[], Account *account);
 int getSearchScore(const char eventName[], const char searchInput[]);
 void toLowerCase(char str[]);
-int checkPassword(char ps[], Account *account);
 void inputString(char str[], int size);
 void clearBuffer() {
     while (getchar() != '\n');
@@ -42,9 +40,11 @@ int validInput(int min, int max){
         int check = scanf("%d", &number);
         if(check == 1){
             if(number >= min && number <= max){
+                clearBuffer();
                 return number;
             }else{
                 printf(">>Error: The number must be in %d to %d. Pls, try again: ", min, max);
+                clearBuffer();
             }
         }
         else{
@@ -198,21 +198,6 @@ int getSearchScore(const char eventName[], const char searchInput[]) {
     }
 
     return checkout; 
-}
-int checkPassword(char ps[], Account *account) {
-    if (strcmp(ps, account->password) == 0) {
-        account->failCount = 0; 
-        return 1; 
-    }
-
-    account->failCount++;
-    if (account->failCount >= 3) {
-        account->isLocked = 1;
-        printf("Incorrect password 3 times. This account has been locked!\n");
-        return -3;
-    } 
-    printf("Incorrect password! You have %d attempts left.\n", 3 - account->failCount);
-      return -1;
 }
 int checkId(char mssv[], Account list[], int accountCount){
     for(int i = 0; i <= accountCount - 1; i++){

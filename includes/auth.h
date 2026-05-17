@@ -25,4 +25,5 @@ void forgotPassword(Account list[], int accountCount);
 void setupEmail(Account *account, Account list[], int accountCount);
 void generatedSecretKey(int lenght);
 void Register(Account list[], int *accountCount);
+int checkPassword(char ps[], Account *account);
 #endif

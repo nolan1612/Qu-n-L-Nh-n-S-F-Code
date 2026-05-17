@@ -16,6 +16,7 @@ void forgotPassword(Account list[], int accountCount);
 void setupEmail(Account *account, Account list[], int accountCount);
 void generatedSecretKey(int lenght);
 void Register(Account list[], int *accountCount);
+int checkPassword(char ps[], Account *account);
 
 int Login(char mssv[], char ps[], Account list[], int accountCount) {    
     int index = -1;
@@ -384,4 +385,19 @@ void Register(Account list[], int *accountCount){
     (*accountCount)++;
     saveAccounts(list, *accountCount);
     printf("\n\033[1;32m>>Success: Account created successfully!\033[0m\n");
+}
+int checkPassword(char ps[], Account *account) {
+    if (strcmp(ps, account->password) == 0) {
+        account->failCount = 0; 
+        return 1; 
+    }
+
+    account->failCount++;
+    if (account->failCount >= 3) {
+        account->isLocked = 1;
+        printf("Incorrect password 3 times. This account has been locked!\n");
+        return -3;
+    } 
+    printf("Incorrect password! You have %d attempts left.\n", 3 - account->failCount);
+      return -1;
 }
