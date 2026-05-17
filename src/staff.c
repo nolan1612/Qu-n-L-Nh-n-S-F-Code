@@ -60,6 +60,7 @@ void addStaffToEvent(Event events[], int count, Account list[], int accountCount
     }
 
     char mssvInput[50];
+    char studentNameFound[100] = "";
     attempts = 3;
 
     while (attempts > 0) {
@@ -79,6 +80,7 @@ void addStaffToEvent(Event events[], int count, Account list[], int accountCount
         for (int i = 0; i < accountCount; i++) {
             if (strcmp(list[i].studentid, mssvInput) == 0) {
                 existedInSystem = 1;
+                strcpy(studentNameFound, list[i].username);
                 break;
             }
         }
@@ -114,6 +116,7 @@ void addStaffToEvent(Event events[], int count, Account list[], int accountCount
     int sCount = events[foundIndex].staffCount;
 
     strcpy(events[foundIndex].staffList[sCount].studentId, mssvInput);
+    strcpy(events[foundIndex].staffList[sCount].studentName, studentNameFound);
     events[foundIndex].staffList[sCount].role = role;
     strcpy(events[foundIndex].staffList[sCount].description, desc);
 
