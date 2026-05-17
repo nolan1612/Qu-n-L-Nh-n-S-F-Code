@@ -144,17 +144,13 @@ EmailValidationResult validateEmail(const char email[]){
     if(atIndex == 0){
         return EMAIL_INVALID_FORMAT;
     }
-
     const char *domain = email + atIndex + 1;
-
     if(strncmp(domain, "gmail", 5) != 0){
         return EMAIL_MISSING_GMAIL;
     }
-
     if(strcmp(domain, "gmail.com") != 0){
         return EMAIL_MISSING_DOT_COM;
     }
-
     return EMAIL_VALID;
 }
 
@@ -193,9 +189,7 @@ PhoneValidationResult validatePhone(const char phone[]){
             return PHONE_INVALID_FORMAT;
         }
     }
-
     if(phone[0] != '0') return FIRST_DIGIT_INVALID;
-
     if(phone[1] != '2' && phone[1] != '3' && phone[1] != '5' &&
        phone[1] != '7' && phone[1] != '8' && phone[1] != '9'){
         return SECOND_DIGIT_INVALID;

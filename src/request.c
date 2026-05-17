@@ -39,7 +39,6 @@ void sendUnlockRequest(Account *currentAcc, int accountCount) {
         return;
     }
 
-    // Kiểm tra đã gửi yêu cầu chưa
     Request list[MAX_REQUESTS];
     int requestCount = loadRequests(list);
 
@@ -143,9 +142,7 @@ void deleteUnlockRequest(Request requests[], int requestCount, char mssv[])
     for (int i = deleteIndex; i < requestCount - 1; i++) {
         requests[i] = requests[i + 1];
     }
-
     requestCount--;
-
     saveRequests(requests, requestCount);
 
     printf("The request has been deleted.\n");

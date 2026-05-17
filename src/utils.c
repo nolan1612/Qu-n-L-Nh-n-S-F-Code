@@ -100,18 +100,14 @@ int isValidDateStr(const char* date) {
 int getDaysDifference(const char* start, const char* end) {
     struct tm tm_start = {0};
     struct tm tm_end = {0};
-
     sscanf(start, "%d-%d-%d", &tm_start.tm_year, &tm_start.tm_mon, &tm_start.tm_mday);
     sscanf(end, "%d-%d-%d", &tm_end.tm_year, &tm_end.tm_mon, &tm_end.tm_mday);
-
     tm_start.tm_year -= 1900;
     tm_start.tm_mon -= 1;
     tm_end.tm_year -= 1900;
     tm_end.tm_mon -= 1;
-
     time_t time_start = mktime(&tm_start);
     time_t time_end = mktime(&tm_end);
-
     long long seconds = (long long)difftime(time_end, time_start);
     return (int)(seconds / (60 * 60 * 24)); 
 }
@@ -151,7 +147,6 @@ void inputValidFormatDate(char str[]){
         }
     }
 }
-
 int confirmAction( char message[]) {
     char choice;
     while (1) {
@@ -164,10 +159,6 @@ int confirmAction( char message[]) {
         printf(">> Error: Invalid input! Please enter Y or N.\n");
     }
 }
-#include <stdio.h>
-#include <string.h>
-#include <ctype.h>
-
 void toLowerCase(char str[]) {
     for(int i = 0; str[i] != '\0'; i++){
         str[i] = tolower(str[i]);
@@ -176,8 +167,6 @@ void toLowerCase(char str[]) {
 int getSearchScore(const char eventName[], const char searchInput[]) {
     char nameCopy[256];
     char searchCopy[256];
-
-
     strncpy(nameCopy, eventName, sizeof(nameCopy) - 1);
     nameCopy[sizeof(nameCopy) - 1] = '\0';
     
@@ -187,7 +176,6 @@ int getSearchScore(const char eventName[], const char searchInput[]) {
     toLowerCase(searchCopy);
     int checkout = 0;
     char *word = strtok(searchCopy, " ");
-
     while (word != NULL) {
         if (strstr(nameCopy, word) != NULL) {
             checkout++; 

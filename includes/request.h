@@ -2,7 +2,7 @@
 #define REQUEST_H
 
 #define MAX_REQUESTS 500
-
+#include "auth.h"
 typedef struct {
     char mssv[20];
     char name[50];

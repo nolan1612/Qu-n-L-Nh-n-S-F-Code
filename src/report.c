@@ -87,7 +87,6 @@ void eventDetail(Event list[], int countEvent)
             printf("+---------------------------+--------------+------------+----------------------------------+\n");
             printf("|        LIST OF STAFF FOR THE EVENT (Total: %d)                                         |\n", list[Index].staffCount);
             printf("+---------------------------+--------------+------------+----------------------------------+\n");
-            // Căn lề cố định: Tên (25 ký tự), ID (12 ký tự), Chức vụ (10 ký tự), Nhiệm vụ (30 ký tự)
             printf("| %-25s | %-12s | %-10s | %-32s |\n", "Name", "ID", "Role", "Responsibilities");
             printf("+---------------------------+--------------+------------+----------------------------------+\n");
 
@@ -95,17 +94,13 @@ void eventDetail(Event list[], int countEvent)
 
             for (int i = 0; i < list[Index].staffCount; i++)
             {   
-                // Tối ưu lấy Role Name
                 int r = list[Index].staffList[i].role;
                 const char* roleStr = (r >= 0 && r <= 2) ? ROLE_NAMES[r] : ROLE_NAMES[3];
-
-                // Tối ưu kiểm tra chuỗi rỗng bằng ký tự '\0' thay vì dùng strlen
                 const char* descStr = list[Index].staffList[i].description;
                 if (descStr[0] == '\0') {
                     descStr = "No responsibilities assigned";
                 }
 
-                // In một dòng dữ liệu thẳng hàng tuyệt đối
                 printf("| %-25s | %-12s | %-10s | %-32s |\n", 
                         list[Index].staffList[i].studentName,
                         list[Index].staffList[i].studentId,
@@ -125,10 +120,8 @@ void createFile(Event list[], int countEvent)
     printf("Search name or ID of event you want to create report for: ");
     char eId[20];
     
-    // [FIX]: Giới hạn nhập tối đa 19 ký tự để chống lỗi tràn bộ nhớ (Buffer Overflow)
     scanf(" %19[^\n]", eId);
 
-    // Tìm kiếm sự kiện
     int Index = eventSearch(list, countEvent, eId);
 
     if (Index != -1)
@@ -173,7 +166,6 @@ void createFile(Event list[], int countEvent)
             fprintf(fptr, "+---------------------------+--------------+------------+----------------------------------+\n");
             fprintf(fptr, "|        LIST OF STAFF FOR THE EVENT (Total: %d)                                         |\n", list[Index].staffCount);
             fprintf(fptr, "+---------------------------+--------------+------------+----------------------------------+\n");
-            // Căn lề cố định: Tên (25 ký tự), ID (12 ký tự), Chức vụ (10 ký tự), Nhiệm vụ (30 ký tự)
             fprintf(fptr, "| %-25s | %-12s | %-10s | %-32s |\n", "Name", "ID", "Role", "Responsibilities");
             fprintf(fptr, "+---------------------------+--------------+------------+----------------------------------+\n");
 

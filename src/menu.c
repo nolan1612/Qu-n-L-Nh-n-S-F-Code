@@ -247,7 +247,6 @@ void runRequest(Account *currentAcc, Request listRequests[], int accountCount)
         {
         case 1:
             sendUnlockRequest(currentAcc, accountCount);
-            //saveRequests(listRequests, accountCount);
             break;
         case 0:
             printf(">> Returning to welcome menu...\n");
