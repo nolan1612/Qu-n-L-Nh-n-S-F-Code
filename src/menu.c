@@ -51,11 +51,13 @@ void runAdminMenu(Account *currentAcc, Account list[], int accountCount, Event e
     int choice;
     do {
         AdminMenu();
-        printf("Enter your choice (0-17): ");
+        printf("Enter your choice (0-16): ");
         if (scanf("%d", &choice) != 1) {
             while (getchar() != '\n');
             choice = -1;
-        }
+        } else {
+    		while (getchar() != '\n');
+		}
 
         switch(choice) {
             case 1: 
@@ -181,11 +183,13 @@ void runMemberMenu(Account *currentAcc, Account list[], int accountCount, Event 
     int choice;
     do {
         MemberMenu();
-        printf("Enter your choice (0-8): ");
+        printf("Enter your choice (0-7): ");
         if (scanf("%d", &choice) != 1) {
             while (getchar() != '\n');
             choice = -1;
-        }
+        } else {
+    		while (getchar() != '\n');
+		}
 
         switch(choice) {
             case 1:
@@ -247,7 +251,6 @@ void runRequest(Account *currentAcc, Request listRequests[], int accountCount)
             break;
         case 0:
             printf(">> Returning to welcome menu...\n");
-            return;
             break;
         default:
             printf(">> Error: Invalid choice. Please try again!\n");
